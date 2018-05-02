@@ -1,0 +1,35 @@
+{
+  "extensionName": {
+    "message": "DNS Over HTTPS"
+  },
+  "extensionDescriptionIntro": {
+    "message": "Mozilla is running a series of studies in Firefox Nightly to evaluate a service that keeps DNS providers from collecting and sharing your browsing history. All Nightly users will receive a notification about these studies. When a study is active, Nightly Firefox will automatically use Cloudflare’s 1.1.1.1 secure DNS over HTTPS. This study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP in order to compare approaches."
+  },
+  "extensionDescriptionDataTitle": {
+    "message": "What happens to your data"
+  },
+  "extensionDescriptionDataDesc": {
+    "message": "Cloudflare, like any other DNS provider, needs access to the host names you use to resolve requests. We’ve chosen Cloudflare as our partner for these studies because, unlike many other DNS providers, they agreed to strong privacy controls that include limits on what data they collect and how long they keep it, as well a promise to not share data with other parties. Read the Cloudflare/Firefox Privacy Policy at https://tinyurl.com/yax6zfqo"
+  },
+  "extensionDescriptionDisableTitle": {
+    "message": "How you can disable DNS studies"
+  },
+  "extensionDescriptionDisableDesc": {
+    "message": "If you don’t want to participate in this study, you can select the Disable button on this page. To disable all studies in Nightly, you can update your Privacy and Security settings in about:preferences."
+  },
+  "notificationMessage": {
+    "message": "Mozilla is working to improve privacy and security on the web. We are conducting studies that send encrypted DNS requests to Cloudflare, a secure, cloud-based service."
+  },
+  "disableButtonText": {
+    "message": "Disable DNS Studies"
+  },
+  "acceptButtonText": {
+    "message": "OK, Got It"
+  },
+  "learnMoreLinkText": {
+    "message": "Learn More"
+  },
+  "studyTitle": {
+    "message": "DNS Over HTTPS Studies"
+  }
+}
