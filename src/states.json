@@ -1,0 +1,34 @@
+{
+  "prefTypes": {
+    "network.trr.mode": "int",
+    "network.trr.uri": "string",
+    "network.trr.experimentalRollout": "int"
+  },
+  "prerequisitePrefs": [
+    "network.trr.mode"
+  ],
+  "statePref": "network.trr.experimentalRollout",
+  "states": {
+    "loaded": {
+      "id": 0,
+      "_comment": "Extension loaded but disclosure hasn't loaded yet (shouldn't be observable)",
+      "prefs": {
+      }
+    },
+    "enabled": {
+      "id": 1,
+      "_comment": "User has been presented with disclosure message",
+      "prefs": {
+        "network.trr.uri": "https://dns.cloudflare.com/.well-known/dns",
+        "network.trr.mode": 4
+      }
+    },
+    "disabled": {
+      "id": -1,
+      "_comment": "User saw disclosure and disabled the experiment",
+      "prefs": {
+        "network.trr.mode": 5
+      }
+    }
+  }
+}

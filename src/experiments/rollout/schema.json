@@ -1,0 +1,54 @@
+[
+  {
+    "namespace": "experiments.rollout",
+    "description": "Rollout",
+    "types": [
+      {
+        "id": "pref",
+        "type": "object",
+        "description": "Preference to set",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "any"
+          }
+        }
+      }
+    ],
+    "functions": [
+      {
+        "name": "setPrefs",
+        "type": "function",
+        "description": "Calls the setPrefs() function",
+        "parameters": [
+          {
+            "type": "array",
+            "name": "prefs",
+            "description": "An array of prefs",
+            "items": { "$ref": "pref" }
+          }
+        ],
+        "async": true
+      },
+      {
+        "name": "getPrefs",
+        "type": "function",
+        "description": "Calls the getPrefs() function",
+        "parameters": [
+          {
+            "type": "array",
+            "name": "prefNames",
+            "description": "An array of prefNames",
+            "items": { "type": "string" }
+          }
+        ],
+        "async": true
+      }
+    ]
+  }
+]
