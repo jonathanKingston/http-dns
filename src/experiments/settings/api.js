@@ -7,6 +7,7 @@ Cu2.import("resource://gre/modules/Services.jsm");
 Cu2.import("resource://gre/modules/ExtensionSettingsStore.jsm");
 Cu2.import("resource://gre/modules/ExtensionPreferencesManager.jsm");
 
+
 // TODO file scope issue on experiments that join extension contexts causing redeclaration issues.
 
 const prefManager = {

@@ -41,7 +41,6 @@ class NotificationPrompt {
     this.id = id;
     this.options = options;
 
-    //loadStyles(extension.resourceURL + "");
     loadStyles(extension.baseURI.spec + "");
 
     const browserWin = Services.wm.getMostRecentWindow("navigator:browser");
