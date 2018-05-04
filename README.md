@@ -21,6 +21,7 @@ testing purposes.
 
 ## TODO list
 
+- Decide if network.trr.mode=5 should persist after removing the addon
 - Document functions
 - Add tests for unset hidden prefs and public ones
 - Decide if pref setting should be synced across devices
