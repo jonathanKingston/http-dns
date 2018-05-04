@@ -42,7 +42,7 @@
     "message": "We are running a series of $STUDYTEXT$ in Nightly. All Nightly users will receive a notification about these studies.  When a study is active, Nightly Firefox will automatically use Cloudflare’s $CLOUDFLARE$.  The first study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP to compare approaches.",
     "placeholders": {
       "studyText": {
-        "content": "<a href=\"https://support.mozilla.org/en-US/kb/shield\">Series</a>"
+        "content": "<a href=\"https://medium.com/@linclark/cee3af19f10a\">studies</a>"
       },
       "cloudflare": {
         "content": "<a href=\"https://blog.cloudflare.com/dns-resolver-1-1-1-1/\">1.1.1.1 secure DNS over HTTPS</a>"
