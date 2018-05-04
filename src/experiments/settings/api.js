@@ -57,7 +57,11 @@ const prefManager = {
 }
 const SETTING_TYPE = "setting_config";
 const settingManager = {
+  async init() {
+    await ExtensionSettingsStore.initialize();
+  },
   async add(id, settingConfig) {
+    await this.init();
     await ExtensionSettingsStore.addSetting(id, SETTING_TYPE, `settingConfig_${settingConfig.name}`, settingConfig);
     await ExtensionPreferencesManager.addSetting(settingConfig.name, {
       settingConfig,
@@ -84,6 +88,7 @@ const settingManager = {
     });
   },
   async getSettingConfig(settingName) {
+    await this.init();
     return await ExtensionSettingsStore.getSetting(SETTING_TYPE, `settingConfig_${settingName}`);
   },
   async get(settingName) {
@@ -103,6 +108,7 @@ const settingManager = {
     return await ExtensionPreferencesManager.setSetting(id, settingName, value);
   },
   async clear(id) {
+    await this.init();
     const types = await ExtensionSettingsStore.getAllForExtension(id, SETTING_TYPE);
     for (let key of types) {
       await ExtensionSettingsStore.removeSetting(id, SETTING_TYPE, key);
