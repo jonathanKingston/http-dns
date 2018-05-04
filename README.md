@@ -21,11 +21,4 @@ testing purposes.
 
 - Document functions
 - Add tests for unset hidden prefs and public ones
-- Cater for translations
-- Add shield plumbing
 - Decide if pref setting should be synced across devices
-- Find out about how `about:studies` works in regards to cleaning up prefs
-- Decide if we should allow the user to disable through `about:addons` options page
-- Is the page that provides the opt out going to be it's own extension page or injected into the content like UX email
-- Telemetry?
-

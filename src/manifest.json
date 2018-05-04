@@ -22,12 +22,12 @@
   },
 
   "experiment_apis": {
-    "rollout": {
-      "schema": "experiments/rollout/schema.json",
+    "settings": {
+      "schema": "experiments/settings/schema.json",
       "parent": {
         "scopes": ["addon_parent"],
-        "script": "experiments/rollout/api.js",
-        "paths": [["experiments", "rollout"]]
+        "script": "experiments/settings/api.js",
+        "paths": [["experiments", "settings"]]
       }
     },
     "notifications": {

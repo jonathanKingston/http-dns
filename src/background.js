@@ -4,8 +4,7 @@
 const HAS_SEEN_VERSION = 1;
 const STORAGE_AREA = "local";
 const STUDY_URL = browser.extension.getURL("study.html");
-// TODO delete debug
-//browser.tabs.create({"url": STUDY_URL});
+const SETTING_NAME = "trr";
 
 const stateManager = {
   hasInit: false,
@@ -19,54 +18,14 @@ const stateManager = {
     }
   },
 
-  async getPrefs(prefNames) {
-    return browser.experiments.rollout.getPrefs(prefNames);
-  },
-
-  async getPref(prefName) {
-    const {[prefName]: prefValue} = await this.getPrefs([prefName]);
-    return prefValue;
-  },
-
   async getStateName() {
     await this.init();
-    let currentState = null;
-    const prefValue = await this.getStatePrefValue();
-    Object.keys(this.statesInfo.states).forEach((stateKey) => {
-      const state = this.statesInfo.states[stateKey];
-      if (state.id === prefValue) {
-        currentState = stateKey;
-      }
-    });
-    return currentState;
-  },
-
-  async getStatePrefValue() {
-    await this.init();
-    return this.getPref(this.statesInfo.statePref);
-  },
-
-  async setPrefs(prefs) {
-    return browser.experiments.rollout.setPrefs(prefs);
+    return await browser.experiments.settings.get(SETTING_NAME) || null;
   },
 
   async setState(stateKey) {
     await this.init();
-    const prefs = [];
-    const state = this.statesInfo.states[stateKey];
-    state.prefs[this.statesInfo.statePref] = state.id;
-    const initial = await this.getIntialPrefValues();
-    const prefNames = await this.getPrefNames();
-    prefNames.forEach((prefName) => {
-      const value = state.prefs[prefName] || initial[prefName] || null;
-      const pref = {
-        name: prefName,
-        value,
-        type: this.statesInfo.prefTypes[prefName]
-      };
-      prefs.push(pref);
-    });
-    return this.setPrefs(prefs);
+    browser.experiments.settings.set(SETTING_NAME, stateKey);
   },
 
   getUserPrefKey(key) {
@@ -97,39 +56,35 @@ const stateManager = {
   async checkPrerequisites() {
     await this.init();
     const prerequisitePrefs = this.statesInfo.prerequisitePrefs;
-    const prefValues = await this.getPrefs(prerequisitePrefs);
     for (let pref of prerequisitePrefs) {
-      if (null !== prefValues[pref]) {
+      const prefValue = await browser.experiments.settings.getPref(pref);
+      if (null !== prefValue) {
         return false;
       }
     }
     return true;
   },
 
-  /**
-   * Get the initial user values of the experiments preferences and store them into the extension
-   */
-  async setInitialUserPrefValues() {
-    const prefNames = await this.getPrefNames();
-    const prefValues = await this.getPrefs(prefNames);
-    const storeValues = {};
-    Object.keys(prefValues).forEach((key) => {
-      storeValues[this.getUserPrefKey(key)] = prefValues[key];
+  async setSetting() {
+    return browser.experiments.settings.add({
+      name: SETTING_NAME,
+      prefNames: await this.getPrefNames(),
+      statePref: this.statesInfo.statePref,
+      states: this.statesInfo.states
     });
-    return browser.storage[STORAGE_AREA].set(storeValues);
   },
 };
 
 const rollout = {
   async init() {
     browser.runtime.onMessage.addListener((...args) => this.handleMessage(...args));
+    await stateManager.setSetting();
     const stateName = await stateManager.getStateName();
     switch (stateName) {
       case null:
       case "loaded":
-        await stateManager.setInitialUserPrefValues();
-        await stateManager.setState("loaded");
         if (await stateManager.checkPrerequisites()) {
+          await stateManager.setState("loaded");
           await this.show();
         }
         break;
@@ -148,7 +103,6 @@ const rollout = {
   },
 
   async disable() {
-    // TODO don't clear prefs if the user has changed after the experiment started
     await stateManager.setState("disabled");
     const tabs = await browser.tabs.query({
       url: STUDY_URL
