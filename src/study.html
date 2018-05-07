@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title data-i18n-message="extensionName"></title>
     <link href="study.css" rel="stylesheet" />
   </head>
@@ -12,14 +13,25 @@
       </form>
     </header>
     <main>
-      <p data-i18n-message="studyIntro"></p>
-      <h2 data-i18n-message="studyWorkTitle"></h2>
-      <p data-i18n-message="studyWork"></p>
-      <h2 data-i18n-message="extensionDescriptionDataTitle"></h2>
-      <p data-i18n-message="studyDataDesc"></p>
-      <h2 data-i18n-message="studyOptOutTitle"></h2>
-      <p data-i18n-message="studyOptOut"></p>
-      <p data-i18n-message="studyOptOutAll"></p>
+      <template>
+        <p data-i18n-message="studyIntro">
+          <span>Nightly</span>
+        </p>
+        <h2 data-i18n-message="studyWorkTitle"></h2>
+        <p data-i18n-message="studyWork">
+          <a href="https://medium.com/@linclark/cee3af19f10a" data-i18n-message="studyLink"></a>
+          <span>Nightly</span>
+          <span>Firefox Nightly</span>
+          <a href="https://blog.cloudflare.com/dns-resolver-1-1-1-1/" data-i18n-message="cloudflareLink"></a>
+        </p>
+        <h2 data-i18n-message="extensionDescriptionDataTitle"></h2>
+        <p data-i18n-message="studyDataDesc">
+          <a href="https://developers.cloudflare.com/1.1.1.1/commitment-to-privacy/privacy-policy/firefox/" data-i18n-message="policyLink"></a>
+        </p>
+        <h2 data-i18n-message="studyOptOutTitle"></h2>
+        <p data-i18n-message="studyOptOut"></p>
+        <p data-i18n-message="studyOptOutAll"></p>
+      </template>
     </main>
     <script src="lib/purify.js"></script>
     <script src="study.js"></script>
