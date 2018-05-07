@@ -137,6 +137,14 @@ var settings = class settings extends ExtensionAPI {
     return {
       experiments: {
         settings: {
+          async getStrings(stringNames) {
+            let brands = Services.strings.createBundle("chrome://branding/locale/brand.properties");
+            let output = {};
+            for (let key of stringNames) {
+              output[key] = brands.GetStringFromName(key);
+            }
+            return output;
+          },
           async getPref(prefName) {
             return await prefManager.getUserPref(prefName);
           },

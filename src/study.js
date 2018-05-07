@@ -8,6 +8,8 @@ async function init() {
     });
   }
 
+  const brandStrings = await browser.experiments.settings.getStrings(["brandShortName", "brandFullName"]);
+
   function createNodes(el, tagConfig) {
     for (const childEl of [...tagConfig.childNodes]) {
       if (childEl.nodeName === "#text") {
@@ -30,7 +32,9 @@ async function init() {
       el[attr.name] = attr.value;
     }
     let placeholders = [];
-    if (tagConfig.dataset.i18nMessage) {
+    if (tagConfig.dataset.i18nBrand) {
+      el.textContent = brandStrings[tagConfig.dataset.i18nBrand];
+    } else if (tagConfig.dataset.i18nMessage) {
       const placeholders = [...createNodes(document.createDocumentFragment(), tagConfig).childNodes].map(e => `${e.outerHTML || e.textContent}`);
       // Escape to only allow link placeholders, everything is turned to text
       el.innerHTML = DOMPurify.sanitize(browser.i18n.getMessage(tagConfig.dataset.i18nMessage, placeholders), {
