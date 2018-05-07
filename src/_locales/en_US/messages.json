@@ -3,7 +3,7 @@
     "message": "DNS Over HTTPS"
   },
   "extensionDescriptionIntro": {
-    "message": "Mozilla is running a series of studies in Firefox Nightly to evaluate a service that keeps DNS providers from collecting and sharing your browsing history. All Nightly users will receive a notification about these studies. When a study is active, Nightly Firefox will automatically use Cloudflare’s 1.1.1.1 secure DNS over HTTPS. This study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP in order to compare approaches."
+    "message": "Mozilla is running a series of studies in the browser to evaluate a service that keeps DNS providers from collecting and sharing your browsing history. All users will receive a notification about these studies. When a study is active, $BRANDNAME$ will automatically use Cloudflare’s 1.1.1.1 secure DNS over HTTPS. This study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP in order to compare approaches."
   },
   "extensionDescriptionDataTitle": {
     "message": "What happens to your data"
@@ -15,7 +15,7 @@
     "message": "How you can disable DNS studies"
   },
   "extensionDescriptionDisableDesc": {
-    "message": "If you don’t want to participate in this study, you can select the Disable button on this page. To disable all studies in Nightly, you can update your Privacy and Security settings in about:preferences."
+    "message": "If you don’t want to participate in this study, you can select the Disable button on this page. To disable all studies in Firefox, you can update your Privacy and Security settings in about:preferences."
   },
   "notificationMessage": {
     "message": "Mozilla is working to improve privacy and security on the web. We are conducting studies that send encrypted DNS requests to Cloudflare, a secure, cloud-based service."
@@ -33,37 +33,57 @@
     "message": "DNS Over HTTPS Studies"
   },
   "studyIntro": {
-    "message": "Domain Name Service (DNS) is one of the oldest parts of internet architecture, yet remains largely untouched by efforts to make the web safer and more private. On the Firefox team, we’re working to change that. We’ve already implemented the DNS over HTTPS (DoH) protocol in Nightly and are studying a service that keeps DNS providers from collecting and sharing your browsing history."
+    "message": "Domain Name Service (DNS) is one of the oldest parts of internet architecture, yet remains largely untouched by efforts to make the web safer and more private. On the Firefox team, we’re working to change that. We’ve already implemented the DNS over HTTPS (DoH) protocol in $BRANDSHORTNAME$ and are studying a service that keeps DNS providers from collecting and sharing your browsing history.",
+    "placeholders": {
+      "brandshortname": {
+        "content": "$1"
+      }
+    }
   },
   "studyWorkTitle": {
     "message": "How the studies work"
   },
   "studyWork": {
-    "message": "We are running a series of $STUDYTEXT$ in Nightly. All Nightly users will receive a notification about these studies.  When a study is active, Nightly Firefox will automatically use Cloudflare’s $CLOUDFLARE$.  The first study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP to compare approaches.",
+    "message": "We are running a series of $STUDYLINK$ in $BRANDSHORTNAME$. All users will receive a notification about these studies. When a study is active, $BRANDNAME$ will automatically use Cloudflare’s $CLOUDFLARELINK$. The first study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP to compare approaches.",
     "placeholders": {
-      "studyText": {
-        "content": "<a href=\"https://medium.com/@linclark/cee3af19f10a\">studies</a>"
+      "studylink": {
+        "content": "$1"
       },
-      "cloudflare": {
-        "content": "<a href=\"https://blog.cloudflare.com/dns-resolver-1-1-1-1/\">1.1.1.1 secure DNS over HTTPS</a>"
+      "brandshortname": {
+        "content": "$2"
+      },
+      "brandname": {
+        "content": "$3"
+      },
+      "cloudflarelink": {
+        "content": "$4"
       }
     }
   },
+  "studyLink": {
+    "message": "studies"
+  },
+  "cloudflareLink": {
+    "message": "1.1.1.1 secure DNS over HTTPS"
+  },
   "studyDataDesc": {
-    "message": "Cloudflare, like any other DNS provider, needs access to the host names you use to resolve requests. We’ve chosen Cloudflare as our partner for these studies because, unlike many other DNS providers, they agreed to $STRONG$ that include limits on what data they collect and how long they keep it, as well as a promise to not share data with other parties.",
+    "message": "Cloudflare, like any other DNS provider, needs access to the host names you use to resolve requests. We’ve chosen Cloudflare as our partner for these studies because, unlike many other DNS providers, they agreed to $POLICYLINK$ that include limits on what data they collect and how long they keep it, as well as a promise to not share data with other parties.",
     "placeholders": {
-      "strong": {
-        "content": "<a href=\"https://developers.cloudflare.com/1.1.1.1/commitment-to-privacy/privacy-policy/firefox/\">strong privacy controls</a>"
+      "policylink": {
+        "content": "$1"
       }
     }
+  },
+  "policyLink": {
+    "message": "strong privacy controls"
   },
   "studyOptOutTitle": {
     "message": "How you can opt out of studies"
   },
   "studyOptOut": {
-    "message": "If you don’t want to participate in these DNS studies, you can select the Disable DNS Studies button on this page. You can also disable them on the about:studies page in Firefox.  (Type about:studies into the FIrefox address bar.)"
+    "message": "If you don’t want to participate in these DNS studies, you can select the Disable DNS Studies button on this page. You can also disable them on the about:studies page in Firefox. (Type about:studies into the Firefox address bar.)"
   },
   "studyOptOutAll": {
-    "message": "To disable all studies in Nightly, you can update your Privacy and Security settings in about:preferences."
+    "message": "To disable all studies in Firefox, you can update your Privacy and Security settings in about:preferences."
   }
 }
