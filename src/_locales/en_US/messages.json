@@ -52,7 +52,7 @@
       "brandshortname": {
         "content": "$2"
       },
-      "brandname": {
+      "brandlongname": {
         "content": "$3"
       },
       "cloudflarelink": {

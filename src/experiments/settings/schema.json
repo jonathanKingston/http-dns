@@ -22,6 +22,18 @@
     ],
     "functions": [
       {
+        "name": "getStrings",
+        "type": "function",
+        "description": "Gets the brand strings",
+        "parameters": [
+          {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        ],
+        "async": true
+      },
+      {
         "name": "getPref",
         "type": "function",
         "description": "Gets the pref value of the prefName",
