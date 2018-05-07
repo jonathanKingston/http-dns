@@ -3,7 +3,7 @@
     "message": "DNS Over HTTPS"
   },
   "extensionDescriptionIntro": {
-    "message": "Mozilla is running a series of studies to evaluate a service that keeps DNS providers from collecting and sharing your browsing history. All users in the study will receive a notification. When a study is active, Firefox will automatically use Cloudflare’s 1.1.1.1 secure DNS over HTTPS.  This study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP in order to compare approaches."
+    "message": "Mozilla is running a series of studies to evaluate a service that keeps DNS providers from collecting and sharing your browsing history. All users in the study will receive a notification. When a study is active, Firefox will automatically use Cloudflare’s 1.1.1.1 secure DNS over HTTPS. This study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP in order to compare approaches."
   },
   "extensionDescriptionDataTitle": {
     "message": "What happens to your data"
@@ -44,7 +44,7 @@
     "message": "How the studies work"
   },
   "studyWork": {
-    "message": "We are running a series of $STUDYLINK$ in $BRANDSHORTNAME$. All users will receive a notification about these studies. When a study is active, $BRANDNAME$ will automatically use Cloudflare’s $CLOUDFLARELINK$. The first study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP to compare approaches.",
+    "message": "We are running a series of $STUDYLINK$ in $BRANDSHORTNAME$. All users will receive a notification about these studies. When a study is active, $BRANDFULLNAME$ will automatically use Cloudflare’s $CLOUDFLARELINK$. The first study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP to compare approaches.",
     "placeholders": {
       "studylink": {
         "content": "$1"
@@ -52,7 +52,7 @@
       "brandshortname": {
         "content": "$2"
       },
-      "brandlongname": {
+      "brandfullname": {
         "content": "$3"
       },
       "cloudflarelink": {
