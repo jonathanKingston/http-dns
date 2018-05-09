@@ -13,35 +13,11 @@ const {EventManager} = ExtensionCommon;
 Cu.import("resource://gre/modules/EventEmitter.jsm");
 Cu.import("resource://gre/modules/BrowserUtils.jsm");
 
-function loadStyles(resourceURI) {
-  const styleSheetService = Cc["@mozilla.org/content/style-sheet-service;1"]
-                            .getService(Ci.nsIStyleSheetService);
-  const styleURI = styleSheet(resourceURI);
-  const sheetType = styleSheetService.AGENT_SHEET;
-  styleSheetService.loadAndRegisterSheet(styleURI, sheetType);
-}
-
-function styleSheet(resourceURI) {
-  return Services.io.newURI("prompt.css", null, Services.io.newURI(resourceURI));
-}
-
-function unloadStyles(resourceURI) {
-  const styleURI = styleSheet(resourceURI);
-  const styleSheetService = Cc["@mozilla.org/content/style-sheet-service;1"]
-                  .getService(Ci.nsIStyleSheetService);
-  const sheetType = styleSheetService.AGENT_SHEET;
-  if (styleSheetService.sheetRegistered(styleURI, sheetType)) {
-    styleSheetService.unregisterSheet(styleURI, sheetType);
-  }
-}
-
 class NotificationPrompt {
   constructor(extension, notificationsMap, id, options) {
     this.notificationsMap = notificationsMap;
     this.id = id;
     this.options = options;
-
-    loadStyles(extension.baseURI.spec + "");
 
     const browserWin = Services.wm.getMostRecentWindow("navigator:browser");
     let buttonsOutput = [];
