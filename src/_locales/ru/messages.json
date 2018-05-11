@@ -1,0 +1,44 @@
+{
+  "extensionName": {
+    "message": "DNS через HTTPS"
+  },
+  "extensionDescriptionIntro": {
+    "message": "Mozilla запускает серию исследований для тестирования службы, которая огородит от сбора и передачи истории веб-сёрфинга DNS-провайдерами. Все пользователи будут получать оповещения. Когда исследование активно, Firefox будет автоматически использовать защищённый DNS-сервер Cloudflare с IP-адресом 1.1.1.1 по HTTPS. Это исследование будет использовать резольвер Cloudflare в дополнение к DNS-серверам, выбранных пользователем или его ISP, для сравнивания результатов."
+  },
+  "extensionDescriptionDataTitle": {
+    "message": "Что случится с моими данными"
+  },
+  "extensionDescriptionDisableTitle": {
+    "message": "Как я могу отключить исследование «DNS через HTTPS»"
+  },
+  "disableButtonText": {
+    "message": "Отключить исследование «DNS через HTTPS»"
+  },
+  "acceptButtonText": {
+    "message": "OK, понятно"
+  },
+  "learnMoreLinkText": {
+    "message": "Подробнее"
+  },
+  "studyTitle": {
+    "message": "Исследование «DNS через HTTPS»"
+  },
+  "studyWorkTitle": {
+    "message": "Как работает исследование"
+  },
+  "studyLink": {
+    "message": "исследование"
+  },
+  "cloudflareLink": {
+    "message": "защищённый DNS-сервер 1.1.1.1 по HTTPS"
+  },
+  "policyLink": {
+    "message": "мощные настройки приватности"
+  },
+  "studyOptOutTitle": {
+    "message": "Как я могу выйти из исследования"
+  },
+  "studyOptOut": {
+    "message": "Если вы не хотите участвовать в этих исследованиях по DNS, вы можете нажать кнопку «Отключить исследование «DNS через HTTPS»» на этой странице. Вы также можете отключить их на странице about:studies в Firefox. (Наберите about:studies в адресной строке Firefox)."
+  }
+}
