@@ -4,7 +4,7 @@
   "description": "DNS over HTTPS",
   "main": ".eslintrc.js",
   "scripts": {
-    "build": "mkdir src/lib/; cp node_modules/dompurify/dist/purify.js src/lib/",
+    "build": "mkdir src/lib/; cp node_modules/dompurify/dist/purify.js src/lib/; npm run import-l10n",
     "import-l10n": "bash scripts/import_l10n.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,6 +20,6 @@
   "homepage": "https://github.com/jonathanKingston/http-dns#readme",
   "dependencies": {
     "dompurify": "^1.0.4",
-    "pontoon-to-webext": "1.0.1"
+    "pontoon-to-webext": "^1.0.2"
   }
 }
