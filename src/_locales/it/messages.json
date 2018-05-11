@@ -1,0 +1,89 @@
+{
+  "extensionName": {
+    "message": "DNS over HTTPS"
+  },
+  "extensionDescriptionIntro": {
+    "message": "Mozilla sta conducendo una serie di studi per valutare un servizio in grado di impedire ai provider DNS la raccolta e condivisione di informazioni sulla tua cronologia di navigazione. Ogni utente che partecipa allo studio riceverà una notifica. Quando uno studio è attivo, Firefox utilizzerà automaticamente 1.1.1.1, il servizio di “DNS over HTTPS” di Cloudflare. Questo studio utilizzerà il sistema di Cloudflare, insieme al server DNS selezionato dall’utente o fornito dal provider Internet (ISP), per confrontarne le prestazioni."
+  },
+  "extensionDescriptionDataTitle": {
+    "message": "Come vengono gestiti i tuoi dati"
+  },
+  "extensionDescriptionDataDesc": {
+    "message": "Cloudflare, come qualsiasi altro provider DNS, deve accedere ai nomi host per risolvere le richieste del browser. Abbiamo scelto Cloudflare come partner per questi studi perché, a differenza di molti altri provider DNS, ha accettato di rispettare rigorosi controlli sulla privacy che includono limitazioni sui dati raccolti e sul tempo massimo per cui vengono conservati. Non da ultimo, Cloudflare si impegna a non condividere i dati raccolti con altri soggetti. Consulta l’informativa sulla privacy di Cloudflare per Firefox: https://tinyurl.com/yax6zfqo"
+  },
+  "extensionDescriptionDisableTitle": {
+    "message": "Come disattivare gli studi DNS"
+  },
+  "extensionDescriptionDisableDesc": {
+    "message": "Se non desideri partecipare a questo studio, fai clic sul pulsante “Disattiva\" in questa pagina. Per disattivare completamente gli studi in Firefox, aggiorna le impostazioni nel pannello “Privacy e sicurezza” in about:preferences."
+  },
+  "notificationMessage": {
+    "message": "Mozilla sta lavorando per migliorare la privacy e la sicurezza degli utenti sul Web. Stiamo conducendo una serie di studi che invia richieste DNS crittate a Cloudflare, un servizio sicuro e basato sul cloud."
+  },
+  "disableButtonText": {
+    "message": "Disattiva gli studi DNS"
+  },
+  "acceptButtonText": {
+    "message": "OK, ricevuto"
+  },
+  "learnMoreLinkText": {
+    "message": "Ulteriori informazioni"
+  },
+  "studyTitle": {
+    "message": "Studi DNS over HTTPS"
+  },
+  "studyIntro": {
+    "message": "Il servizio dei nomi di dominio (DNS) è una delle parti più antiche dell’architettura di Internet, eppure non ha subito rinnovamenti sostanziali nell’ambito delle iniziative per migliorare privacy e sicurezza sul Web. Il team Firefox sta lavorando per cambiare questa situazione. Abbiamo già implementato il protocollo DNS over HTTPS (DoH) in $BRANDSHORTNAME$ e stiamo studiando un servizio in grado di impedire ai provider DNS la raccolta e condivisione di informazioni sulla tua cronologia di navigazione.",
+    "placeholders": {
+      "brandshortname": {
+        "content": "$1"
+      }
+    }
+  },
+  "studyWorkTitle": {
+    "message": "Come funzionano questi studi"
+  },
+  "studyWork": {
+    "message": "Stiamo conducendo una serie di $STUDYLINK$ in $BRANDSHORTNAME$. Tutti gli utenti riceveranno una notifica relativa a questi studi. Quando uno studio è attivo, $BRANDFULLNAME$ utilizzerà automaticamente $CLOUDFLARELINK$. Il primo studio utilizzerà il sistema di Cloudflare, insieme al server DNS selezionato dall’utente o fornito dal provider Internet (ISP), per confrontarne le prestazioni.",
+    "placeholders": {
+      "studylink": {
+        "content": "$1"
+      },
+      "brandshortname": {
+        "content": "$2"
+      },
+      "brandfullname": {
+        "content": "$3"
+      },
+      "cloudflarelink": {
+        "content": "$4"
+      }
+    }
+  },
+  "studyLink": {
+    "message": "studi"
+  },
+  "cloudflareLink": {
+    "message": "1.1.1.1, il servizio DNS over HTTPS di Cloudflare"
+  },
+  "studyDataDesc": {
+    "message": "Cloudflare, come qualsiasi altro provider DNS, deve accedere ai nomi host per risolvere le richieste del browser. Abbiamo scelto Cloudflare come partner per questi studi perché, a differenza di molti altri provider DNS, ha accettato di rispettare $POLICYLINK$ che includono limitazioni sui dati raccolti e sul tempo massimo per cui vengono conservati. Non da ultimo, Cloudflare si impegna a non condividere i dati raccolti con altri soggetti.",
+    "placeholders": {
+      "policylink": {
+        "content": "$1"
+      }
+    }
+  },
+  "policyLink": {
+    "message": "rigorosi controlli sulla privacy"
+  },
+  "studyOptOutTitle": {
+    "message": "Come evitare di partecipare a questi studi"
+  },
+  "studyOptOut": {
+    "message": "Se non desideri partecipare a questi studi, puoi fare clic sul pulsante “Disattiva studi DNS\" in questa pagina. Puoi anche disattivarli nella pagina about:studies di Firefox (digita about:studies nella barra degli indirizzi e premi invio)."
+  },
+  "studyOptOutAll": {
+    "message": "Per disattivare completamente gli studi in Firefox, aggiorna le impostazioni nel pannello “Privacy e sicurezza” in about:preferences."
+  }
+}
