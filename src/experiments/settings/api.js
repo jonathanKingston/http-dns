@@ -31,14 +31,9 @@ const prefManager = {
     }
   },
 
-  getUserPrefs(prefNames) {
-    let prefs = {};
-    prefNames.forEach((prefName) => {prefs[prefName] = this.getUserPref(prefName)});
-    return prefs;
-  },
   getUserPref(name, value) {
     if (!Services.prefs.prefHasUserValue(name)) {
-      return null;
+      return value;
     }
     let type = Services.prefs.getPrefType(name);
     switch (type) {
@@ -114,7 +109,6 @@ const settingManager = {
       }
       await ExtensionSettingsStore.removeSetting(id, SETTING_TYPE, key);
     }
-    return true;
   }
 };
 
@@ -125,6 +119,9 @@ var settings = class settings extends ExtensionAPI {
       close: () => {
         switch (extension.shutdownReason) {
           case "ADDON_DISABLE":
+            settingManager.clear(extension.id);
+            break;
+
           case "ADDON_DOWNGRADE":
           case "ADDON_UPGRADE":
             // TODO Decide if we need to do something here

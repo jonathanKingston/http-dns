@@ -2,7 +2,6 @@
 
 /* global browser */
 const HAS_SEEN_VERSION = 1;
-const STORAGE_AREA = "local";
 const STUDY_URL = browser.extension.getURL("study.html");
 const SETTING_NAME = "trr";
 
@@ -37,19 +36,6 @@ const stateManager = {
     return Object.keys(this.statesInfo.prefTypes);
   },
 
-  async getIntialPrefValues() {
-    const prefNames = await this.getPrefNames();
-    const storePrefNames = prefNames.map(n => {
-      return this.getUserPrefKey(n);
-    });
-    const initialStoredValues = await browser.storage[STORAGE_AREA].get(storePrefNames);
-    const initialValues = {};
-    prefNames.forEach(prefName => {
-      initialValues[prefName] = initialStoredValues[this.getUserPrefKey(prefName)];
-    });
-    return initialValues;
-  },
-
   /**
    * Ensure that the user hasn't modified any pref in the prerequisite list
    */
@@ -58,7 +44,7 @@ const stateManager = {
     const prerequisitePrefs = this.statesInfo.prerequisitePrefs;
     for (let pref of prerequisitePrefs) {
       const prefValue = await browser.experiments.settings.getPref(pref);
-      if (null !== prefValue) {
+      if (undefined !== prefValue) {
         return false;
       }
     }

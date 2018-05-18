@@ -34,6 +34,7 @@ header h1 {
 }
 
 button {
+  cursor: pointer;
   -moz-appearance: none;
   background: rgba(12,12,13,0.10);
   border: none;
@@ -43,6 +44,10 @@ button {
 
 button:hover, button:focus {
   background: rgba(12,12,13,0.20);
+}
+
+button:active {
+  background: rgba(10, 10, 182, 0.2);
 }
 
 p {

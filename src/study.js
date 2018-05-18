@@ -1,5 +1,5 @@
 async function init() {
-  const elements = [...document.querySelectorAll("[data-i18n-message]")];
+  const elements = document.querySelectorAll("[data-i18n-message]");
   for (const element of elements) {
     element.innerHTML = DOMPurify.sanitize(browser.i18n.getMessage(element.dataset.i18nMessage), {
       ALLOWED_TAGS: ["a"],
@@ -10,14 +10,14 @@ async function init() {
   const brandStrings = await browser.experiments.settings.getStrings(["brandShortName", "brandFullName"]);
 
   function createNodes(el, tagConfig) {
-    for (const childEl of [...tagConfig.childNodes]) {
+    for (const childEl of tagConfig.childNodes) {
       if (childEl.nodeName === "#text") {
         // Ignore whitespace nodes
         if (!/[^\W]/.test(childEl.textContent)) {
           continue;
         }
         const textOutput = childEl.textContent;
-        el.appendChild(document.createTextNode(textOutput));
+        el.appendChild(textOutput);
       } else {
         el.appendChild(createElement(childEl));
       }
@@ -26,10 +26,7 @@ async function init() {
   }
 
   function createElement(tagConfig) {
-    const el = document.createElement(tagConfig.tagName);
-    for (const attr of [...tagConfig.attributes]) {
-      el[attr.name] = attr.value;
-    }
+    const el = tagConfig.cloneNode(false);
     let placeholders = [];
     if (tagConfig.dataset.i18nBrand) {
       el.textContent = brandStrings[tagConfig.dataset.i18nBrand];
@@ -46,7 +43,7 @@ async function init() {
     return el;
   }
 
-  const templates = [...document.querySelectorAll("template")];
+  const templates = document.querySelectorAll("template");
   for (const template of templates) {
     const output = document.createDocumentFragment();
     createNodes(output, template.content);
