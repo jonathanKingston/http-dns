@@ -51,13 +51,10 @@ async function init() {
   }
 
   const disable = document.getElementById("disable");
-  async function disableAddon() {
-    await browser.runtime.sendMessage({
+  disable.addEventListener("submit", () => {
+    browser.runtime.sendMessage({
       method: "disable"
     });
-  }
-  disable.addEventListener("submit", () => {
-    disableAddon();
   });
 }
 init();

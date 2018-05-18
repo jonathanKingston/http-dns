@@ -89,9 +89,7 @@ var notifications = class notifications extends ExtensionAPI {
           clear: function(notificationId) {
             if (notificationsMap.has(notificationId)) {
               notificationsMap.get(notificationId).clear();
-              return Promise.resolve(true);
             }
-            return Promise.resolve(false);
           },
           create: (notificationId, options) => {
             if (!notificationId) {
@@ -110,7 +108,7 @@ var notifications = class notifications extends ExtensionAPI {
             }
             notificationsMap.set(notificationId, notification);
   
-            return Promise.resolve(notificationId);
+            return notificationId;
           },
   
           onButtonClicked: new EventManager(
