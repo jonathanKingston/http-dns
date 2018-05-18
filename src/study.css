@@ -41,6 +41,10 @@ button {
   padding: 14px 8px;
 }
 
+button:hover, button:focus {
+  background: rgba(12,12,13,0.20);
+}
+
 p {
   color: #0C0C0D;
   margin-block-end: 28px;
@@ -62,4 +66,5 @@ h2 {
 
 a {
   color: #0A84FF;
+  text-decoration: none;
 }

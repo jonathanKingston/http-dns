@@ -18,7 +18,7 @@ const stateManager = {
     }
   },
 
-  async getStateName() {
+  async getState() {
     await this.init();
     return await browser.experiments.settings.get(SETTING_NAME) || null;
   },
@@ -53,7 +53,7 @@ const stateManager = {
   /**
    * Ensure that the user hasn't modified any pref in the prerequisite list
    */
-  async checkPrerequisites() {
+  async hasUnmodifiedPrerequisites() {
     await this.init();
     const prerequisitePrefs = this.statesInfo.prerequisitePrefs;
     for (let pref of prerequisitePrefs) {
@@ -79,11 +79,11 @@ const rollout = {
   async init() {
     browser.runtime.onMessage.addListener((...args) => this.handleMessage(...args));
     await stateManager.setSetting();
-    const stateName = await stateManager.getStateName();
+    const stateName = await stateManager.getState();
     switch (stateName) {
       case null:
       case "loaded":
-        if (await stateManager.checkPrerequisites()) {
+        if (await stateManager.hasUnmodifiedPrerequisites()) {
           await stateManager.setState("loaded");
           await this.show();
         }
@@ -109,6 +109,7 @@ const rollout = {
     });
     browser.tabs.remove(tabs.map((tab) => tab.id));
     browser.experiments.notifications.clear("rollout-prompt");
+    browser.management.uninstallSelf();
   },
 
   async show() {

@@ -22,9 +22,8 @@ class NotificationPrompt {
     const browserWin = Services.wm.getMostRecentWindow("navigator:browser");
     let buttonsOutput = [];
     if (options.buttons) {
-      let buttonIndex = 0;
-      for (let buttonIndex in options.buttons) {
-        let button = options.buttons[buttonIndex];
+      const addButton = (button) => {
+        let buttonIndex = buttonsOutput.length;
         buttonsOutput.push({
           label: button.title,
           callback: () => {
@@ -34,6 +33,9 @@ class NotificationPrompt {
             });
           }
         });
+      };
+      for (let button of options.buttons) {
+        addButton(button);
       }
     }
     this.box = browserWin.document.getElementById("global-notificationbox");
