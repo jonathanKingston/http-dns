@@ -75,6 +75,9 @@ const settingManager = {
         // The state pref can't be cleared
         if (value in this.settingConfig.states) {
           const state = this.settingConfig.states[value];
+          for (const [prefName,value] of Object.entries(state.persistPrefs)) {
+            prefManager.setPref(prefName, value, this.settingConfig.prefTypes[prefName]);
+          }
           prefManager.setPref(this.settingConfig.statePref, state.id, "int");
           match = state.prefs;
         }

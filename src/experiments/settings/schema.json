@@ -94,6 +94,9 @@
               },
               "states": {
                 "type": "any"
+              },
+              "prefTypes": {
+                "type": "any"
               }
             }
           }

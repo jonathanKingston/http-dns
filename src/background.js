@@ -70,7 +70,8 @@ const stateManager = {
       name: SETTING_NAME,
       prefNames: await this.getPrefNames(),
       statePref: this.statesInfo.statePref,
-      states: this.statesInfo.states
+      states: this.statesInfo.states,
+      prefTypes: this.statesInfo.prefTypes,
     });
   },
 };
