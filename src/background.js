@@ -91,6 +91,7 @@ const rollout = {
         break;
       case "enabled":
       case "disabled":
+      case "uninstalled":
         break
     }
   },

@@ -5,8 +5,6 @@
 let Cu2 = Components.utils;
 Cu2.import("resource://gre/modules/Services.jsm");
 Cu2.import("resource://gre/modules/ExtensionSettingsStore.jsm");
-Cu2.import("resource://gre/modules/ExtensionPreferencesManager.jsm");
-
 
 // TODO file scope issue on experiments that join extension contexts causing redeclaration issues.
 
@@ -56,51 +54,29 @@ const prefManager = {
   }
 }
 const SETTING_TYPE = "setting_config";
+const SETTING_PREFIX = "settingRolloutConfig_";
 const settingManager = {
   async init() {
     await ExtensionSettingsStore.initialize();
   },
   async add(id, settingConfig) {
     await this.init();
-    await ExtensionSettingsStore.addSetting(id, SETTING_TYPE, `settingConfig_${settingConfig.name}`, settingConfig);
-    await ExtensionPreferencesManager.addSetting(settingConfig.name, {
-      settingConfig,
-      prefNames: settingConfig.prefNames.filter((name) => {
-        return name !== settingConfig.statePref;
-      }),
-
-      setCallback(value) {
-        let match = {};
-        // If we match a state set the state pref and prefs
-        // The state pref can't be cleared
-        if (value in this.settingConfig.states) {
-          const state = this.settingConfig.states[value];
-          for (const [prefName,value] of Object.entries(state.persistPrefs)) {
-            prefManager.setPref(prefName, value, this.settingConfig.prefTypes[prefName]);
-          }
-          prefManager.setPref(this.settingConfig.statePref, state.id, "int");
-          match = state.prefs;
-        }
-
-        let prefs = {};
-        for (let pref of this.prefNames) {
-          prefs[pref] = match[pref] || undefined;
-        }
-        return prefs;
-      },
-    });
+    await ExtensionSettingsStore.addSetting(id, SETTING_TYPE, `${SETTING_PREFIX}${settingConfig.name}`, settingConfig);
+  },
+  async getSetting(settingName) {
+    await this.init();
+    return await ExtensionSettingsStore.getSetting(SETTING_TYPE, `${SETTING_PREFIX}${settingName}`);
   },
   async getSettingConfig(settingName) {
-    await this.init();
-    return await ExtensionSettingsStore.getSetting(SETTING_TYPE, `settingConfig_${settingName}`);
+    const setting = await this.getSetting(settingName);
+    return setting.value;
   },
   async get(settingName) {
     const settingConfig = await this.getSettingConfig(settingName);
-    const stateInfo = settingConfig.value;
-    const statePref = await prefManager.getUserPref(stateInfo.statePref);
+    const statePref = await prefManager.getUserPref(settingConfig.statePref);
     let currentState = null;
-    Object.keys(stateInfo.states).forEach((stateKey) => {
-      const state = stateInfo.states[stateKey];
+    Object.keys(settingConfig.states).forEach((stateKey) => {
+      const state = settingConfig.states[stateKey];
       if (state.id === statePref) {
         currentState = stateKey;
       }
@@ -108,15 +84,37 @@ const settingManager = {
     return currentState;
   },
   async set(id, settingName, value) {
-    return await ExtensionPreferencesManager.setSetting(id, settingName, value);
+    const config = await this.getSettingConfig(settingName);
+    let match = {};
+    let state;
+    // If we match a state set the state pref and prefs
+    // The state pref can't be cleared
+    if (value in config.states) {
+      state = config.states[value];
+      match = state.prefs;
+      match[config.statePref] = state.id;
+    }
+
+    // set prefs to state or reset
+    let prefs = {};
+    for (let pref of Object.keys(config.prefTypes)) {
+      prefManager.setPref(pref, match[pref] || undefined, config.prefTypes[pref]);
+    }
+
+    return true;
   },
   async clear(id) {
     await this.init();
     const types = await ExtensionSettingsStore.getAllForExtension(id, SETTING_TYPE);
     for (let key of types) {
+      const settingName = key.replace(new RegExp(`^${SETTING_PREFIX}`), "");
+      const state = await this.get(settingName);
+      if (state !== "disabled") {
+        await this.set(id, settingName, "uninstalled");
+      }
       await ExtensionSettingsStore.removeSetting(id, SETTING_TYPE, key);
     }
-    return await ExtensionPreferencesManager.disableAll(id);
+    return true;
   }
 };
 
