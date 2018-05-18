@@ -4,7 +4,8 @@
   "description": "DNS over HTTPS",
   "main": ".eslintrc.js",
   "scripts": {
-    "build": "mkdir src/lib/; cp node_modules/dompurify/dist/purify.js src/lib/; npm run import-l10n",
+    "build": "mkdir src/lib/; cp node_modules/dompurify/dist/purify.js src/lib/; npm run import-l10n && npm run ext-build",
+    "ext-build": "cd src && web-ext build --overwrite-dest;",
     "import-l10n": "bash scripts/import_l10n.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
