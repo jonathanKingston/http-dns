@@ -7,7 +7,7 @@
 
   "applications": {
     "gecko": {
-      "id": "httpdns@test.mozilla.org"
+      "id": "httpdns@shield.mozilla.org"
     }
   },
 
