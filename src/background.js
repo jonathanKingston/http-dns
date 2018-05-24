@@ -77,6 +77,8 @@ const rollout = {
         break;
       case "enabled":
       case "disabled":
+      case "UIDisabled":
+      case "UIOk":
       case "uninstalled":
         break
     }
@@ -84,14 +86,22 @@ const rollout = {
 
   async handleMessage(message) {
     switch (message.method) {
-      case "disable":
-        await this.disable();
+      case "UIDisable":
+        await this.handleUIDisable();
+        break;
+      case "UIOK":
+        await this.handleUIOK();
         break;
     }
   },
 
-  async disable() {
-    await stateManager.setState("disabled");
+  async handleUIOK() {
+    await stateManager.setState("UIOk");
+    browser.experiments.notifications.clear("rollout-prompt");
+  },
+
+  async handleUIDisable() {
+    await stateManager.setState("UIDisabled");
     const tabs = await browser.tabs.query({
       url: STUDY_URL
     });
@@ -105,10 +115,10 @@ const rollout = {
     browser.experiments.notifications.onButtonClicked.addListener((options) => {
       switch (Number(options.buttonIndex)) {
         case 1:
-          console.log("ok");
+          this.handleUIOK();
           break;
         case 0:
-          this.disable();
+          this.handleUIDisable();
           break;
       }
     });

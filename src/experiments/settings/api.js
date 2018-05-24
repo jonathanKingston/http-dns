@@ -5,6 +5,7 @@
 let Cu2 = Components.utils;
 Cu2.import("resource://gre/modules/Services.jsm");
 Cu2.import("resource://gre/modules/ExtensionSettingsStore.jsm");
+Cu2.import("resource://gre/modules/AddonManager.jsm");
 
 // TODO file scope issue on experiments that join extension contexts causing redeclaration issues.
 
@@ -78,7 +79,7 @@ const settingManager = {
     });
     return currentState;
   },
-  async set(id, settingName, value) {
+  async set(id, settingName, value, includePrefs = true) {
     const config = await this.getSettingConfig(settingName);
     let match = {};
     let state;
@@ -86,8 +87,13 @@ const settingManager = {
     // The state pref can't be cleared
     if (value in config.states) {
       state = config.states[value];
-      match = state.prefs;
-      match[config.statePref] = state.id;
+      // If we aren't clearing the prefs we want these too
+      if (includePrefs) {
+        match = state.prefs;
+      }
+      match = Object.assign(match, state.persistPrefs, {
+        [config.statePref]: state.id
+      });
     }
 
     // set prefs to state or reset
@@ -98,16 +104,24 @@ const settingManager = {
 
     return true;
   },
-  async clear(id) {
+  // Clear all non persistant prefs and remove the addon.
+  async clear(id, finalState = "uninstalled") {
     await this.init();
     const types = await ExtensionSettingsStore.getAllForExtension(id, SETTING_TYPE);
     for (let key of types) {
       const settingName = key.replace(new RegExp(`^${SETTING_PREFIX}`), "");
       const state = await this.get(settingName);
-      if (state !== "disabled") {
-        await this.set(id, settingName, "uninstalled");
+      const config = await this.getSettingConfig(settingName);
+      // If we don't have a valid state or it's not a minus state then set uninstalled
+      if (!config.states[state] || config.states[state].id >= 0) {
+        await this.set(id, settingName, finalState, false);
+      } else {
+        // Set the state again, resetting non persistent prefs
+        await this.set(id, settingName, state, false);
       }
       await ExtensionSettingsStore.removeSetting(id, SETTING_TYPE, key);
+      const addon = await AddonManager.getAddonByID(id);
+      addon.uninstall();
     }
   }
 };
@@ -119,7 +133,7 @@ var settings = class settings extends ExtensionAPI {
       close: () => {
         switch (extension.shutdownReason) {
           case "ADDON_DISABLE":
-            settingManager.clear(extension.id);
+            settingManager.clear(extension.id, "disabled");
             break;
 
           case "ADDON_DOWNGRADE":

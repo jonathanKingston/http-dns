@@ -13,6 +13,8 @@
       "id": 0,
       "_comment": "Extension loaded but disclosure hasn't loaded yet (shouldn't be observable)",
       "prefs": {
+      },
+      "persistPrefs": {
       }
     },
     "enabled": {
@@ -21,12 +23,16 @@
       "prefs": {
         "network.trr.uri": "https://dns.cloudflare.com/.well-known/dns",
         "network.trr.mode": 4
+      },
+      "persistPrefs": {
       }
     },
-    "disabled": {
+    "UIDisabled": {
       "id": -1,
       "_comment": "User saw disclosure and disabled the experiment",
       "prefs": {
+      },
+      "persistPrefs": {
         "network.trr.mode": 5
       }
     },
@@ -34,6 +40,26 @@
       "id": -2,
       "_comment": "Addon was removed other than disabled",
       "prefs": {
+      },
+      "persistPrefs": {
+      }
+    },
+    "disabled": {
+      "id": -3,
+      "_comment": "Addon was disabled, probably through about:addons",
+      "prefs": {
+      },
+      "persistPrefs": {
+      }
+    },
+    "UIOk": {
+      "id": -4,
+      "_comment": "User saw disclosure and clicked OK",
+      "prefs": {
+        "network.trr.uri": "https://dns.cloudflare.com/.well-known/dns",
+        "network.trr.mode": 4
+      },
+      "persistPrefs": {
       }
     }
   }

@@ -53,7 +53,7 @@ async function init() {
   const disable = document.getElementById("disable");
   disable.addEventListener("submit", () => {
     browser.runtime.sendMessage({
-      method: "disable"
+      method: "UIDisable"
     });
   });
 }
