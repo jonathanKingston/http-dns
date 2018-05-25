@@ -120,9 +120,9 @@ const settingManager = {
         await this.set(id, settingName, state, false);
       }
       await ExtensionSettingsStore.removeSetting(id, SETTING_TYPE, key);
-      const addon = await AddonManager.getAddonByID(id);
-      addon.uninstall();
     }
+    const addon = await AddonManager.getAddonByID(id);
+    addon.uninstall();
   }
 };
 
