@@ -69,11 +69,12 @@ const rollout = {
     const stateName = await stateManager.getState();
     switch (stateName) {
       case null:
-      case "loaded":
         if (await stateManager.hasUnmodifiedPrerequisites()) {
           await stateManager.setState("loaded");
-          await this.show();
         }
+        // Fall-through
+      case "loaded":
+        await this.show();
         break;
       case "enabled":
       case "disabled":
@@ -111,7 +112,6 @@ const rollout = {
   },
 
   async show() {
-    await stateManager.setState("enabled");
     browser.experiments.notifications.onButtonClicked.addListener((options) => {
       switch (Number(options.buttonIndex)) {
         case 1:
@@ -135,6 +135,8 @@ const rollout = {
         title: browser.i18n.getMessage("learnMoreLinkText")
       }
     });
+    // Set enabled state last in-case the code above fails.
+    await stateManager.setState("enabled");
   }
 };
 
