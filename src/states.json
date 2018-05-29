@@ -38,7 +38,7 @@
     },
     "uninstalled": {
       "id": -2,
-      "_comment": "Addon was removed other than disabled",
+      "_comment": "Addon was removed other than disabled. This is the fallback also when an addon uninstall happens and the current state isn't a negative value.",
       "prefs": {
       },
       "persistPrefs": {
@@ -46,7 +46,7 @@
     },
     "disabled": {
       "id": -3,
-      "_comment": "Addon was disabled, probably through about:addons",
+      "_comment": "Addon was disabled, probably through about:addons. Exemptions include other minus states, if the user saw the banner and clicked ok they will end with -4 even on disable.",
       "prefs": {
       },
       "persistPrefs": {

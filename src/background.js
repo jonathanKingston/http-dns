@@ -112,6 +112,7 @@ const rollout = {
   },
 
   async show() {
+    // This doesn't handle the 'x' clicking on the notification mostly because it's not clear what the user intended here.
     browser.experiments.notifications.onButtonClicked.addListener((options) => {
       switch (Number(options.buttonIndex)) {
         case 1:
