@@ -71,8 +71,10 @@ const rollout = {
       case null:
         if (await stateManager.hasUnmodifiedPrerequisites()) {
           await stateManager.setState("loaded");
+          await this.show();
         }
-        // Fall-through
+        break;
+      // If the user has a thrown error show the banner again (shouldn't happen)
       case "loaded":
         await this.show();
         break;
