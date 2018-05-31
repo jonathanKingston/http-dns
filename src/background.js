@@ -33,6 +33,9 @@ const rollout = {
         if (await browser.experiments.settings.hasUnmodifiedPrerequisites(SETTING_NAME)) {
           await stateManager.setState("loaded");
           await this.show();
+        } else {
+          // If the user hasn't met the criteria clean up
+          browser.management.uninstallSelf();
         }
         break;
       // If the user has a thrown error show the banner again (shouldn't happen)
