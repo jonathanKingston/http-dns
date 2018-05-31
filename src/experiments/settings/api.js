@@ -6,6 +6,9 @@ let Cu2 = Components.utils;
 Cu2.import("resource://gre/modules/Services.jsm");
 Cu2.import("resource://gre/modules/ExtensionSettingsStore.jsm");
 Cu2.import("resource://gre/modules/AddonManager.jsm");
+Cu2.import("resource://gre/modules/JSONFile.jsm");
+Cu2.import("resource://gre/modules/osfile.jsm");
+Cu2.import("resource://gre/modules/NetUtil.jsm");
 
 // TODO file scope issue on experiments that join extension contexts causing redeclaration issues.
 
@@ -67,6 +70,21 @@ const settingManager = {
     const setting = await this.getSetting(settingName);
     return setting.value;
   },
+  /**
+   * Ensure that the user hasn't modified any pref in the prerequisite list
+   */
+  async hasUnmodifiedPrerequisites(settingName) {
+    await this.init();
+    const settingConfig = await this.getSettingConfig(settingName);
+    const prerequisitePrefs = settingConfig.prerequisitePrefs;
+    for (let pref of prerequisitePrefs) {
+      const prefValue = await prefManager.getUserPref(pref);
+      if (undefined !== prefValue) {
+        return false;
+      }
+    }
+    return true;
+  },
   async get(settingName) {
     const settingConfig = await this.getSettingConfig(settingName);
     const statePref = await prefManager.getUserPref(settingConfig.statePref);
@@ -126,6 +144,25 @@ const settingManager = {
   }
 };
 
+function readJSON(url) {
+  return new Promise((resolve, reject) => {
+    NetUtil.asyncFetch({uri: url, loadUsingSystemPrincipal: true}, (inputStream, status) => {
+      if (!Components.isSuccessCode(status)) {
+        // Convert status code to a string
+        let e = Components.Exception("", status);
+        reject(new Error(`Error while loading '${url}' (${e.name})`));
+        return;
+      }
+      try {
+        let text = NetUtil.readInputStreamToString(inputStream, inputStream.available());
+        resolve(JSON.parse(text));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  });
+}
+
 var settings = class settings extends ExtensionAPI {
   getAPI(context) {
     const {extension} = context;
@@ -157,11 +194,17 @@ var settings = class settings extends ExtensionAPI {
             }
             return output;
           },
-          async getPref(prefName) {
-            return await prefManager.getUserPref(prefName);
+          async hasUnmodifiedPrerequisites(settingName) {
+            return settingManager.hasUnmodifiedPrerequisites(settingName);
           },
-          async add(settingsObject) {
-            return settingManager.add(extension.id, settingsObject);
+          async add(stateName) {
+            // Resolve URL which should remove path exploits
+            let statesFile = extension.baseURI.resolve(`states-${stateName}.json`);
+            let statesInfo = await readJSON(statesFile);
+
+            statesInfo.name = stateName;
+            statesInfo.prefNames = Object.keys(statesInfo.prefTypes);
+            return settingManager.add(extension.id, statesInfo);
           },
           async set(settingName, value) {
             return settingManager.set(extension.id, settingName, value);

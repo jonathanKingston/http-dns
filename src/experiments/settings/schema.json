@@ -34,13 +34,13 @@
         "async": true
       },
       {
-        "name": "getPref",
+        "name": "hasUnmodifiedPrerequisites",
         "type": "function",
-        "description": "Gets the pref value of the prefName",
+        "description": "Returns a bool of if the user has modified the agreed prereq prefs",
         "parameters": [
           {
             "type": "string",
-            "name": "prefName"
+            "name": "settingName"
           }
         ],
         "async": true
@@ -79,26 +79,8 @@
         "description": "Sets up a preference manager that we can manage later",
         "parameters": [
           {
-            "type": "object",
-            "name": "settingsConfig",
-            "description": "Config for the preference manager",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "prefNames": {
-                "type": "any"
-              },
-              "statePref": {
-                "type": "string"
-              },
-              "states": {
-                "type": "any"
-              },
-              "prefTypes": {
-                "type": "any"
-              }
-            }
+            "type": "string",
+            "name": "settingName"
           }
         ],
         "async": true

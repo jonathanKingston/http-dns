@@ -6,24 +6,11 @@ const STUDY_URL = browser.extension.getURL("study.html");
 const SETTING_NAME = "trr";
 
 const stateManager = {
-  hasInit: false,
-
-  async init() {
-    if (!this.hasInit) {
-      const statesFile = browser.runtime.getURL("states.json");
-      const response = await fetch(statesFile);
-      this.statesInfo = await response.json();
-      this.hasInit = true;
-    }
-  },
-
   async getState() {
-    await this.init();
     return await browser.experiments.settings.get(SETTING_NAME) || null;
   },
 
   async setState(stateKey) {
-    await this.init();
     browser.experiments.settings.set(SETTING_NAME, stateKey);
   },
 
@@ -31,34 +18,8 @@ const stateManager = {
     return `userPref_${key}`;
   },
 
-  async getPrefNames() {
-    await this.init();
-    return Object.keys(this.statesInfo.prefTypes);
-  },
-
-  /**
-   * Ensure that the user hasn't modified any pref in the prerequisite list
-   */
-  async hasUnmodifiedPrerequisites() {
-    await this.init();
-    const prerequisitePrefs = this.statesInfo.prerequisitePrefs;
-    for (let pref of prerequisitePrefs) {
-      const prefValue = await browser.experiments.settings.getPref(pref);
-      if (undefined !== prefValue) {
-        return false;
-      }
-    }
-    return true;
-  },
-
   async setSetting() {
-    return browser.experiments.settings.add({
-      name: SETTING_NAME,
-      prefNames: await this.getPrefNames(),
-      statePref: this.statesInfo.statePref,
-      states: this.statesInfo.states,
-      prefTypes: this.statesInfo.prefTypes,
-    });
+    return browser.experiments.settings.add(SETTING_NAME);
   },
 };
 
@@ -69,7 +30,7 @@ const rollout = {
     const stateName = await stateManager.getState();
     switch (stateName) {
       case null:
-        if (await stateManager.hasUnmodifiedPrerequisites()) {
+        if (await browser.experiments.settings.hasUnmodifiedPrerequisites(SETTING_NAME)) {
           await stateManager.setState("loaded");
           await this.show();
         }
