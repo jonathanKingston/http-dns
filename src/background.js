@@ -30,7 +30,7 @@ const rollout = {
         await this.show();
       } else {
         // If the user hasn't met the criteria clean up
-        browser.management.uninstallSelf();
+        browser.experiments.settings.clear(null);
       }
       break;
       // If the user has a thrown error show the banner again (shouldn't happen)
@@ -63,13 +63,12 @@ const rollout = {
   },
 
   async handleUIDisable() {
-    await stateManager.setState("UIDisabled");
     const tabs = await browser.tabs.query({
       url: STUDY_URL
     });
     browser.tabs.remove(tabs.map((tab) => tab.id));
     browser.experiments.notifications.clear("rollout-prompt");
-    browser.management.uninstallSelf();
+    browser.experiments.settings.clear("UIDisabled");
   },
 
   async show() {

@@ -58,6 +58,18 @@
         "async": true
       },
       {
+        "name": "clear",
+        "type": "function",
+        "description": "Deletes the extension and clears up",
+        "parameters": [
+          {
+            "type": "any",
+            "name": "stateName"
+          }
+        ],
+        "async": true
+      },
+      {
         "name": "set",
         "type": "function",
         "description": "Sets the value of the preference manager",

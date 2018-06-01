@@ -128,12 +128,14 @@ const settingManager = {
       const settingName = key.replace(new RegExp(`^${SETTING_PREFIX}`), "");
       const state = await this.get(settingName);
       const config = await this.getSettingConfig(settingName);
-      // If we don't have a valid state or it's not a minus state then set uninstalled
-      if (!config.states[state] || config.states[state].id >= 0) {
-        await this.set(id, settingName, finalState, false);
-      } else {
-        // Set the state again, resetting non persistent prefs
-        await this.set(id, settingName, state, false);
+      if (finalState !== null) {
+        // If we don't have a valid state or it's not a minus state then set uninstalled
+        if (!config.states[state] || config.states[state].id >= 0) {
+          await this.set(id, settingName, finalState, false);
+        } else {
+          // Set the state again, resetting non persistent prefs
+          await this.set(id, settingName, state, false);
+        }
       }
       await ExtensionSettingsStore.removeSetting(id, SETTING_TYPE, key);
     }
@@ -210,6 +212,9 @@ var settings = class settings extends ExtensionAPI {
           async get(settingName) {
             return settingManager.get(settingName);
           },
+          async clear(stateName) {
+            return settingManager.clear(extension.id, stateName);
+          }
         },
       },
     };
