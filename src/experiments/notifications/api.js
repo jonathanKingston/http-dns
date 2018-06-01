@@ -1,9 +1,8 @@
 "use strict";
 
-/* global Components, ExtensionAPI */
-let Cc = Components.classes;
+/* exported notifications */
+/* global Components, ExtensionAPI, ExtensionCommon, Services */
 let Cu = Components.utils;
-let Ci = Components.interfaces;
 Cu.import("resource://gre/modules/Services.jsm");
 
 const {EventManager} = ExtensionCommon;
@@ -12,6 +11,7 @@ const {EventManager} = ExtensionCommon;
 
 Cu.import("resource://gre/modules/EventEmitter.jsm");
 Cu.import("resource://gre/modules/BrowserUtils.jsm");
+/* global BrowserUtils, EventEmitter */
 
 class NotificationPrompt {
   constructor(extension, notificationsMap, id, options) {
@@ -41,14 +41,14 @@ class NotificationPrompt {
     this.box = browserWin.document.getElementById("global-notificationbox");
     let outputMessage = options.message;
     if (options.moreInfo) {
-        let mainMessage = "%S %S";
-        let text = options.moreInfo.title || "Learn more";
-        let link = browserWin.document.createElement("label");
-        link.className = "text-link";
-        link.setAttribute("useoriginprincipal", true);
-        link.setAttribute("href", options.moreInfo.url);
-        link.textContent = text;
-        outputMessage = BrowserUtils.getLocalizedFragment(browserWin.document, mainMessage, outputMessage, link);
+      let mainMessage = "%S %S";
+      let text = options.moreInfo.title || "Learn more";
+      let link = browserWin.document.createElement("label");
+      link.className = "text-link";
+      link.setAttribute("useoriginprincipal", true);
+      link.setAttribute("href", options.moreInfo.url);
+      link.textContent = text;
+      outputMessage = BrowserUtils.getLocalizedFragment(browserWin.document, mainMessage, outputMessage, link);
     }
     this.box.appendNotification(outputMessage, id, null, this.box.PRIORITY_INFO_HIGH,
       buttonsOutput);
@@ -104,7 +104,7 @@ var notifications = class notifications extends ExtensionAPI {
             if (options.type === "prompt") {
               notification = new NotificationPrompt(extension, notificationsMap, notificationId, options);
             } else {
-             // Normal notices here unsupported in experiment
+              // Normal notices here unsupported in experiment
             }
             notificationsMap.set(notificationId, notification);
   

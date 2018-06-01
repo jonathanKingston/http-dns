@@ -27,7 +27,6 @@ async function init() {
 
   function createElement(tagConfig) {
     const el = tagConfig.cloneNode(false);
-    let placeholders = [];
     if (tagConfig.dataset.i18nBrand) {
       el.textContent = brandStrings[tagConfig.dataset.i18nBrand];
     } else if (tagConfig.dataset.i18nMessage) {
@@ -47,7 +46,7 @@ async function init() {
   for (const template of templates) {
     const output = document.createDocumentFragment();
     createNodes(output, template.content);
-    template.parentNode.insertBefore(output, template)
+    template.parentNode.insertBefore(output, template);
   }
 
   const disable = document.getElementById("disable");

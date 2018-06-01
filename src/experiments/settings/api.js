@@ -1,14 +1,13 @@
 "use strict";
 
-
-/* global Components, ExtensionAPI */
+/* exported settings */
+/* global Components, ExtensionAPI, Services */
 let Cu2 = Components.utils;
 Cu2.import("resource://gre/modules/Services.jsm");
 Cu2.import("resource://gre/modules/ExtensionSettingsStore.jsm");
 Cu2.import("resource://gre/modules/AddonManager.jsm");
-Cu2.import("resource://gre/modules/JSONFile.jsm");
-Cu2.import("resource://gre/modules/osfile.jsm");
 Cu2.import("resource://gre/modules/NetUtil.jsm");
+/* global ExtensionSettingsStore, AddonManager, NetUtil */
 
 // TODO file scope issue on experiments that join extension contexts causing redeclaration issues.
 
@@ -24,14 +23,14 @@ const prefManager = {
     }
     /* As prefs are hidden we can't use Services.prefs.getPrefType */
     switch (type) {
-      case "string":
-        return Services.prefs.setCharPref(name, value);
-      case "int":
-        return Services.prefs.setIntPref(name, value);
-      case "bool":
-        return Services.prefs.setBoolPref(name, value);
-      default:
-        throw new Error("Unknown type");
+    case "string":
+      return Services.prefs.setCharPref(name, value);
+    case "int":
+      return Services.prefs.setIntPref(name, value);
+    case "bool":
+      return Services.prefs.setBoolPref(name, value);
+    default:
+      throw new Error("Unknown type");
     }
   },
 
@@ -41,17 +40,17 @@ const prefManager = {
     }
     let type = Services.prefs.getPrefType(name);
     switch (type) {
-      case Services.prefs.PREF_STRING:
-        return Services.prefs.getCharPref(name, value);
-      case Services.prefs.PREF_INT:
-        return Services.prefs.getIntPref(name, value);
-      case Services.prefs.PREF_BOOL:
-        return Services.prefs.getBoolPref(name, value);
-      default:
-        throw new Error("Unknown type");
+    case Services.prefs.PREF_STRING:
+      return Services.prefs.getCharPref(name, value);
+    case Services.prefs.PREF_INT:
+      return Services.prefs.getIntPref(name, value);
+    case Services.prefs.PREF_BOOL:
+      return Services.prefs.getBoolPref(name, value);
+    default:
+      throw new Error("Unknown type");
     }
   }
-}
+};
 const SETTING_TYPE = "setting_config";
 const SETTING_PREFIX = "settingRolloutConfig_";
 const settingManager = {
@@ -115,7 +114,6 @@ const settingManager = {
     }
 
     // set prefs to state or reset
-    let prefs = {};
     for (let pref of Object.keys(config.prefTypes)) {
       prefManager.setPref(pref, match[pref] || undefined, config.prefTypes[pref]);
     }
@@ -169,17 +167,17 @@ var settings = class settings extends ExtensionAPI {
     extension.callOnClose({
       close: () => {
         switch (extension.shutdownReason) {
-          case "ADDON_DISABLE":
-            settingManager.clear(extension.id, "disabled");
-            break;
+        case "ADDON_DISABLE":
+          settingManager.clear(extension.id, "disabled");
+          break;
 
-          case "ADDON_DOWNGRADE":
-          case "ADDON_UPGRADE":
-            // TODO Decide if we need to do something here
-            break;
-          case "ADDON_UNINSTALL":
-            settingManager.clear(extension.id);
-            break;
+        case "ADDON_DOWNGRADE":
+        case "ADDON_UPGRADE":
+          // TODO Decide if we need to do something here
+          break;
+        case "ADDON_UNINSTALL":
+          settingManager.clear(extension.id);
+          break;
         }
       },
     });
@@ -216,4 +214,4 @@ var settings = class settings extends ExtensionAPI {
       },
     };
   }
-}
+};
