@@ -1,0 +1,22 @@
+:root {
+  --button-primary-color: #0a84ff;
+}
+
+notification[value="rollout-prompt"] {
+  border-top: 1px solid black;
+}
+
+notification[value="rollout-prompt"] .messageCloseButton,
+notification[value="rollout-prompt"] .messageImage {
+  display: none;
+}
+
+notification[value="rollout-prompt"] .messageText {
+  margin: 1em;
+}
+
+notification[value="rollout-prompt"] .notification-button {
+  margin: 1em;
+  background: var(--button-primary-color);
+  border: 1px solid grey;
+}

@@ -1,0 +1,41 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescriptionIntro__\n\n__MSG_extensionDescriptionDataTitle__\n\n__MSG_extensionDescriptionDataDesc__\n\n__MSG_extensionDescriptionDisableTitle__\n\n__MSG_extensionDescriptionDisableDesc__",
+  "version": "1.0",
+  "default_locale": "en_US",
+
+  "applications": {
+    "gecko": {
+      "id": "httpdns@shield.mozilla.org"
+    }
+  },
+
+  "permissions": [
+    "tabs",
+    "notifications"
+  ],
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "experiment_apis": {
+    "settings": {
+      "schema": "experiments/settings/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "experiments/settings/api.js",
+        "paths": [["experiments", "settings"]]
+      }
+    },
+    "notifications": {
+      "schema": "experiments/notifications/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "experiments/notifications/api.js",
+        "paths": [["experiments", "notifications"]]
+      }
+    }
+  }
+}

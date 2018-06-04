@@ -1,0 +1,30 @@
+{
+  "name": "http-dns",
+  "version": "1.0.0",
+  "description": "DNS over HTTPS",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "build": "mkdir src/lib/; cp node_modules/dompurify/dist/purify.js src/lib/; npm run import-l10n && npm run ext-build",
+    "ext-build": "cd src && web-ext build --overwrite-dest;",
+    "import-l10n": "bash scripts/import_l10n.sh",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonathanKingston/http-dns.git"
+  },
+  "author": "Jonathan Kingston",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/jonathanKingston/http-dns/issues"
+  },
+  "homepage": "https://github.com/jonathanKingston/http-dns#readme",
+  "dependencies": {
+    "dompurify": "^1.0.4",
+    "pontoon-to-webext": "^1.0.2"
+  },
+  "devDependencies": {
+    "eslint": "4.19.1"
+  }
+}
