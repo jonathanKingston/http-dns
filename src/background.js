@@ -24,6 +24,10 @@ const rollout = {
     await stateManager.setSetting();
     const stateName = await stateManager.getState();
     switch (stateName) {
+    case "UIOk":
+        // If the user has previously clicked ok, we reset those state prefs to what they were pre-uninstall
+        await stateManager.setState("UIOk");
+        break;
     case null:
       if (await browser.experiments.settings.hasUnmodifiedPrerequisites(SETTING_NAME)) {
         await stateManager.setState("loaded");
@@ -40,7 +44,6 @@ const rollout = {
     case "enabled":
     case "disabled":
     case "UIDisabled":
-    case "UIOk":
     case "uninstalled":
       break;
     }
