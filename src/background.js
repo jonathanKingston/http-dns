@@ -10,6 +10,7 @@ const stateManager = {
   },
 
   async setState(stateKey) {
+    browser.study.sendTelemetry({settingName: SETTING_NAME, stateKey});
     browser.experiments.settings.set(SETTING_NAME, stateKey);
   },
 
@@ -20,7 +21,57 @@ const stateManager = {
 
 const rollout = {
   async init() {
+    const baseStudySetup = {
+      activeExperimentName: browser.runtime.id,
+      studyType: "shield",
+      // telemetry
+      telemetry: {
+        // default false. Actually send pings.
+        send: true,
+        // Marks pings with testing=true.  Set flag to `true` before final release
+        removeTestingFlag: false,
+      },
+      // endings with urls
+      endings: {
+        /** standard endings */
+        "user-disable": {
+          baseUrls: [
+            "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=user-disable",
+          ],
+        },
+        ineligible: {
+          baseUrls: [],
+        },
+        expired: {
+          baseUrls: [
+            "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=expired",
+          ],
+        },
+      },
+      // TODO should we implement this 
+      weightedVariations: [
+        {
+          name: "trr-active",
+          weight: 1
+        },
+        {
+          name: "trr-off",
+          weight: 1
+        },
+        {
+          name: "trr-study",
+          weight: 1
+        },
+      ],
+      // maximum time that the study should run, from the first run
+      expire: {
+        days: 14,
+      },
+    };
+    await browser.study.setup(baseStudySetup);
     browser.runtime.onMessage.addListener((...args) => this.handleMessage(...args));
+    //const studyInfo = await browser.study.getStudyInfo();
+    //console.log({studyInfo, stack: new Error().stack});
     await stateManager.setSetting();
     const stateName = await stateManager.getState();
     switch (stateName) {

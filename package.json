@@ -4,7 +4,8 @@
   "description": "DNS over HTTPS",
   "main": ".eslintrc.js",
   "scripts": {
-    "build": "mkdir src/lib/; cp node_modules/dompurify/dist/purify.js src/lib/; npm run import-l10n && npm run ext-build",
+    "build": "mkdir src/lib/; cp node_modules/dompurify/dist/purify.js src/lib/; npm run import-l10n && npm run ext-build && npm run setup-shield",
+    "setup-shield": "./node_modules/.bin/copyStudyUtils src/experiments",
     "ext-build": "cd src && web-ext build --overwrite-dest;",
     "import-l10n": "bash scripts/import_l10n.sh",
     "lint": "eslint .",
@@ -22,7 +23,8 @@
   "homepage": "https://github.com/jonathanKingston/http-dns#readme",
   "dependencies": {
     "dompurify": "^1.0.4",
-    "pontoon-to-webext": "^1.0.2"
+    "pontoon-to-webext": "^1.0.2",
+    "shield-studies-addon-utils": "^5.0.3"
   },
   "devDependencies": {
     "eslint": "4.19.1"
