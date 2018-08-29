@@ -5,18 +5,50 @@ const STUDY_URL = browser.extension.getURL("study.html");
 const SETTING_NAME = "trr";
 
 const stateManager = {
+  _settingName: null,
+
+  set settingName(settingName) {
+    if (this._settingName == null) {
+      this._settingName = settingName;
+    } else {
+      throw new Error("already set setting");
+    }
+  },
+
+  get settingName() {
+    if (this._settingName == null) {
+      throw new Error("set setting not set");
+    } else {
+      return this._settingName;
+    }
+  },
+
   async getState() {
-    return await browser.experiments.settings.get(SETTING_NAME) || null;
+    return await browser.experiments.settings.get(this.settingName) || null;
   },
 
   async setState(stateKey) {
-    browser.study.sendTelemetry({settingName: SETTING_NAME, stateKey});
-    browser.experiments.settings.set(SETTING_NAME, stateKey);
+    browser.study.sendTelemetry({stateKey});
+    browser.experiments.settings.set(this.settingName, stateKey);
   },
 
-  async setSetting() {
-    return browser.experiments.settings.add(SETTING_NAME);
+  /* settingName impacts the active states file we will be getting:
+     trr-active, trr-study
+   */
+  async setSetting(settingName) {
+    stateManager.settingName = settingName;
+    return browser.experiments.settings.add(this.settingName);
   },
+
+  endStudy(stateKey) {
+    browser.study.sendTelemetry({stateKey, disabling: "yes"});
+    browser.study.endStudy(stateKey || "generic");
+  },
+
+  // Clear out settings
+  async clear(stateKey = null) {
+    browser.experiments.settings.clear(stateKey);
+  }
 };
 
 const rollout = {
@@ -35,18 +67,22 @@ const rollout = {
       endings: {
         /** standard endings */
         "user-disable": {
-          baseUrls: [
-            "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=user-disable",
-          ],
+          baseUrls: [],
         },
         ineligible: {
           baseUrls: [],
         },
         expired: {
-          baseUrls: [
-            "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=expired",
-          ],
+          baseUrls: [],
         },
+
+        UIDisabled: {
+          baseUrls: [],
+        },
+// Other exit states, I don't think we ever need to handle them though:
+// uninstalled
+// disabled
+// UIOk
       },
       // TODO should we implement this 
       weightedVariations: [
@@ -54,10 +90,10 @@ const rollout = {
           name: "trr-active",
           weight: 1
         },
-        {
-          name: "trr-off",
-          weight: 1
-        },
+//        {
+//          name: "trr-off",
+//          weight: 1
+//        },
         {
           name: "trr-study",
           weight: 1
@@ -67,21 +103,25 @@ const rollout = {
       expire: {
         days: 14,
       },
+      allowEnroll: true,
     };
+    browser.study.onEndStudy.addListener((ending) => {
+      //TODO make sure we handle all endings here
+      stateManager.clear(ending);
+    });
     await browser.study.setup(baseStudySetup);
     browser.runtime.onMessage.addListener((...args) => this.handleMessage(...args));
-    //const studyInfo = await browser.study.getStudyInfo();
-    //console.log({studyInfo, stack: new Error().stack});
-    await stateManager.setSetting();
+    const studyInfo = await browser.study.getStudyInfo();
+    await stateManager.setSetting(studyInfo.variation.name);
     const stateName = await stateManager.getState();
     switch (stateName) {
     case null:
-      if (await browser.experiments.settings.hasUnmodifiedPrerequisites(SETTING_NAME)) {
+      if (await browser.experiments.settings.hasUnmodifiedPrerequisites(stateManager.settingName)) {
         await stateManager.setState("loaded");
         await this.show();
       } else {
         // If the user hasn't met the criteria clean up
-        browser.experiments.settings.clear(null);
+        stateManager.clear();
       }
       break;
       // If the user has a thrown error show the banner again (shouldn't happen)
@@ -119,7 +159,7 @@ const rollout = {
     });
     browser.tabs.remove(tabs.map((tab) => tab.id));
     browser.experiments.notifications.clear("rollout-prompt");
-    browser.experiments.settings.clear("UIDisabled");
+    stateManager.endStudy("UIDisabled");
   },
 
   async show() {

@@ -199,7 +199,7 @@ var settings = class settings extends ExtensionAPI {
           },
           async add(stateName) {
             // Resolve URL which should remove path exploits
-            let statesFile = extension.baseURI.resolve(`states-${stateName}.json`);
+            let statesFile = extension.baseURI.resolve(`states/${stateName}.json`);
             let statesInfo = await readJSON(statesFile);
 
             statesInfo.name = stateName;

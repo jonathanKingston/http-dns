@@ -55,7 +55,11 @@ class NotificationPrompt {
   }
 
   clear() {
-    this.box.getNotificationWithValue(this.id).close();
+    let notificationNode = this.box.getNotificationWithValue(this.id);
+    // Sometimes the node has gone before we get here
+    if (notificationNode) {
+      notificationNode.close();
+    }
     this.notificationsMap.delete(this.id);
   }
 
