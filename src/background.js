@@ -88,6 +88,10 @@ const rollout = {
       weightedVariations: [
         {
           name: "trr-active",
+          weight: 1.5
+        },
+        {
+          name: "control",
           weight: 1
         },
 //        {
@@ -96,7 +100,7 @@ const rollout = {
 //        },
         {
           name: "trr-study",
-          weight: 1
+          weight: 1.5
         },
       ],
       // maximum time that the study should run, from the first run
@@ -112,7 +116,11 @@ const rollout = {
     await browser.study.setup(baseStudySetup);
     browser.runtime.onMessage.addListener((...args) => this.handleMessage(...args));
     const studyInfo = await browser.study.getStudyInfo();
-    await stateManager.setSetting(studyInfo.variation.name);
+    const variation = studyInfo.variation.name;
+    if (variation == "control") {
+      return;
+    }
+    await stateManager.setSetting(variation);
     const stateName = await stateManager.getState();
     switch (stateName) {
     case null:
