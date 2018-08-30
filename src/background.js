@@ -3,6 +3,57 @@
 /* global browser */
 const STUDY_URL = browser.extension.getURL("study.html");
 const SETTING_NAME = "trr";
+const baseStudySetup = {
+  activeExperimentName: browser.runtime.id,
+  studyType: "shield",
+  // telemetry
+  telemetry: {
+    // default false. Actually send pings.
+    send: true,
+    // Marks pings with testing=true.  Set flag to `true` before final release
+    removeTestingFlag: false,
+  },
+  endings: {
+    // standard endings
+    "user-disable": {
+      baseUrls: [],
+      category: "ended-negative",
+    },
+    ineligible: {
+      baseUrls: [],
+      category: "ended-neutral",
+    },
+    expired: {
+      baseUrls: [],
+      category: "ended-positive",
+    },
+
+    // custom endings
+    UIDisabled: {
+      baseUrls: [],
+      category: "ended-negative",
+    },
+  },
+  weightedVariations: [
+    {
+      name: "trr-active",
+      weight: 1.5
+    },
+    {
+      name: "control",
+      weight: 1
+    },
+    {
+      name: "trr-study",
+      weight: 1.5
+    },
+  ],
+  // maximum time that the study should run, from the first run
+  expire: {
+    days: 14,
+  },
+  allowEnroll: true,
+};
 
 const stateManager = {
   _settingName: null,
@@ -53,62 +104,6 @@ const stateManager = {
 
 const rollout = {
   async init() {
-    const baseStudySetup = {
-      activeExperimentName: browser.runtime.id,
-      studyType: "shield",
-      // telemetry
-      telemetry: {
-        // default false. Actually send pings.
-        send: true,
-        // Marks pings with testing=true.  Set flag to `true` before final release
-        removeTestingFlag: false,
-      },
-      // endings with urls
-      endings: {
-        /** standard endings */
-        "user-disable": {
-          baseUrls: [],
-        },
-        ineligible: {
-          baseUrls: [],
-        },
-        expired: {
-          baseUrls: [],
-        },
-
-        UIDisabled: {
-          baseUrls: [],
-        },
-// Other exit states, I don't think we ever need to handle them though:
-// uninstalled
-// disabled
-// UIOk
-      },
-      // TODO should we implement this 
-      weightedVariations: [
-        {
-          name: "trr-active",
-          weight: 1.5
-        },
-        {
-          name: "control",
-          weight: 1
-        },
-//        {
-//          name: "trr-off",
-//          weight: 1
-//        },
-        {
-          name: "trr-study",
-          weight: 1.5
-        },
-      ],
-      // maximum time that the study should run, from the first run
-      expire: {
-        days: 14,
-      },
-      allowEnroll: true,
-    };
     browser.study.onEndStudy.addListener((ending) => {
       //TODO make sure we handle all endings here
       stateManager.clear(ending);
@@ -116,31 +111,30 @@ const rollout = {
     await browser.study.setup(baseStudySetup);
     browser.runtime.onMessage.addListener((...args) => this.handleMessage(...args));
     const studyInfo = await browser.study.getStudyInfo();
+    // If the user hasn't met the criteria clean up
+    if (await browser.experiments.settings.hasModifiedPrerequisites()) {
+      stateManager.endStudy("ineligible");
+    }
     const variation = studyInfo.variation.name;
     if (variation == "control") {
+      // Return early as we don't have a control.json file
       return;
     }
     await stateManager.setSetting(variation);
     const stateName = await stateManager.getState();
     switch (stateName) {
-    case null:
-      if (await browser.experiments.settings.hasUnmodifiedPrerequisites(stateManager.settingName)) {
-        await stateManager.setState("loaded");
-        await this.show();
-      } else {
-        // If the user hasn't met the criteria clean up
-        stateManager.clear();
-      }
-      break;
-      // If the user has a thrown error show the banner again (shouldn't happen)
-    case "loaded":
-      await this.show();
-      break;
     case "enabled":
     case "disabled":
     case "UIDisabled":
     case "UIOk":
     case "uninstalled":
+    case null:
+      await stateManager.setState("loaded");
+      await this.show();
+      break;
+      // If the user has a thrown error show the banner again (shouldn't happen)
+    case "loaded":
+      await this.show();
       break;
     }
   },

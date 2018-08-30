@@ -4,9 +4,6 @@
     "network.trr.uri": "string",
     "network.trr.experimentalRollout": "int"
   },
-  "prerequisitePrefs": [
-    "network.trr.mode"
-  ],
   "statePref": "network.trr.experimentalRollout",
   "states": {
     "loaded": {
