@@ -37,16 +37,18 @@ const baseStudySetup = {
   weightedVariations: [
     {
       name: "trr-active",
-      weight: 1.5
+      weight: 1
     },
     {
       name: "control",
       weight: 1
     },
+/*
     {
       name: "trr-study",
       weight: 1.5
     },
+*/
   ],
   // maximum time that the study should run, from the first run
   expire: {
