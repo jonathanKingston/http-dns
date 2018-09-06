@@ -23,6 +23,15 @@ OR
 
 You should see a new entry in the list of extensions titled "HTTP DNS".
 
+# Telemetry
+
+The addon will enable DNS over HTTP which will send timing statistics of trr resolving to Firefox. This won't include domains or specific information about the queries being used.
+
+The addon will also send usage telemetry about the state of the addon being install or removed using Shield telemetry.
+- When a user opts out of the banner shown a ping will be sent.
+- Existing sheild telemetry utils telemetry will be sent.
+- The variant of the study will be captured.
+
 ## How to read the states file
 
 The preferences are managed by [states-trr.json](/src/states-trr.json) this is only read by the browsers parent process in the [Web Extension Experiment code](src/experiments/settings/api.js).
