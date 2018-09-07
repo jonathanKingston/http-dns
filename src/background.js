@@ -110,9 +110,17 @@ const rollout = {
       //TODO make sure we handle all endings here
       stateManager.clear(ending);
     });
+    browser.study.onReady.addListener(() => {
+      this.onReady()
+    });
     await browser.study.setup(baseStudySetup);
     browser.runtime.onMessage.addListener((...args) => this.handleMessage(...args));
+  },
+  async onReady() {
     const studyInfo = await browser.study.getStudyInfo();
+    if (!studyInfo.isFirstRun) {
+      return;
+    }
     // If the user hasn't met the criteria clean up
     if (await browser.experiments.settings.hasModifiedPrerequisites()) {
       stateManager.endStudy("ineligible");
