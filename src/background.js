@@ -52,7 +52,7 @@ const baseStudySetup = {
   ],
   // maximum time that the study should run, from the first run
   expire: {
-    days: 356,
+    days: 21,
   },
   allowEnroll: true,
 };
