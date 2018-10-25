@@ -1,0 +1,16 @@
+[
+  {
+    "namespace": "experiments.perf",
+    "description": "Measure perf of DoH",
+    "functions": [
+      {
+        "name": "measure",
+        "type": "function",
+        "description": "Measures perf of DoH",
+        "parameters": [
+        ],
+        "async": true
+      }
+    ]
+  }
+]

@@ -39,11 +39,11 @@ const baseStudySetup = {
       name: "trr-active",
       weight: 1
     },
+/*
     {
       name: "control",
       weight: 1
     },
-/*
     {
       name: "trr-study",
       weight: 1.5
@@ -132,6 +132,8 @@ const rollout = {
     }
     await stateManager.setSetting(variation);
     const stateName = await stateManager.getState();
+let results = await browser.experiments.perf.measure();
+console.log("results", results);
     switch (stateName) {
     case "enabled":
     case "disabled":
