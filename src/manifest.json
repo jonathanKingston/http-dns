@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescriptionIntro__\n\n__MSG_extensionDescriptionDataTitle__\n\n__MSG_extensionDescriptionDataDesc__\n\n__MSG_extensionDescriptionDisableTitle__\n\n__MSG_extensionDescriptionDisableDesc__",
-  "version": "1.1",
+  "version": "4.0.4",
   "default_locale": "en_US",
 
   "applications": {
@@ -21,6 +21,14 @@
   },
 
   "experiment_apis": {
+    "study": {
+      "schema": "experiments/study/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "experiments/study/api.js",
+        "paths": [["study"]]
+      }
+    },
     "settings": {
       "schema": "experiments/settings/schema.json",
       "parent": {

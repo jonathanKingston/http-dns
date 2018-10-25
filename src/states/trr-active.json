@@ -4,9 +4,6 @@
     "network.trr.uri": "string",
     "network.trr.experimentalRollout": "int"
   },
-  "prerequisitePrefs": [
-    "network.trr.mode"
-  ],
   "statePref": "network.trr.experimentalRollout",
   "states": {
     "loaded": {
@@ -22,7 +19,7 @@
       "_comment": "User has been presented with disclosure message",
       "prefs": {
         "network.trr.uri": "https://mozilla.cloudflare-dns.com/dns-query",
-        "network.trr.mode": 4
+        "network.trr.mode": 2
       },
       "persistPrefs": {
       }
@@ -57,7 +54,7 @@
       "_comment": "User saw disclosure and clicked OK",
       "prefs": {
         "network.trr.uri": "https://mozilla.cloudflare-dns.com/dns-query",
-        "network.trr.mode": 4
+        "network.trr.mode": 2
       },
       "persistPrefs": {
       }

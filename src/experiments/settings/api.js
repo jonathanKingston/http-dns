@@ -72,17 +72,18 @@ const settingManager = {
   /**
    * Ensure that the user hasn't modified any pref in the prerequisite list
    */
-  async hasUnmodifiedPrerequisites(settingName) {
+  async hasModifiedPrerequisites() {
     await this.init();
-    const settingConfig = await this.getSettingConfig(settingName);
-    const prerequisitePrefs = settingConfig.prerequisitePrefs;
+    const prerequisitePrefs = [
+      "network.trr.mode"
+    ];
     for (let pref of prerequisitePrefs) {
       const prefValue = await prefManager.getUserPref(pref);
       if (undefined !== prefValue) {
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
   },
   async get(settingName) {
     const settingConfig = await this.getSettingConfig(settingName);
@@ -194,12 +195,12 @@ var settings = class settings extends ExtensionAPI {
             }
             return output;
           },
-          async hasUnmodifiedPrerequisites(settingName) {
-            return settingManager.hasUnmodifiedPrerequisites(settingName);
+          async hasModifiedPrerequisites() {
+            return settingManager.hasModifiedPrerequisites();
           },
           async add(stateName) {
             // Resolve URL which should remove path exploits
-            let statesFile = extension.baseURI.resolve(`states-${stateName}.json`);
+            let statesFile = extension.baseURI.resolve(`states/${stateName}.json`);
             let statesInfo = await readJSON(statesFile);
 
             statesInfo.name = stateName;
