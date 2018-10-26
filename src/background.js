@@ -42,7 +42,7 @@ const baseStudySetup = {
   ],
   // maximum time that the study should run, from the first run
   expire: {
-    days: 21,
+    days: 14,
   },
   allowEnroll: true,
 };
@@ -165,6 +165,14 @@ const rollout = {
   },
 
   async alarm(alarmInfo) {
+    // Let's verify that we have the expected settings as we want for
+    // this performance study.
+    let prereq = await browser.experiments.settings.prerequisites();
+    if (prereq["network.trr.mode"] !== 2 &&
+        prereq["network.trr.uri"] != "https://mozilla.cloudflare-dns.com/dns-query") {
+      stateManager.endStudy("ineligible");
+    }
+
     let { lastChecked = 0, sentCount = 0 } = await browser.storage.local.get(["lastChecked", "sentCount"]); 
     let time = Date.now();
     // Hours * Minutes * seconds * miliseconds
