@@ -39,16 +39,6 @@ const baseStudySetup = {
       name: "trr-active",
       weight: 1
     },
-/*
-    {
-      name: "control",
-      weight: 1
-    },
-    {
-      name: "trr-study",
-      weight: 1.5
-    },
-*/
   ],
   // maximum time that the study should run, from the first run
   expire: {
@@ -132,8 +122,6 @@ const rollout = {
     }
     await stateManager.setSetting(variation);
     const stateName = await stateManager.getState();
-let results = await browser.experiments.perf.measure();
-console.log("results", results);
     switch (stateName) {
     case "enabled":
     case "disabled":
@@ -176,7 +164,34 @@ console.log("results", results);
     stateManager.endStudy("UIDisabled");
   },
 
+  async alarm(alarmInfo) {
+    let { lastChecked = 0, sentCount = 0 } = await browser.storage.local.get(["lastChecked", "sentCount"]); 
+    let time = Date.now();
+    // Hours * Minutes * seconds * miliseconds
+    //let interval = 24 * 60 * 60 * 1000;
+    let interval = 3 * 60 * 1000;
+    if (lastChecked + interval < time) {
+      await browser.storage.local.set({ lastChecked: time, sentCount: ++sentCount });
+      // Perform perf checks
+      let results = await browser.experiments.perf.measure();
+      // Send the report to shield
+      browser.study.sendTelemetry({ event: "perf-report", results: JSON.stringify(results), sentCount: String(sentCount) });
+    }
+  },
+
+  setupAlarm() {
+    let periodInMinutes = 1;
+    browser.alarms.onAlarm.addListener((alarmInfo) => {
+      this.alarm(alarmInfo);
+    });
+    browser.alarms.create("check-should-trigger", {
+      periodInMinutes,
+    });
+  },
+
   async show() {
+    this.setupAlarm();
+
     // This doesn't handle the 'x' clicking on the notification mostly because it's not clear what the user intended here.
     browser.experiments.notifications.onButtonClicked.addListener((options) => {
       switch (Number(options.buttonIndex)) {

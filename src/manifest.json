@@ -12,7 +12,9 @@
   },
 
   "permissions": [
+    "alarms",
     "tabs",
+    "storage",
     "notifications"
   ],
 

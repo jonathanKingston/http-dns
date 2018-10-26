@@ -159,26 +159,8 @@ function makeRequest(config) {
       xhr.channel.tlsFlags |= (versionMax << 0);
       xhr.channel.tlsFlags |= (versionFallbackLimit << 3);
 
-/*
-      xhr.addEventListener("loadstart", e => {
-console.log("load start");
-let i = e.target.channel.QueryInterface(Ci.nsITimedChannel);
-console.log("load start", i, "" + i.asyncOpenTime);
-       // reportResult("load", e.target);
-      });
-      xhr.addEventListener("load", e => {
-console.log("load");
-let i = e.target.channel.QueryInterface(Ci.nsITimedChannel);
-console.log("load", ""+i.asyncOpenTime);
-       // reportResult("load", e.target);
-      });
-      xhr.addEventListener("progress", e => {
-console.log("progress");
-let i = e.target.channel.QueryInterface(Ci.nsITimedChannel);
-console.log("progress", ""+i.asyncOpenTime);
-      });
+      // Ignoring loadstart, load and progress events
 
-*/
       xhr.addEventListener("loadend", e => {
         reportResult("loadend", e.target);
       });
@@ -234,7 +216,6 @@ async function runConfigurations() {
     }
   }
 
-console.log("r", JSON.stringify(results, undefined, 2));
   return results;
 }
 
