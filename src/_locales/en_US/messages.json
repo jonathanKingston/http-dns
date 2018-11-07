@@ -18,7 +18,7 @@
     "message": "If you don’t want to participate in this study, you can select the Disable button on this page. To disable all studies in Firefox, you can update your Privacy and Security settings in about:preferences."
   },
   "notificationMessage": {
-    "message": "Mozilla is working to improve privacy and security on the web. We are conducting studies that send encrypted DNS requests to Cloudflare, a secure, cloud-based service."
+    "message": "For a limited time, Firefox is conducting a study that routes your DNS requests to a secure service in partnership with Cloudflare to protect you while you browse."
   },
   "disableButtonText": {
     "message": "Disable DNS Studies"
@@ -44,7 +44,7 @@
     "message": "How the studies work"
   },
   "studyWork": {
-    "message": "We are running a series of $STUDYLINK$ in $BRANDSHORTNAME$. All users will receive a notification about these studies. When a study is active, $BRANDFULLNAME$ will automatically use Cloudflare’s $CLOUDFLARELINK$. The first study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP to compare approaches.",
+    "message": "We are running a series of $STUDYLINK$ in $BRANDSHORTNAME$. All users will receive a notification about these studies. When a study is active, $BRANDFULLNAME$ will automatically use Cloudflare’s $CLOUDFLARELINK$. In this particular study, Firefox will also perform a few performance measurements during the one-week testing period. These performance measurements will make Firefox do transfers from a dedicated service run by Akamai.",
     "placeholders": {
       "studylink": {
         "content": "$1"
@@ -67,7 +67,7 @@
     "message": "1.1.1.1 secure DNS over HTTPS"
   },
   "studyDataDesc": {
-    "message": "Cloudflare, like any other DNS provider, needs access to the host names you use to resolve requests. We’ve chosen Cloudflare as our partner for these studies because, unlike many other DNS providers, they agreed to $POLICYLINK$ that include limits on what data they collect and how long they keep it, as well as a promise to not share data with other parties.",
+    "message": "Cloudflare, like any other DNS provider, needs access to the host names you use to resolve requests. We’ve chosen Cloudflare as our partner for these studies because, unlike many other DNS providers, they agreed to $POLICYLINK$ that include limits on what data they collect and how long they keep it, as well as a promise to not share data with other parties. The performance measurement servers do not collect any personal information except for seeing from which source IP the downloads originate and this data is not shared with other parties.",
     "placeholders": {
       "policylink": {
         "content": "$1"
