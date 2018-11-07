@@ -8,6 +8,11 @@
         "type": "function",
         "description": "Measures perf of DoH",
         "parameters": [
+          {
+            "type": "integer",
+            "name": "repeatCount",
+            "description": "The number of times each config should be checked."
+          }
         ],
         "async": true
       }

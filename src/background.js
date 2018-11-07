@@ -168,20 +168,23 @@ const rollout = {
     // Let's verify that we have the expected settings as we want for
     // this performance study.
     let prereq = await browser.experiments.settings.prerequisites();
+    let interval = prereq["network.trr.experimentalPerfInterval"];
+    let repeatCount = prereq["network.trr.experimentalPerfRepeatCount"];
+    // Sanity check that our interval pref is never smaller than 1 minute
+    let minInterval = 60 * 1000;
     if (prereq["network.trr.mode"] !== 2 &&
-        prereq["network.trr.uri"] != "https://mozilla.cloudflare-dns.com/dns-query") {
+        prereq["network.trr.uri"] != "https://mozilla.cloudflare-dns.com/dns-query" &&
+        interval > minInterval &&
+        repeatCount > 0) {
       stateManager.endStudy("ineligible");
     }
 
     let { lastChecked = 0, sentCount = 0 } = await browser.storage.local.get(["lastChecked", "sentCount"]); 
     let time = Date.now();
-    // Hours * Minutes * seconds * miliseconds
-    //let interval = 24 * 60 * 60 * 1000;
-    let interval = 3 * 60 * 1000;
     if (lastChecked + interval < time) {
       await browser.storage.local.set({ lastChecked: time, sentCount: ++sentCount });
       // Perform perf checks
-      let results = await browser.experiments.perf.measure();
+      let results = await browser.experiments.perf.measure(repeatCount);
       // Send the report to shield
       browser.study.sendTelemetry({ event: "perf-report", results: JSON.stringify(results), sentCount: String(sentCount) });
     }
