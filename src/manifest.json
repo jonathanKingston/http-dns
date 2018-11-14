@@ -2,8 +2,10 @@
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescriptionIntro__\n\n__MSG_extensionDescriptionDataTitle__\n\n__MSG_extensionDescriptionDataDesc__\n\n__MSG_extensionDescriptionDisableTitle__\n\n__MSG_extensionDescriptionDisableDesc__",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "default_locale": "en_US",
+
+  "hidden": true,
 
   "applications": {
     "gecko": {
