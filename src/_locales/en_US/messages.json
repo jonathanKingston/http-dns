@@ -15,7 +15,7 @@
     "message": "How you can disable DNS studies"
   },
   "extensionDescriptionDisableDesc": {
-    "message": "If you don’t want to participate in this DNS study, you can disable it on the about:studies page in $BRANDSHORTNAME$. (Type about:studies into the $BRANDSHORTNAME$ address bar.) To disable all studies in $BRANDSHORTNAME$, you can update your Privacy and Security settings in about:preferences."
+    "message": "If you don’t want to participate in this DNS study, you can disable it on the about:studies page in Firefox. (Type about:studies into the $BRANDSHORTNAME$ address bar.) To disable all studies in Firefox, you can update your Privacy and Security settings in about:preferences."
   },
   "notificationMessage": {
     "message": "For a limited time, Firefox is conducting a study that routes your DNS requests to a secure service in partnership with Cloudflare to protect you while you browse."
@@ -81,9 +81,9 @@
     "message": "How you can opt out of studies"
   },
   "studyOptOut": {
-    "message": "If you don’t want to participate in this DNS study, you can disable it on the about:studies page in $BRANDSHORTNAME$. (Type about:studies into the $BRANDSHORTNAME$ address bar.)"
+    "message": "If you don’t want to participate in this DNS study, you can disable it on the about:studies page in Firefox. (Type about:studies into the $BRANDSHORTNAME$ address bar.)"
   },
   "studyOptOutAll": {
-    "message": "To disable all studies in $BRANDSHORTNAME$, you can update your Privacy and Security settings in about:preferences."
+    "message": "To disable all studies in Firefox, you can update your Privacy and Security settings in about:preferences."
   }
 }
