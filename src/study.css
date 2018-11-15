@@ -19,7 +19,7 @@ header {
 }
 
 header::before {
-  background: 0 0 no-repeat url("img/firefox-logo-nightly.svg");
+  background: 0 0 no-repeat url("img/firefox-logo-beta.svg");
   content: "";
   display: block;
   inline-size: 83px;

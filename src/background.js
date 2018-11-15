@@ -3,48 +3,148 @@
 /* global browser */
 const STUDY_URL = browser.extension.getURL("study.html");
 const SETTING_NAME = "trr";
+const baseStudySetup = {
+  activeExperimentName: browser.runtime.id,
+  studyType: "shield",
+  // telemetry
+  telemetry: {
+    // default false. Actually send pings.
+    send: true,
+    // Marks pings with testing=true.  Set flag to `true` before final release
+    removeTestingFlag: false,
+  },
+  endings: {
+    // standard endings
+    "user-disable": {
+      baseUrls: [],
+      category: "ended-negative",
+    },
+    ineligible: {
+      baseUrls: [],
+      category: "ended-neutral",
+    },
+    expired: {
+      baseUrls: [],
+      category: "ended-positive",
+    },
+
+    // custom endings
+    UIDisabled: {
+      baseUrls: [],
+      category: "ended-negative",
+    },
+  },
+  weightedVariations: [
+    {
+      name: "trr-active",
+      weight: 1
+    },
+    {
+      name: "control",
+      weight: 1
+    },
+/*
+    {
+      name: "trr-study",
+      weight: 1.5
+    },
+*/
+  ],
+  // maximum time that the study should run, from the first run
+  expire: {
+    days: 21,
+  },
+  allowEnroll: true,
+};
 
 const stateManager = {
+  _settingName: null,
+
+  set settingName(settingName) {
+    if (this._settingName == null) {
+      this._settingName = settingName;
+    } else {
+      throw new Error("already set setting");
+    }
+  },
+
+  get settingName() {
+    if (this._settingName == null) {
+      throw new Error("set setting not set");
+    } else {
+      return this._settingName;
+    }
+  },
+
   async getState() {
-    return await browser.experiments.settings.get(SETTING_NAME) || null;
+    return await browser.experiments.settings.get(this.settingName) || null;
   },
 
   async setState(stateKey) {
-    browser.experiments.settings.set(SETTING_NAME, stateKey);
+    browser.study.sendTelemetry({stateKey});
+    browser.experiments.settings.set(this.settingName, stateKey);
   },
 
-  async setSetting() {
-    return browser.experiments.settings.add(SETTING_NAME);
+  /* settingName impacts the active states file we will be getting:
+     trr-active, trr-study
+   */
+  async setSetting(settingName) {
+    stateManager.settingName = settingName;
+    return browser.experiments.settings.add(this.settingName);
   },
+
+  endStudy(stateKey) {
+    browser.study.sendTelemetry({stateKey, disabling: "yes"});
+    browser.study.endStudy(stateKey || "generic");
+  },
+
+  // Clear out settings
+  async clear(stateKey = null) {
+    browser.experiments.settings.clear(stateKey);
+  }
 };
 
 const rollout = {
   async init() {
+    browser.study.onEndStudy.addListener((ending) => {
+      //TODO make sure we handle all endings here
+      stateManager.clear(ending);
+    });
+    browser.study.onReady.addListener(() => {
+      this.onReady()
+    });
+    await browser.study.setup(baseStudySetup);
     browser.runtime.onMessage.addListener((...args) => this.handleMessage(...args));
-    await stateManager.setSetting();
+  },
+  async onReady() {
+    const studyInfo = await browser.study.getStudyInfo();
+    if (!studyInfo.isFirstRun) {
+      return;
+    }
+    // If the user hasn't met the criteria clean up
+    if (await browser.experiments.settings.hasModifiedPrerequisites()) {
+      stateManager.endStudy("ineligible");
+    }
+    const variation = studyInfo.variation.name;
+    if (variation == "control") {
+      // Return early as we don't have a control.json file
+      return;
+    }
+    await stateManager.setSetting(variation);
     const stateName = await stateManager.getState();
     switch (stateName) {
+    case "enabled":
+    case "disabled":
+    case "UIDisabled":
     case "UIOk":
-        // If the user has previously clicked ok, we reset those state prefs to what they were pre-uninstall
-        await stateManager.setState("UIOk");
-        break;
+    case "uninstalled":
     case null:
-      if (await browser.experiments.settings.hasUnmodifiedPrerequisites(SETTING_NAME)) {
-        await stateManager.setState("loaded");
-        await this.show();
-      } else {
-        // If the user hasn't met the criteria clean up
-        browser.experiments.settings.clear(null);
-      }
+      await stateManager.setState("loaded");
+      await this.show();
       break;
       // If the user has a thrown error show the banner again (shouldn't happen)
     case "loaded":
       await this.show();
-      break;
-    case "enabled":
-    case "disabled":
-    case "UIDisabled":
-    case "uninstalled":
       break;
     }
   },
@@ -71,7 +171,7 @@ const rollout = {
     });
     browser.tabs.remove(tabs.map((tab) => tab.id));
     browser.experiments.notifications.clear("rollout-prompt");
-    browser.experiments.settings.clear("UIDisabled");
+    stateManager.endStudy("UIDisabled");
   },
 
   async show() {

@@ -34,14 +34,10 @@
         "async": true
       },
       {
-        "name": "hasUnmodifiedPrerequisites",
+        "name": "hasModifiedPrerequisites",
         "type": "function",
         "description": "Returns a bool of if the user has modified the agreed prereq prefs",
         "parameters": [
-          {
-            "type": "string",
-            "name": "settingName"
-          }
         ],
         "async": true
       },
