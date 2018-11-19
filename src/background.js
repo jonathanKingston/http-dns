@@ -39,20 +39,10 @@ const baseStudySetup = {
       name: "trr-active",
       weight: 1
     },
-    {
-      name: "control",
-      weight: 1
-    },
-/*
-    {
-      name: "trr-study",
-      weight: 1.5
-    },
-*/
   ],
   // maximum time that the study should run, from the first run
   expire: {
-    days: 21,
+    days: 7,
   },
   allowEnroll: true,
 };
@@ -108,7 +98,7 @@ const rollout = {
   async init() {
     browser.study.onEndStudy.addListener((ending) => {
       //TODO make sure we handle all endings here
-      stateManager.clear(ending);
+      stateManager.clear(ending.endingName);
     });
     browser.study.onReady.addListener(() => {
       this.onReady()
@@ -174,7 +164,45 @@ const rollout = {
     stateManager.endStudy("UIDisabled");
   },
 
+  async alarm(alarmInfo) {
+    // Let's verify that we have the expected settings as we want for
+    // this performance study.
+    let prereq = await browser.experiments.settings.prerequisites();
+    let interval = prereq["network.trr.experimentalPerfInterval"];
+    let repeatCount = prereq["network.trr.experimentalPerfRepeatCount"];
+    // Sanity check that our interval pref is never smaller than 1 minute
+    let minInterval = 60 * 1000;
+    if (prereq["network.trr.mode"] !== 2 &&
+        prereq["network.trr.uri"] != "https://mozilla.cloudflare-dns.com/dns-query" &&
+        interval > minInterval &&
+        repeatCount > 0) {
+      stateManager.endStudy("ineligible");
+    }
+
+    let { lastChecked = 0, sentCount = 0 } = await browser.storage.local.get(["lastChecked", "sentCount"]); 
+    let time = Date.now();
+    if (lastChecked + interval < time) {
+      await browser.storage.local.set({ lastChecked: time, sentCount: ++sentCount });
+      // Perform perf checks
+      let results = await browser.experiments.perf.measure(repeatCount);
+      // Send the report to shield
+      browser.study.sendTelemetry({ event: "perf-report", results: JSON.stringify(results), sentCount: String(sentCount) });
+    }
+  },
+
+  setupAlarm() {
+    let periodInMinutes = 1;
+    browser.alarms.onAlarm.addListener((alarmInfo) => {
+      this.alarm(alarmInfo);
+    });
+    browser.alarms.create("check-should-trigger", {
+      periodInMinutes,
+    });
+  },
+
   async show() {
+    this.setupAlarm();
+
     // This doesn't handle the 'x' clicking on the notification mostly because it's not clear what the user intended here.
     browser.experiments.notifications.onButtonClicked.addListener((options) => {
       switch (Number(options.buttonIndex)) {

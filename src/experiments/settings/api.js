@@ -73,17 +73,27 @@ const settingManager = {
    * Ensure that the user hasn't modified any pref in the prerequisite list
    */
   async hasModifiedPrerequisites() {
-    await this.init();
-    const prerequisitePrefs = [
-      "network.trr.mode"
-    ];
-    for (let pref of prerequisitePrefs) {
-      const prefValue = await prefManager.getUserPref(pref);
+    let prerequisites = await this.prerequisites();
+    for (let [pref, prefValue] of Object.entries(prerequisites)) {
       if (undefined !== prefValue) {
         return true;
       }
     }
     return false;
+  },
+  async prerequisites() {
+    await this.init();
+    const prerequisitePrefs = [
+      "network.trr.mode",
+      "network.trr.uri",
+      "network.trr.experimentalPerfInterval",
+      "network.trr.experimentalPerfRepeatCount"
+    ];
+    const values = {};
+    for (let pref of prerequisitePrefs) {
+      values[pref] = await prefManager.getUserPref(pref);
+    }
+    return values;
   },
   async get(settingName) {
     const settingConfig = await this.getSettingConfig(settingName);
@@ -113,10 +123,9 @@ const settingManager = {
         [config.statePref]: state.id
       });
     }
-
     // set prefs to state or reset
     for (let pref of Object.keys(config.prefTypes)) {
-      prefManager.setPref(pref, match[pref] || undefined, config.prefTypes[pref]);
+      prefManager.setPref(pref, match[pref] || null, config.prefTypes[pref]);
     }
 
     return true;
@@ -194,6 +203,9 @@ var settings = class settings extends ExtensionAPI {
               output[key] = brands.GetStringFromName(key);
             }
             return output;
+          },
+          async prerequisites() {
+            return settingManager.prerequisites();
           },
           async hasModifiedPrerequisites() {
             return settingManager.hasModifiedPrerequisites();

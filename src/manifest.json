@@ -2,8 +2,10 @@
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescriptionIntro__\n\n__MSG_extensionDescriptionDataTitle__\n\n__MSG_extensionDescriptionDataDesc__\n\n__MSG_extensionDescriptionDisableTitle__\n\n__MSG_extensionDescriptionDisableDesc__",
-  "version": "4.0.4",
+  "version": "5.0.3",
   "default_locale": "en_US",
+
+  "hidden": true,
 
   "applications": {
     "gecko": {
@@ -12,7 +14,9 @@
   },
 
   "permissions": [
+    "alarms",
     "tabs",
+    "storage",
     "notifications"
   ],
 
@@ -27,6 +31,14 @@
         "scopes": ["addon_parent"],
         "script": "experiments/study/api.js",
         "paths": [["study"]]
+      }
+    },
+    "perf": {
+      "schema": "experiments/perf/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "experiments/perf/api.js",
+        "paths": [["experiments", "perf"]]
       }
     },
     "settings": {
