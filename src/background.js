@@ -98,7 +98,7 @@ const rollout = {
   async init() {
     browser.study.onEndStudy.addListener((ending) => {
       //TODO make sure we handle all endings here
-      stateManager.clear(ending);
+      stateManager.clear(ending.endingName);
     });
     browser.study.onReady.addListener(() => {
       this.onReady()

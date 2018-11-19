@@ -123,10 +123,9 @@ const settingManager = {
         [config.statePref]: state.id
       });
     }
-
     // set prefs to state or reset
     for (let pref of Object.keys(config.prefTypes)) {
-      prefManager.setPref(pref, match[pref] || undefined, config.prefTypes[pref]);
+      prefManager.setPref(pref, match[pref] || null, config.prefTypes[pref]);
     }
 
     return true;
