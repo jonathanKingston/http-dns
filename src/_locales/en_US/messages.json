@@ -3,19 +3,19 @@
     "message": "DNS Over HTTPS"
   },
   "extensionDescriptionIntro": {
-    "message": "Mozilla is running a series of studies to evaluate a service that keeps DNS providers from collecting and sharing your browsing history. All users in the study will receive a notification. When a study is active, Firefox will automatically use Cloudflare’s 1.1.1.1 secure DNS over HTTPS. This study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP in order to compare approaches."
+    "message": "Mozilla is running a series of studies to evaluate a service that keeps DNS providers from collecting and sharing your browsing history. All users in the study will receive a notification. When a study is active, $BRANDSHORTNAME$ will automatically use Cloudflare’s 1.1.1.1 secure DNS over HTTPS. This study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP in order to compare approaches."
   },
   "extensionDescriptionDataTitle": {
     "message": "What happens to your data"
   },
   "extensionDescriptionDataDesc": {
-    "message": "Cloudflare, like any other DNS provider, needs access to the host names you use to resolve requests. We’ve chosen Cloudflare as our partner for these studies because, unlike many other DNS providers, they agreed to strong privacy controls that include limits on what data they collect and how long they keep it, as well a promise to not share data with other parties. Read the Cloudflare/Firefox Privacy Policy at https://tinyurl.com/yax6zfqo"
+    "message": "Cloudflare, like any other DNS provider, needs access to the host names you use to resolve requests. We’ve chosen Cloudflare as our partner for these studies because, unlike many other DNS providers, they agreed to strong privacy controls that include limits on what data they collect and how long they keep it, as well a promise to not share data with other parties. Read the Cloudflare/$BRANDSHORTNAME$ Privacy Policy at https://tinyurl.com/yax6zfqo"
   },
   "extensionDescriptionDisableTitle": {
     "message": "How you can disable DNS studies"
   },
   "extensionDescriptionDisableDesc": {
-    "message": "If you don’t want to participate in this study, you can select the Disable button on this page. To disable all studies in Firefox, you can update your Privacy and Security settings in about:preferences."
+    "message": "If you don’t want to participate in this DNS study, you can disable it on the about:studies page in Firefox. (Type about:studies into the $BRANDSHORTNAME$ address bar.) To disable all studies in Firefox, you can update your Privacy and Security settings in about:preferences."
   },
   "notificationMessage": {
     "message": "For a limited time, Firefox is conducting a study that routes your DNS requests to a secure service in partnership with Cloudflare to protect you while you browse."
@@ -33,7 +33,7 @@
     "message": "DNS Over HTTPS Studies"
   },
   "studyIntro": {
-    "message": "Domain Name Service (DNS) is one of the oldest parts of internet architecture, yet remains largely untouched by efforts to make the web safer and more private. On the Firefox team, we’re working to change that. We’ve already implemented the DNS over HTTPS (DoH) protocol in $BRANDSHORTNAME$ and are studying a service that keeps DNS providers from collecting and sharing your browsing history.",
+    "message": "Domain Name Service (DNS) is one of the oldest parts of internet architecture, yet remains largely untouched by efforts to make the web safer and more private. On the $BRANDSHORTNAME$ team, we’re working to change that. We’ve already implemented the DNS over HTTPS (DoH) protocol in $BRANDSHORTNAME$ and are studying a service that keeps DNS providers from collecting and sharing your browsing history.",
     "placeholders": {
       "brandshortname": {
         "content": "$1"
@@ -44,7 +44,7 @@
     "message": "How the studies work"
   },
   "studyWork": {
-    "message": "We are running a series of $STUDYLINK$ in $BRANDSHORTNAME$. All users will receive a notification about these studies. When a study is active, $BRANDFULLNAME$ will automatically use Cloudflare’s $CLOUDFLARELINK$. In this particular study, Firefox will also perform a few performance measurements during the one-week testing period. These performance measurements will make Firefox do transfers from a dedicated service run by Akamai.",
+    "message": "We are running a series of $STUDYLINK$ in $BRANDSHORTNAME$. All users will receive a notification about these studies. When a study is active, $BRANDFULLNAME$ will automatically use Cloudflare’s $CLOUDFLARELINK$. In this particular study, $BRANDSHORTNAME$ will also perform a few performance measurements during the one-week testing period. These performance measurements will make $BRANDSHORTNAME$ do transfers from a dedicated service run by Akamai.",
     "placeholders": {
       "studylink": {
         "content": "$1"
@@ -81,7 +81,7 @@
     "message": "How you can opt out of studies"
   },
   "studyOptOut": {
-    "message": "If you don’t want to participate in these DNS studies, you can select the Disable DNS Studies button on this page. You can also disable them on the about:studies page in Firefox. (Type about:studies into the Firefox address bar.)"
+    "message": "If you don’t want to participate in this DNS study, you can disable it on the about:studies page in Firefox. (Type about:studies into the $BRANDSHORTNAME$ address bar.)"
   },
   "studyOptOutAll": {
     "message": "To disable all studies in Firefox, you can update your Privacy and Security settings in about:preferences."

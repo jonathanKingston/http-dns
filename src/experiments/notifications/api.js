@@ -38,7 +38,8 @@ class NotificationPrompt {
         addButton(button);
       }
     }
-    this.box = browserWin.document.getElementById("global-notificationbox");
+    // Current nightly version 65 vs pre 65 notification
+    this.box = browserWin.gNotificationBox || browserWin.document.getElementById("global-notificationbox");
     let outputMessage = options.message;
     if (options.moreInfo) {
       let mainMessage = "%S %S";
