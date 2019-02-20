@@ -12,6 +12,11 @@
             "type": "integer",
             "name": "repeatCount",
             "description": "The number of times each config should be checked."
+          },
+          {
+            "type": "boolean",
+            "name": "isFacebookEnabled",
+            "description": "If we are permitted to check Facebook"
           }
         ],
         "async": true

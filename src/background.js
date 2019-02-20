@@ -94,6 +94,18 @@ const stateManager = {
   }
 };
 
+async function hasFacebookCookie() {
+  let checkURL = "https://facebook.com";
+  let stores = await browser.cookies.getAllCookieStores();
+  for (let store of stores) {
+    if (await browser.cookies.get({name: "xs", url: checkURL}) ||
+        await browser.cookies.get({name: "c_user", url: checkURL})) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const rollout = {
   async init() {
     browser.study.onEndStudy.addListener((ending) => {
@@ -184,7 +196,7 @@ const rollout = {
     if (lastChecked + interval < time) {
       await browser.storage.local.set({ lastChecked: time, sentCount: ++sentCount });
       // Perform perf checks
-      let results = await browser.experiments.perf.measure(repeatCount);
+      let results = await browser.experiments.perf.measure(repeatCount, await hasFacebookCookie());
       // Send the report to shield
       browser.study.sendTelemetry({ event: "perf-report", results: JSON.stringify(results), sentCount: String(sentCount) });
     }

@@ -23,6 +23,12 @@ const measurements = [
   {label: "http-1M", url: "http://ionspm-synth.akamaized.net/tests/1M.bin", doh: false, ccheck: true},
   {label: "https-now", url: "https://ionspm-synth.akamaized.net/now.txt", doh: false, ccheck: false},
   {label: "https-1M", url: "https://ionspm-synth.akamaized.net/tests/1M.bin", doh: false, ccheck: true},
+
+  {label: "https-fb-43b-doh", url: "https://scontent.xx.fbcdn.net/test-1px.gif", doh: true, ccheck: false, facebook: true},
+  {label: "https-fb-100k-doh", url: "https://scontent.xx.fbcdn.net/r20-100KB.png", doh: true, ccheck: false, facebook: true},
+
+  {label: "https-fb-43b", url: "https://scontent.xx.fbcdn.net/test-1px.gif", doh: false, ccheck: false, facebook: true},
+  {label: "https-fb-100k", url: "https://scontent.xx.fbcdn.net/r20-100KB.png", doh: false, ccheck: false, facebook: true},
 ];
 
 let probe_id = null;
@@ -227,7 +233,7 @@ function shuffleArray(original_array) {
 }
 
 // make the request for each configuration
-async function runConfigurations(repeatCount) {
+async function runConfigurations(repeatCount, facebook) {
   let results = [];
 
   let configs = shuffleArray(measurements);
@@ -238,18 +244,24 @@ async function runConfigurations(repeatCount) {
 
   for (let i = 0; i < repeatCount; i++) {
     for (let c = 0; c < configs.length; c++) {
+      let config = configs[c];
+
+      // Skip facebook payloads when the user doens't have a facebook cookie
+      if (!facebook && "facebook" in config && config.facebook) {
+        continue;
+      }
       // we wait until the result is ready for the current configuration
       // and then move on to the next configuration
-      results[c].results.push(await makeRequest(configs[c]));
+      results[c].results.push(await makeRequest(config));
     }
   }
 
   return results;
 }
 
-async function measure(repeatCount) {
+async function measure(repeatCount, facebook) {
   let output = {};
-  await runConfigurations(repeatCount).then(testResults => {
+  await runConfigurations(repeatCount, facebook).then(testResults => {
     output.status = "complete";
     output.tests = testResults;
 
@@ -267,8 +279,8 @@ var perf = class settings extends ExtensionAPI {
     return {
       experiments: {
         perf: {
-          async measure(repeatCount) {
-            return measure(repeatCount);
+          async measure(repeatCount, facebook) {
+            return measure(repeatCount, facebook);
           }
         },
       },
