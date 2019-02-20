@@ -64,7 +64,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 66);
+/******/ 	return __webpack_require__(__webpack_require__.s = 75);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,8 +83,8 @@ module.exports = {
   toHash: toHash,
   getProperty: getProperty,
   escapeQuotes: escapeQuotes,
-  equal: __webpack_require__(4),
-  ucs2length: __webpack_require__(26),
+  equal: __webpack_require__(5),
+  ucs2length: __webpack_require__(31),
   varOccurences: varOccurences,
   varReplace: varReplace,
   cleanUpCode: cleanUpCode,
@@ -357,11 +357,11 @@ function unescapeJsonPointer(str) {
 /* harmony export (immutable) */ __webpack_exports__["j"] = equal;
 /* harmony export (immutable) */ __webpack_exports__["k"] = escapeComponent;
 /* harmony export (immutable) */ __webpack_exports__["l"] = unescapeComponent;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__regexps_uri__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__regexps_iri__ = __webpack_require__(57);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_punycode__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__regexps_uri__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__regexps_iri__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_punycode__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_punycode___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_punycode__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__util__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__util__ = __webpack_require__(6);
 /**
  * URI.js
  *
@@ -847,12 +847,52 @@ function unescapeComponent(str, options) {
 
 /***/ }),
 /* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return createLogger; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return utilsLogger; });
+/* eslint-env commonjs */
+
+
+
+/**
+ * Creates a logger for debugging.
+ *
+ * The pref to control this is "shieldStudy.logLevel"
+ *
+ * @param {string} prefix - a prefix string to be printed before
+ *                            the actual logged message
+ * @param {string} maxLogLevelPref - String pref name which contains the
+ *                            level to use for maxLogLevel
+ * @param {string} maxLogLevel - level to use by default, see LOG_LEVELS in gre/modules/Console.jsm
+ * @returns {Object} - the Console instance, see gre/modules/Console.jsm
+ */
+function createLogger(prefix, maxLogLevelPref, maxLogLevel = "warn") {
+  const ConsoleAPI = ChromeUtils.import(
+    "resource://gre/modules/Console.jsm",
+    {},
+  ).ConsoleAPI;
+  return new ConsoleAPI({
+    prefix,
+    maxLogLevelPref,
+    maxLogLevel,
+  });
+}
+
+const utilsLogger = createLogger("shield-study-utils", "shieldStudy.logLevel");
+
+
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var resolve = __webpack_require__(3);
+var resolve = __webpack_require__(4);
 
 module.exports = {
   Validation: errorSubclass(ValidationError),
@@ -887,17 +927,17 @@ function errorSubclass(Subclass) {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var URI = __webpack_require__(56)
-  , equal = __webpack_require__(4)
+var URI = __webpack_require__(66)
+  , equal = __webpack_require__(5)
   , util = __webpack_require__(0)
-  , SchemaObject = __webpack_require__(8)
-  , traverse = __webpack_require__(52);
+  , SchemaObject = __webpack_require__(10)
+  , traverse = __webpack_require__(60);
 
 module.exports = resolve;
 
@@ -1164,7 +1204,7 @@ function resolveIds(schema) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1226,7 +1266,7 @@ module.exports = function equal(a, b) {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1274,56 +1314,82 @@ function assign(target, source) {
 //# sourceMappingURL=util.js.map
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* eslint-env commonjs */
-
-
+/* unused harmony export isShieldEnabled */
+/* harmony export (immutable) */ __webpack_exports__["b"] = isUserOptedInToPioneer;
+/* harmony export (immutable) */ __webpack_exports__["a"] = getDataPermissions;
+const { Services } = ChromeUtils.import(
+  "resource://gre/modules/Services.jsm",
+  {},
+);
+const { AddonManager } = ChromeUtils.import(
+  "resource://gre/modules/AddonManager.jsm",
+  {},
+);
 
 /**
- * Creates a logger for debugging.
+ * Checks to see if SHIELD is enabled for a user.
  *
- * The pref to control this is "shieldStudy.logLevel"
- *
- * @param {string} logPrefix - the name of the Console instance
- * @param {string} level - level to use by default
- * @returns {Object} - the Console instance, see gre/modules/Console.jsm
+ * @returns {Boolean}
+ *   A boolean to indicate SHIELD opt-in status.
  */
-function createShieldStudyLogger(logPrefix, level = "Warn") {
-  const prefName = "shieldStudy.logLevel";
-  const ConsoleAPI = ChromeUtils.import(
-    "resource://gre/modules/Console.jsm",
-    {},
-  ).ConsoleAPI;
-  return new ConsoleAPI({
-    maxLogLevel: level,
-    maxLogLevelPref: prefName,
-    prefix: logPrefix,
-  });
+function isShieldEnabled() {
+  return Services.prefs.getBoolPref("app.shield.optoutstudies.enabled", true);
 }
 
-const logger = createShieldStudyLogger("shield-study-utils");
+/**
+ * Checks to see if the user has opted in to Pioneer. This is
+ * done by checking that the opt-in addon is installed and active.
+ *
+ * @returns {Boolean}
+ *   A boolean to indicate opt-in status.
+ */
+async function isUserOptedInToPioneer() {
+  const addon = await AddonManager.getAddonByID("pioneer-opt-in@mozilla.org");
+  return isShieldEnabled() && addon !== null && addon.isActive;
+}
 
-/* harmony default export */ __webpack_exports__["a"] = (logger);
+async function getDataPermissions() {
+  const shield = isShieldEnabled();
+  const pioneer = await isUserOptedInToPioneer();
+  return {
+    shield,
+    pioneer,
+  };
+}
 
 
 /***/ }),
-/* 7 */
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+function makeWidgetId(id) {
+  id = id.toLowerCase();
+  return id.replace(/[^a-z0-9_-]/g, "_");
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (makeWidgetId);
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var compileSchema = __webpack_require__(24)
-  , resolve = __webpack_require__(3)
-  , Cache = __webpack_require__(21)
-  , SchemaObject = __webpack_require__(8)
-  , stableStringify = __webpack_require__(15)
-  , formats = __webpack_require__(23)
-  , rules = __webpack_require__(25)
-  , $dataMetaSchema = __webpack_require__(27)
+var compileSchema = __webpack_require__(29)
+  , resolve = __webpack_require__(4)
+  , Cache = __webpack_require__(26)
+  , SchemaObject = __webpack_require__(10)
+  , stableStringify = __webpack_require__(17)
+  , formats = __webpack_require__(28)
+  , rules = __webpack_require__(30)
+  , $dataMetaSchema = __webpack_require__(32)
   , util = __webpack_require__(0);
 
 module.exports = Ajv;
@@ -1341,13 +1407,13 @@ Ajv.prototype.errorsText = errorsText;
 Ajv.prototype._addSchema = _addSchema;
 Ajv.prototype._compile = _compile;
 
-Ajv.prototype.compileAsync = __webpack_require__(22);
-var customKeyword = __webpack_require__(49);
+Ajv.prototype.compileAsync = __webpack_require__(27);
+var customKeyword = __webpack_require__(54);
 Ajv.prototype.addKeyword = customKeyword.add;
 Ajv.prototype.getKeyword = customKeyword.get;
 Ajv.prototype.removeKeyword = customKeyword.remove;
 
-var errorClasses = __webpack_require__(2);
+var errorClasses = __webpack_require__(3);
 Ajv.ValidationError = errorClasses.Validation;
 Ajv.MissingRefError = errorClasses.MissingRef;
 Ajv.$dataMetaSchema = $dataMetaSchema;
@@ -1758,11 +1824,11 @@ function addFormat(name, format) {
 function addDraft6MetaSchema(self) {
   var $dataSchema;
   if (self._opts.$data) {
-    $dataSchema = __webpack_require__(50);
+    $dataSchema = __webpack_require__(55);
     self.addMetaSchema($dataSchema, $dataSchema.$id, true);
   }
   if (self._opts.meta === false) return;
-  var metaSchema = __webpack_require__(51);
+  var metaSchema = __webpack_require__(56);
   if (self._opts.$data) metaSchema = $dataMetaSchema(metaSchema, META_SUPPORT_DATA);
   self.addMetaSchema(metaSchema, META_SCHEMA_ID, true);
   self._refs['http://json-schema.org/schema'] = META_SCHEMA_ID;
@@ -1816,7 +1882,7 @@ function noop() {}
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1832,7 +1898,7 @@ function SchemaObject(obj) {
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1994,7 +2060,7 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2077,7 +2143,7 @@ module.exports = function generate__limitItems(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2165,7 +2231,7 @@ module.exports = function generate__limitLength(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2248,7 +2314,7 @@ module.exports = function generate__limitProperties(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2700,13 +2766,13 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = {"id":"http://json-schema.org/draft-04/schema#","$schema":"http://json-schema.org/draft-04/schema#","description":"Core schema meta-schema","definitions":{"schemaArray":{"type":"array","minItems":1,"items":{"$ref":"#"}},"positiveInteger":{"type":"integer","minimum":0},"positiveIntegerDefault0":{"allOf":[{"$ref":"#/definitions/positiveInteger"},{"default":0}]},"simpleTypes":{"enum":["array","boolean","integer","null","number","object","string"]},"stringArray":{"type":"array","items":{"type":"string"},"minItems":1,"uniqueItems":true}},"type":"object","properties":{"id":{"type":"string","format":"uri"},"$schema":{"type":"string","format":"uri"},"title":{"type":"string"},"description":{"type":"string"},"default":{},"multipleOf":{"type":"number","minimum":0,"exclusiveMinimum":true},"maximum":{"type":"number"},"exclusiveMaximum":{"type":"boolean","default":false},"minimum":{"type":"number"},"exclusiveMinimum":{"type":"boolean","default":false},"maxLength":{"$ref":"#/definitions/positiveInteger"},"minLength":{"$ref":"#/definitions/positiveIntegerDefault0"},"pattern":{"type":"string","format":"regex"},"additionalItems":{"anyOf":[{"type":"boolean"},{"$ref":"#"}],"default":{}},"items":{"anyOf":[{"$ref":"#"},{"$ref":"#/definitions/schemaArray"}],"default":{}},"maxItems":{"$ref":"#/definitions/positiveInteger"},"minItems":{"$ref":"#/definitions/positiveIntegerDefault0"},"uniqueItems":{"type":"boolean","default":false},"maxProperties":{"$ref":"#/definitions/positiveInteger"},"minProperties":{"$ref":"#/definitions/positiveIntegerDefault0"},"required":{"$ref":"#/definitions/stringArray"},"additionalProperties":{"anyOf":[{"type":"boolean"},{"$ref":"#"}],"default":{}},"definitions":{"type":"object","additionalProperties":{"$ref":"#"},"default":{}},"properties":{"type":"object","additionalProperties":{"$ref":"#"},"default":{}},"patternProperties":{"type":"object","additionalProperties":{"$ref":"#"},"default":{}},"dependencies":{"type":"object","additionalProperties":{"anyOf":[{"$ref":"#"},{"$ref":"#/definitions/stringArray"}]}},"enum":{"type":"array","minItems":1,"uniqueItems":true},"type":{"anyOf":[{"$ref":"#/definitions/simpleTypes"},{"type":"array","items":{"$ref":"#/definitions/simpleTypes"},"minItems":1,"uniqueItems":true}]},"allOf":{"$ref":"#/definitions/schemaArray"},"anyOf":{"$ref":"#/definitions/schemaArray"},"oneOf":{"$ref":"#/definitions/schemaArray"},"not":{"$ref":"#"}},"dependencies":{"exclusiveMaximum":["maximum"],"exclusiveMinimum":["minimum"]},"default":{}}
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2772,7 +2838,7 @@ module.exports = function (data, opts) {
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.1 by @mathias */
@@ -3308,15 +3374,15 @@ module.exports = function (data, opts) {
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(63)(module), __webpack_require__(62)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(72)(module), __webpack_require__(21)))
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = buildExps;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util__ = __webpack_require__(6);
 
 function buildExps(isIRI) {
     const ALPHA$$ = "[A-Za-z]", CR$ = "[\\x0D]", DIGIT$$ = "[0-9]", DQUOTE$$ = "[\\x22]", HEXDIG$$ = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__util__["d" /* merge */])(DIGIT$$, "[A-Fa-f]"), //case-insensitive
@@ -3361,7 +3427,7 @@ function buildExps(isIRI) {
 //# sourceMappingURL=regexps-uri.js.map
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3394,15 +3460,78 @@ const handler = {
 //# sourceMappingURL=http.js.map
 
 /***/ }),
-/* 19 */
+/* 21 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+/* eslint-env commonjs */
+
+/**
+ * Calculate the size of a ping.
+ *
+ * @param {Object} payload
+ *   The data payload of the ping.
+ *
+ * @returns {Number}
+ *   The total size of the ping.
+ */
+function getPingSize(payload) {
+  const converter = Cc[
+    "@mozilla.org/intl/scriptableunicodeconverter"
+  ].createInstance(Ci.nsIScriptableUnicodeConverter);
+  converter.charset = "UTF-8";
+  let utf8Payload = converter.ConvertFromUnicode(JSON.stringify(payload));
+  utf8Payload += converter.Finish();
+  return utf8Payload.length;
+}
+
+module.exports = {
+  getPingSize,
+};
+
+
+/***/ }),
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sampling__ = __webpack_require__(68);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__logger__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jsonschema__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sampling__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__makeWidgetId__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__studyTypes_shield__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__studyTypes_pioneer__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__jsonschema__ = __webpack_require__(76);
 /* eslint-env commonjs */
+
+
+
 
 
 
@@ -3428,10 +3557,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 * Tests for this module are at /test-addon.
 */
 
-const UTILS_VERSION = __webpack_require__(64).version;
+const UTILS_VERSION = __webpack_require__(73).version;
 const PACKET_VERSION = 3;
 
-const Ajv = __webpack_require__(7);
+const Ajv = __webpack_require__(9);
 
 const { Services } = ChromeUtils.import(
   "resource://gre/modules/Services.jsm",
@@ -3452,11 +3581,6 @@ const { ExtensionUtils } = ChromeUtils.import(
 const { ExtensionError } = ExtensionUtils;
 
 // telemetry utils
-const CID = ChromeUtils.import("resource://gre/modules/ClientID.jsm", {});
-const { TelemetryController } = ChromeUtils.import(
-  "resource://gre/modules/TelemetryController.jsm",
-  null,
-);
 const { TelemetryEnvironment } = ChromeUtils.import(
   "resource://gre/modules/TelemetryEnvironment.jsm",
   null,
@@ -3477,9 +3601,9 @@ const { TelemetryEnvironment } = ChromeUtils.import(
  */
 const schemas = {
   // Telemetry PingType schemas
-  "shield-study": __webpack_require__(55), // eslint-disable-line max-len
-  "shield-study-addon": __webpack_require__(53), // eslint-disable-line max-len
-  "shield-study-error": __webpack_require__(54), // eslint-disable-line max-len
+  "shield-study": __webpack_require__(65), // eslint-disable-line max-len
+  "shield-study-addon": __webpack_require__(63), // eslint-disable-line max-len
+  "shield-study-error": __webpack_require__(64), // eslint-disable-line max-len
 };
 
 
@@ -3492,11 +3616,11 @@ class Guard {
    *
    */
   constructor(identifiedSchemas) {
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug("wanting guard");
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug("wanting guard");
     const ajv = new Ajv({
       // important:  these options make ajv behave like 04, not draft-07
       schemaId: "auto", // id UNLESS $id is defined. (draft 5)
-      meta: __webpack_require__(14),
+      meta: __webpack_require__(16),
       extendRefs: true, // optional, current default is to 'fail', spec behaviour is to 'ignore'
       unknownFormats: "ignore", // optional, current default is true (fail)
       validateSchema: false, // used by addSchema.
@@ -3507,16 +3631,16 @@ class Guard {
     });
 
     for (const s of identifiedSchemas) {
-      __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`adding schemas ${s}`);
+      __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`adding schemas ${s}`);
 
       ajv.addSchema(s);
     }
     this.ajv = ajv;
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug("Ajv schemas", Object.keys(this.ajv._schemas));
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug("Ajv schemas", Object.keys(this.ajv._schemas));
   }
 
   it(schemaId, arg, msg = null) {
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug("about to guard", schemaId, arg);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug("about to guard", schemaId, arg);
     const valid = this.ajv.validate(schemaId, arg);
     if (!valid) {
       throw new ExtensionError(
@@ -3527,7 +3651,7 @@ class Guard {
     }
   }
 }
-const guard = new Guard(__webpack_require__(65)[0].types);
+const guard = new Guard(__webpack_require__(74)[0].types);
 
 /**  Simple spread/rest based merge, using Object.assign.
  *
@@ -3581,7 +3705,7 @@ class StudyUtils {
    * - isSetup: bool   `setup`
    * - isFirstRun: bool `setup`, based on pref
    * - studySetup: bool  `setup` the config
-   * - seenTelemetry: object of lists of seen telemetry by bucket
+   * - seenTelemetry: array of seen telemetry. Fully populated only if studySetup.telemetry.internalTelemetryArchive is true
    * - prefs: object of all created prefs and their names
    * - endingRequested: string of ending name
    * - endingReturns: object with useful ending instructions
@@ -3600,7 +3724,7 @@ class StudyUtils {
     // expose schemas
     this.schemas = schemas;
     // expose jsonschema validation methods
-    this.jsonschema = __WEBPACK_IMPORTED_MODULE_2__jsonschema__["a" /* default */];
+    this.jsonschema = __WEBPACK_IMPORTED_MODULE_5__jsonschema__["a" /* default */];
 
     this._extensionManifest = {};
 
@@ -3615,14 +3739,8 @@ class StudyUtils {
         "_createInternals needs `setExtensionManifest`. This should be done by `getApi`.",
       );
     }
-    function makeWidgetId(id) {
-      id = id.toLowerCase();
-      // FIXME: This allows for collisions.
-      // WebExt hasn't ever had a problem.
-      return id.replace(/[^a-z0-9_-]/g, "_");
-    }
 
-    const widgetId = makeWidgetId(
+    const widgetId = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__makeWidgetId__["a" /* default */])(
       this._extensionManifest.applications.gecko.id,
     );
 
@@ -3634,11 +3752,7 @@ class StudyUtils {
       isSetup: false,
       isEnding: false,
       isEnded: false,
-      seenTelemetry: {
-        "shield-study": [],
-        "shield-study-addon": [],
-        "shield-study-error": [],
-      },
+      seenTelemetry: [],
       prefs: {
         firstRunTimestamp: `shield.${widgetId}.firstRunTimestamp`,
       },
@@ -3662,7 +3776,7 @@ class StudyUtils {
   }
 
   /**
-   * Validates the studySetup object passed in from the addon.
+   * Validates the studySetup object passed in from the add-on.
    * @param {Object} studySetup - the studySetup object, see schema.studySetup.json
    * @returns {StudyUtils} - the StudyUtils class instance
    */
@@ -3671,12 +3785,21 @@ class StudyUtils {
       throw new ExtensionError("StudyUtils internals are not initiated");
     }
 
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`setting up! -- ${JSON.stringify(studySetup)}`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`setting up! -- ${JSON.stringify(studySetup)}`);
 
     if (this._internals.isSetup) {
       throw new ExtensionError("StudyUtils is already setup");
     }
     guard.it("studySetup", studySetup, "(in studySetup)");
+    this._internals.studySetup = studySetup;
+
+    // Different study types treat data and configuration differently
+    if (studySetup.studyType === "shield") {
+      this.studyType = new __WEBPACK_IMPORTED_MODULE_3__studyTypes_shield__["a" /* default */](this);
+    }
+    if (studySetup.studyType === "pioneer") {
+      this.studyType = new __WEBPACK_IMPORTED_MODULE_4__studyTypes_pioneer__["a" /* default */](this);
+    }
 
     function getVariationByName(name, variations) {
       if (!name) return null;
@@ -3700,10 +3823,9 @@ class StudyUtils {
         studySetup.activeExperimentName,
         studySetup.weightedVariations,
       ));
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`setting up: variation ${variation.name}`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`setting up: variation ${variation.name}`);
 
     this._internals.variation = variation;
-    this._internals.studySetup = studySetup;
     this._internals.isSetup = true;
 
     // isFirstRun?  ever seen before?
@@ -3727,6 +3849,7 @@ class StudyUtils {
    */
   reset() {
     this._internals = this._createInternals();
+    this.studyType = null;
     this.resetFirstRunTimestamp();
   }
 
@@ -3736,7 +3859,9 @@ class StudyUtils {
    */
   getVariation() {
     this.throwIfNotSetup("getvariation");
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`getVariation: ${JSON.stringify(this._internals.variation)}`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(
+      `getVariation: ${JSON.stringify(this._internals.variation)}`,
+    );
     return this._internals.variation;
   }
 
@@ -3806,12 +3931,7 @@ class StudyUtils {
    * @returns {string} - the telemetry client ID
    */
   async getTelemetryId() {
-    const id = TelemetryController.clientID;
-    /* istanbul ignore next */
-    if (id === undefined) {
-      return CID.ClientIDImpl._doLoadClientID();
-    }
-    return id;
+    return this.studyType.getTelemetryId();
   }
 
   /**
@@ -3828,7 +3948,7 @@ class StudyUtils {
    * @returns {Object} - study information, see schema.studySetup.json
    */
   info() {
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug("getting info");
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug("getting info");
     this.throwIfNotSetup("info");
 
     const studyInfo = {
@@ -3839,13 +3959,23 @@ class StudyUtils {
       shieldId: this.getShieldId(),
       delayInMinutes: this.getDelayInMinutes(),
     };
+    const now = new Date();
+    const diff = Number(now) - studyInfo.firstRunTimestamp;
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(
+      "Study info date information: now, new Date(firstRunTimestamp), firstRunTimestamp, diff (in minutes), delayInMinutes",
+      now,
+      new Date(studyInfo.firstRunTimestamp),
+      studyInfo.firstRunTimestamp,
+      diff / 1000 / 60,
+      studyInfo.delayInMinutes,
+    );
     guard.it("studyInfoObject", studyInfo, "(in studyInfo)");
     return studyInfo;
   }
 
   /**
    * Get the telemetry configuration for the study.
-   * @returns {Object} - the telemetry cofiguration, see schema.studySetup.json
+   * @returns {Object} - the telemetry configuration, see schema.studySetup.json
    */
   get telemetryConfig() {
     this.throwIfNotSetup("telemetryConfig");
@@ -3864,8 +3994,7 @@ class StudyUtils {
     weightedVariations,
     fraction = null,
   ) {
-    // this is the standard arm choosing method
-    // TODO, allow 'pioneer' algorithm
+    // this is the standard arm choosing method, used by both shield and pioneer studies
     if (fraction === null) {
       // hash the studyName and telemetryId to get the same branch every time.
       const clientId = await this.getTelemetryId();
@@ -3874,12 +4003,12 @@ class StudyUtils {
         12,
       );
     }
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`_deterministicVariation`, weightedVariations);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`_deterministicVariation`, weightedVariations);
     return this.sampling.chooseWeighted(weightedVariations, fraction);
   }
 
   /**
-   * Sends an 'enter' telemetry ping for the study; should be called on addon
+   * Sends an 'enter' telemetry ping for the study; should be called on add-on
    * startup for the reason ADDON_INSTALL. For more on study states like 'enter'
    * see ABOUT.md at github.com/mozilla/shield-studies-addon-template
    *
@@ -3891,7 +4020,7 @@ class StudyUtils {
    */
   async firstSeen() {
     this.throwIfNotSetup("firstSeen uses telemetry.");
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`attempting firstSeen`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`attempting firstSeen`);
     this._internals.isFirstRun = true;
     await this._telemetry({ study_state: "enter" }, "shield-study");
     this.setFirstRunTimestamp(Date.now());
@@ -3906,7 +4035,7 @@ class StudyUtils {
   setActive() {
     this.throwIfNotSetup("setActive uses telemetry.");
     const info = this.info();
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(
       "marking TelemetryEnvironment",
       info.activeExperimentName,
       info.variation.name,
@@ -3924,7 +4053,7 @@ class StudyUtils {
   unsetActive() {
     this.throwIfNotSetup("unsetActive uses telemetry.");
     const info = this.info();
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(
       "unmarking TelemetryEnvironment",
       info.activeExperimentName,
       info.variation.name,
@@ -3935,13 +4064,13 @@ class StudyUtils {
   /**
    * Adds the study to the active list of telemetry experiments and sends the
    * "installed" telemetry ping if applicable
-   * @param {string} reason - The reason the addon has started up
+   * @param {string} reason - The reason the add-on has started up
    * @returns {void}
    */
   async startup() {
     this.throwIfNotSetup("startup");
     const isFirstRun = this._internals.isFirstRun;
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`startup.  setting active. isFirstRun? ${isFirstRun}`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`startup.  setting active. isFirstRun? ${isFirstRun}`);
     this.setActive();
     if (isFirstRun) {
       await this._telemetry({ study_state: "installed" }, "shield-study");
@@ -3975,7 +4104,7 @@ class StudyUtils {
 
     // throw if already ending
     if (this._internals.isEnding) {
-      __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug("endStudy, already ending!");
+      __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug("endStudy, already ending!");
       throw new ExtensionError(
         `endStudy, requested:  ${endingName}, but already ending ${
           this._internals.endingRequested
@@ -3987,7 +4116,7 @@ class StudyUtils {
     this._internals.isEnding = true;
     this._internals.endingRequested = endingName;
 
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`endStudy ${endingName}`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`endStudy ${endingName}`);
     await this.unsetActive();
 
     // do the work to end the studyUtils involvement
@@ -4095,9 +4224,9 @@ class StudyUtils {
    */
   async _telemetry(data, bucket = "shield-study-addon") {
     this.throwIfNotSetup("_telemetry");
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`telemetry in:  ${bucket} ${JSON.stringify(data)}`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`telemetry in:  ${bucket} ${JSON.stringify(data)}`);
     const info = this.info();
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`telemetry INFO: ${JSON.stringify(info)}`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`telemetry INFO: ${JSON.stringify(info)}`);
 
     const payload = {
       version: PACKET_VERSION,
@@ -4112,11 +4241,11 @@ class StudyUtils {
 
     let validation;
     try {
-      validation = __WEBPACK_IMPORTED_MODULE_2__jsonschema__["a" /* default */].validate(payload, schemas[bucket]);
+      validation = __WEBPACK_IMPORTED_MODULE_5__jsonschema__["a" /* default */].validate(payload, schemas[bucket]);
     } catch (err) {
-      // Catch failures of unknown origin (could be library, addon, system...)
+      // Catch failures of unknown origin (could be library, add-on, system...)
       // if validation broke, GIVE UP.
-      __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].error(err);
+      __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].error(err);
       return false;
     }
     /*
@@ -4133,39 +4262,46 @@ class StudyUtils {
         message: JSON.stringify(validation.errors),
       };
       if (bucket === "shield-study-error") {
-        __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].warn("cannot validate shield-study-error", data, bucket);
+        __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].warn("cannot validate shield-study-error", data, bucket);
         return false; // just die, maybe should have a super escape hatch?
       }
       return this.telemetryError(errorReport);
     }
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`telemetry: ${JSON.stringify(payload)}`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`telemetry: ${JSON.stringify(payload)}`);
 
-    // IFF it's a shield-study or error ping, which are few in number
-    if (bucket === "shield-study" || bucket === "shield-study-error") {
-      this._internals.seenTelemetry[bucket].push(payload);
-    }
+    let pingId;
 
-    // during developement, don't actually send
+    // during development, don't actually send
     if (!this.telemetryConfig.send) {
-      __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug("NOT sending.  `telemetryConfig.send` is false");
-      return false;
+      __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug("NOT sending.  `telemetryConfig.send` is false");
+      pingId = false;
+    } else {
+      pingId = await this.studyType.sendTelemetry(bucket, payload);
     }
 
-    const telOptions = { addClientId: true, addEnvironment: true };
-    return TelemetryController.submitExternalPing(bucket, payload, telOptions);
+    // Store a copy of the ping if it's a shield-study or error ping, which are few in number, or if we have activated the internal telemetry archive configuration
+    if (
+      bucket === "shield-study" ||
+      bucket === "shield-study-error" ||
+      this.telemetryConfig.internalTelemetryArchive
+    ) {
+      this._internals.seenTelemetry.push({ id: pingId, payload });
+    }
+
+    return pingId;
   }
 
   /**
-   * Validates and submits telemetry pings from the addon; mostly from
+   * Validates and submits telemetry pings from the add-on; mostly from
    * webExtension messages.
-   * @param {Object} data - the data to send as part of the telemetry packet
+   * @param {Object} payload - the data to send as part of the telemetry packet
    * @returns {Promise|boolean} - see StudyUtils._telemetry
    */
-  async telemetry(data) {
+  async telemetry(payload) {
     this.throwIfNotSetup("telemetry");
-    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* default */].debug(`telemetry ${JSON.stringify(data)}`);
+    __WEBPACK_IMPORTED_MODULE_1__logger__["a" /* utilsLogger */].debug(`telemetry ${JSON.stringify(payload)}`);
     const toSubmit = {
-      attributes: data,
+      attributes: payload,
     };
     return this._telemetry(toSubmit, "shield-study-addon");
   }
@@ -4178,6 +4314,25 @@ class StudyUtils {
   telemetryError(errorReport) {
     return this._telemetry(errorReport, "shield-study-error");
   }
+
+  /** Calculate Telemetry using appropriate shield or pioneer methods.
+   *
+   *  shield:
+   *   - Calculate the size of a ping
+   *
+   *   pioneer:
+   *   - Calculate the size of a ping that has Pioneer encrypted data
+   *
+   * @param {Object} payload Non-nested object with key strings, and key values
+   * @returns {Promise<Number>} The total size of the ping.
+   */
+  async calculateTelemetryPingSize(payload) {
+    this.throwIfNotSetup("calculateTelemetryPingSize");
+    const toSubmit = {
+      attributes: payload,
+    };
+    return this.studyType.getPingSize(toSubmit, "shield-study-addon");
+  }
 }
 
 // TODO, use the usual es6 exports
@@ -4187,14 +4342,14 @@ this.studyUtils = studyUtils;
 
 
 /***/ }),
-/* 20 */
+/* 24 */
 /***/ (function(module, exports) {
 
 /* eslint-env node */
 
 // TODO, eventually remove this.  It's used by the Template testing, for now.
 
-// TODO, making this a seperate file means that we have to pass the error from the other compartment.
+// TODO, making this a separate file means that we have to pass the error from the other compartment.
 
 /**
  * Returns array of pings of type `type` in reverse sorted order by timestamp
@@ -4245,15 +4400,57 @@ async function searchTelemetryArchive(TelemetryArchive, searchTelemetryQuery) {
   return Promise.all(pingData);
 }
 
-// TODO pings report, from the utility addon
-
 module.exports = {
   searchTelemetryArchive,
 };
 
 
 /***/ }),
-/* 21 */
+/* 25 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = getTestingOverrides;
+/* harmony export (immutable) */ __webpack_exports__["a"] = listPreferences;
+/* harmony export (immutable) */ __webpack_exports__["c"] = getInternalTestingOverrides;
+const { Preferences } = ChromeUtils.import(
+  "resource://gre/modules/Preferences.jsm",
+  {},
+);
+
+function getTestingOverrides(widgetId) {
+  const testingOverrides = {};
+  testingOverrides.variationName =
+    Preferences.get(`extensions.${widgetId}.test.variationName`) || null;
+  const firstRunTimestamp = Preferences.get(
+    `extensions.${widgetId}.test.firstRunTimestamp`,
+  );
+  testingOverrides.firstRunTimestamp = firstRunTimestamp
+    ? Number(firstRunTimestamp)
+    : null;
+  testingOverrides.expired =
+    Preferences.get(`extensions.${widgetId}.test.expired`) || null;
+  return testingOverrides;
+}
+
+function listPreferences(widgetId) {
+  return [
+    `extensions.${widgetId}.test.variationName`,
+    `extensions.${widgetId}.test.firstRunTimestamp`,
+    `extensions.${widgetId}.test.expired`,
+  ];
+}
+
+function getInternalTestingOverrides(widgetId) {
+  const internalTestingOverrides = {};
+  internalTestingOverrides.studyType =
+    Preferences.get(`extensions.${widgetId}.test.studyType`) || null;
+  return internalTestingOverrides;
+}
+
+
+/***/ }),
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4286,13 +4483,13 @@ Cache.prototype.clear = function Cache_clear() {
 
 
 /***/ }),
-/* 22 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var MissingRefError = __webpack_require__(2).MissingRef;
+var MissingRefError = __webpack_require__(3).MissingRef;
 
 module.exports = compileAsync;
 
@@ -4383,7 +4580,7 @@ function compileAsync(schema, meta, callback) {
 
 
 /***/ }),
-/* 23 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4539,25 +4736,25 @@ function regex(str) {
 
 
 /***/ }),
-/* 24 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var resolve = __webpack_require__(3)
+var resolve = __webpack_require__(4)
   , util = __webpack_require__(0)
-  , errorClasses = __webpack_require__(2)
-  , stableStringify = __webpack_require__(15);
+  , errorClasses = __webpack_require__(3)
+  , stableStringify = __webpack_require__(17);
 
-var validateGenerator = __webpack_require__(13);
+var validateGenerator = __webpack_require__(15);
 
 /**
  * Functions below are used inside compiled validations function
  */
 
 var ucs2length = util.ucs2length;
-var equal = __webpack_require__(4);
+var equal = __webpack_require__(5);
 
 // this error is thrown by async schemas to return validation errors via exception
 var ValidationError = errorClasses.Validation;
@@ -4925,13 +5122,13 @@ function vars(arr, statement) {
 
 
 /***/ }),
-/* 25 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var ruleModules = __webpack_require__(38)
+var ruleModules = __webpack_require__(43)
   , toHash = __webpack_require__(0).toHash;
 
 module.exports = function rules() {
@@ -4998,7 +5195,7 @@ module.exports = function rules() {
 
 
 /***/ }),
-/* 26 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5025,7 +5222,7 @@ module.exports = function ucs2length(str) {
 
 
 /***/ }),
-/* 27 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5081,7 +5278,7 @@ module.exports = function (metaSchema, keywordsJsonPointers) {
 
 
 /***/ }),
-/* 28 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5131,7 +5328,7 @@ module.exports = function generate_allOf(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 29 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5211,7 +5408,7 @@ module.exports = function generate_anyOf(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 30 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5232,7 +5429,7 @@ module.exports = function generate_comment(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 31 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5294,7 +5491,7 @@ module.exports = function generate_const(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 32 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5382,7 +5579,7 @@ module.exports = function generate_contains(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 33 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5615,7 +5812,7 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 34 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5789,7 +5986,7 @@ module.exports = function generate_dependencies(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 35 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5861,7 +6058,7 @@ module.exports = function generate_enum(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 36 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6017,7 +6214,7 @@ module.exports = function generate_format(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 37 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6127,7 +6324,7 @@ module.exports = function generate_if(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 38 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6135,39 +6332,39 @@ module.exports = function generate_if(it, $keyword, $ruleType) {
 
 //all requires must be explicit because browserify won't work with dynamic requires
 module.exports = {
-  '$ref': __webpack_require__(46),
-  allOf: __webpack_require__(28),
-  anyOf: __webpack_require__(29),
-  '$comment': __webpack_require__(30),
-  const: __webpack_require__(31),
-  contains: __webpack_require__(32),
-  dependencies: __webpack_require__(34),
-  'enum': __webpack_require__(35),
-  format: __webpack_require__(36),
-  'if': __webpack_require__(37),
-  items: __webpack_require__(39),
-  maximum: __webpack_require__(9),
-  minimum: __webpack_require__(9),
-  maxItems: __webpack_require__(10),
-  minItems: __webpack_require__(10),
-  maxLength: __webpack_require__(11),
-  minLength: __webpack_require__(11),
-  maxProperties: __webpack_require__(12),
-  minProperties: __webpack_require__(12),
-  multipleOf: __webpack_require__(40),
-  not: __webpack_require__(41),
-  oneOf: __webpack_require__(42),
-  pattern: __webpack_require__(43),
-  properties: __webpack_require__(44),
-  propertyNames: __webpack_require__(45),
-  required: __webpack_require__(47),
-  uniqueItems: __webpack_require__(48),
-  validate: __webpack_require__(13)
+  '$ref': __webpack_require__(51),
+  allOf: __webpack_require__(33),
+  anyOf: __webpack_require__(34),
+  '$comment': __webpack_require__(35),
+  const: __webpack_require__(36),
+  contains: __webpack_require__(37),
+  dependencies: __webpack_require__(39),
+  'enum': __webpack_require__(40),
+  format: __webpack_require__(41),
+  'if': __webpack_require__(42),
+  items: __webpack_require__(44),
+  maximum: __webpack_require__(11),
+  minimum: __webpack_require__(11),
+  maxItems: __webpack_require__(12),
+  minItems: __webpack_require__(12),
+  maxLength: __webpack_require__(13),
+  minLength: __webpack_require__(13),
+  maxProperties: __webpack_require__(14),
+  minProperties: __webpack_require__(14),
+  multipleOf: __webpack_require__(45),
+  not: __webpack_require__(46),
+  oneOf: __webpack_require__(47),
+  pattern: __webpack_require__(48),
+  properties: __webpack_require__(49),
+  propertyNames: __webpack_require__(50),
+  required: __webpack_require__(52),
+  uniqueItems: __webpack_require__(53),
+  validate: __webpack_require__(15)
 };
 
 
 /***/ }),
-/* 39 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6314,7 +6511,7 @@ module.exports = function generate_items(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 40 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6397,7 +6594,7 @@ module.exports = function generate_multipleOf(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 41 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6487,7 +6684,7 @@ module.exports = function generate_not(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 42 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6566,7 +6763,7 @@ module.exports = function generate_oneOf(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 43 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6647,7 +6844,7 @@ module.exports = function generate_pattern(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 44 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6982,7 +7179,7 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 45 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7070,7 +7267,7 @@ module.exports = function generate_propertyNames(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 46 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7200,7 +7397,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 47 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7475,7 +7672,7 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 48 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7567,14 +7764,14 @@ module.exports = function generate_uniqueItems(it, $keyword, $ruleType) {
 
 
 /***/ }),
-/* 49 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var IDENTIFIER = /^[a-z_$][a-z0-9_$-]*$/i;
-var customRuleCode = __webpack_require__(33);
+var customRuleCode = __webpack_require__(38);
 
 module.exports = {
   add: addKeyword,
@@ -7709,19 +7906,1912 @@ function removeKeyword(keyword) {
 
 
 /***/ }),
-/* 50 */
+/* 55 */
 /***/ (function(module, exports) {
 
 module.exports = {"$schema":"http://json-schema.org/draft-07/schema#","$id":"https://raw.githubusercontent.com/epoberezkin/ajv/master/lib/refs/data.json#","description":"Meta-schema for $data reference (JSON Schema extension proposal)","type":"object","required":["$data"],"properties":{"$data":{"type":"string","anyOf":[{"format":"relative-json-pointer"},{"format":"json-pointer"}]}},"additionalProperties":false}
 
 /***/ }),
-/* 51 */
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = {"$schema":"http://json-schema.org/draft-07/schema#","$id":"http://json-schema.org/draft-07/schema#","title":"Core schema meta-schema","definitions":{"schemaArray":{"type":"array","minItems":1,"items":{"$ref":"#"}},"nonNegativeInteger":{"type":"integer","minimum":0},"nonNegativeIntegerDefault0":{"allOf":[{"$ref":"#/definitions/nonNegativeInteger"},{"default":0}]},"simpleTypes":{"enum":["array","boolean","integer","null","number","object","string"]},"stringArray":{"type":"array","items":{"type":"string"},"uniqueItems":true,"default":[]}},"type":["object","boolean"],"properties":{"$id":{"type":"string","format":"uri-reference"},"$schema":{"type":"string","format":"uri"},"$ref":{"type":"string","format":"uri-reference"},"$comment":{"type":"string"},"title":{"type":"string"},"description":{"type":"string"},"default":true,"readOnly":{"type":"boolean","default":false},"examples":{"type":"array","items":true},"multipleOf":{"type":"number","exclusiveMinimum":0},"maximum":{"type":"number"},"exclusiveMaximum":{"type":"number"},"minimum":{"type":"number"},"exclusiveMinimum":{"type":"number"},"maxLength":{"$ref":"#/definitions/nonNegativeInteger"},"minLength":{"$ref":"#/definitions/nonNegativeIntegerDefault0"},"pattern":{"type":"string","format":"regex"},"additionalItems":{"$ref":"#"},"items":{"anyOf":[{"$ref":"#"},{"$ref":"#/definitions/schemaArray"}],"default":true},"maxItems":{"$ref":"#/definitions/nonNegativeInteger"},"minItems":{"$ref":"#/definitions/nonNegativeIntegerDefault0"},"uniqueItems":{"type":"boolean","default":false},"contains":{"$ref":"#"},"maxProperties":{"$ref":"#/definitions/nonNegativeInteger"},"minProperties":{"$ref":"#/definitions/nonNegativeIntegerDefault0"},"required":{"$ref":"#/definitions/stringArray"},"additionalProperties":{"$ref":"#"},"definitions":{"type":"object","additionalProperties":{"$ref":"#"},"default":{}},"properties":{"type":"object","additionalProperties":{"$ref":"#"},"default":{}},"patternProperties":{"type":"object","additionalProperties":{"$ref":"#"},"propertyNames":{"format":"regex"},"default":{}},"dependencies":{"type":"object","additionalProperties":{"anyOf":[{"$ref":"#"},{"$ref":"#/definitions/stringArray"}]}},"propertyNames":{"$ref":"#"},"const":true,"enum":{"type":"array","items":true,"minItems":1,"uniqueItems":true},"type":{"anyOf":[{"$ref":"#/definitions/simpleTypes"},{"type":"array","items":{"$ref":"#/definitions/simpleTypes"},"minItems":1,"uniqueItems":true}]},"format":{"type":"string"},"contentMediaType":{"type":"string"},"contentEncoding":{"type":"string"},"if":{"$ref":"#"},"then":{"$ref":"#"},"else":{"$ref":"#"},"allOf":{"$ref":"#/definitions/schemaArray"},"anyOf":{"$ref":"#/definitions/schemaArray"},"oneOf":{"$ref":"#/definitions/schemaArray"},"not":{"$ref":"#"}},"default":true}
 
 /***/ }),
-/* 52 */
+/* 57 */
+/***/ (function(module, exports) {
+
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = ((value * c) - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {/*-
+ * Copyright 2014 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+var Jose = {};
+
+/**
+ * Javascript Object Signing and Encryption library.
+ *
+ * @author Alok Menghrajani <alok@squareup.com>
+ */
+
+/**
+ * Initializes a JoseJWE object.
+ */
+var JoseJWE = {};
+
+/**
+ * Initializes a JoseJWS object.
+ */
+var JoseJWS = {};
+
+/**
+ * Set crypto provider to use (window.crypto, node-webcrypto-ossl, node-webcrypto-pkcs11 etc.).
+ */
+exports.setCrypto = function (cp) {
+  Jose.crypto = cp;
+};
+
+/**
+ * Default to the global "crypto" variable
+ */
+if (typeof(crypto) !== 'undefined') {
+  exports.setCrypto(crypto);
+}
+
+/**
+ * Use Node versions of atob, btoa functions outside the browser
+ */
+if (typeof atob !== "function") {
+  atob = function (str) {
+    return new Buffer(str, 'base64').toString('binary');
+  };
+}
+
+if (typeof btoa !== "function") {
+  btoa = function (str) {
+    var buffer;
+    if (str instanceof Buffer) {
+      buffer = str;
+    } else {
+      buffer = new Buffer(str.toString(), 'binary');
+    }
+    return buffer.toString('base64');
+  };
+}
+
+/**
+ * Checks if we have all the required APIs.
+ *
+ * It might make sense to take a Cryptographer and delegate some of the checks
+ * to the cryptographer. I however wanted to keep things simple, so I put all
+ * the checks here for now.
+ *
+ * This list is generated manually and needs to be kept up-to-date.
+ *
+ * Casual testing shows that:
+ * - things work in Chrome 40.0.2214.115
+ * - things work in Firefox 35.0.1
+ * - Safari 7.1.3 doesn't support JWK keys.
+ * - Internet Explorer doesn't support Promises.
+ *
+ * Note: We don't check if the browser supports specific crypto operations.
+ *       I.e. it's possible for this function to return true, but encryption or
+ *       decryption to subsequently fail because the browser does not support a
+ *       given encryption, decryption, key wrapping, key unwrapping or hmac
+ *       operation.
+ *
+ * @return bool
+ */
+Jose.caniuse = function() {
+  var r = true;
+
+  // Promises/A+ (https://promisesaplus.com/)
+  r = r && (typeof Promise == "function");
+  r = r && (typeof Promise.reject == "function");
+  r = r && (typeof Promise.prototype.then == "function");
+  r = r && (typeof Promise.all == "function");
+
+  // Crypto (http://www.w3.org/TR/WebCryptoAPI/)
+  r = r && (typeof Jose.crypto == "object");
+  r = r && (typeof Jose.crypto.subtle == "object");
+  r = r && (typeof Jose.crypto.getRandomValues == "function");
+  r = r && (typeof Jose.crypto.subtle.importKey == "function");
+  r = r && (typeof Jose.crypto.subtle.generateKey == "function");
+  r = r && (typeof Jose.crypto.subtle.exportKey == "function");
+  r = r && (typeof Jose.crypto.subtle.wrapKey == "function");
+  r = r && (typeof Jose.crypto.subtle.unwrapKey == "function");
+  r = r && (typeof Jose.crypto.subtle.encrypt == "function");
+  r = r && (typeof Jose.crypto.subtle.decrypt == "function");
+  r = r && (typeof Jose.crypto.subtle.sign == "function");
+
+  // ArrayBuffer (http://people.mozilla.org/~jorendorff/es6-draft.html#sec-arraybuffer-constructor)
+  r = r && (typeof ArrayBuffer == "function");
+  r = r && (typeof Uint8Array == "function" || typeof Uint8Array == "object"); // Safari uses "object"
+  r = r && (typeof Uint32Array == "function" || typeof Uint32Array == "object"); // Safari uses "object"
+  // skipping Uint32Array.prototype.buffer because https://people.mozilla.org/~jorendorff/es6-draft.html#sec-properties-of-the-%typedarrayprototype%-object
+
+  // JSON (http://www.ecma-international.org/ecma-262/5.1/#sec-15.12.3)
+  r = r && (typeof JSON == "object");
+  r = r && (typeof JSON.parse == "function");
+  r = r && (typeof JSON.stringify == "function");
+
+  // Base64 (http://www.w3.org/TR/html5/webappapis.html#dom-windowbase64-atob)
+  r = r && (typeof atob == "function");
+  r = r && (typeof btoa == "function");
+
+  // skipping Array functions (map, join, push, length, etc.)
+  // skipping String functions (split, charCodeAt, fromCharCode, replace, etc.)
+  // skipping regexp.test and parseInt
+
+  return r;
+};
+
+/**
+ * Feel free to override this function.
+ */
+Jose.assert = function(expr, msg) {
+  if (!expr) {
+    throw new Error(msg);
+  }
+};
+
+exports.Jose = Jose;
+exports.JoseJWE = JoseJWE;
+exports.JoseJWS = JoseJWS;
+/*-
+ * Copyright 2014 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * The WebCryptographer uses http://www.w3.org/TR/WebCryptoAPI/ to perform
+ * various crypto operations. In theory, this should help build the library with
+ * different underlying crypto APIs. I'm however unclear if we'll run into code
+ * duplication or callback vs Promise based API issues.
+ */
+var WebCryptographer = function() {
+  this.setKeyEncryptionAlgorithm("RSA-OAEP");
+  this.setContentEncryptionAlgorithm("A256GCM");
+  this.setContentSignAlgorithm("RS256");
+};
+
+Jose.WebCryptographer = WebCryptographer;
+
+/**
+ * Overrides the default key encryption algorithm
+ * @param alg  string
+ */
+WebCryptographer.prototype.setKeyEncryptionAlgorithm = function(alg) {
+  this.key_encryption = getCryptoConfig(alg);
+};
+
+WebCryptographer.prototype.getKeyEncryptionAlgorithm = function() {
+  return this.key_encryption.jwe_name;
+};
+
+/**
+ * Overrides the default content encryption algorithm
+ * @param alg  string
+ */
+WebCryptographer.prototype.setContentEncryptionAlgorithm = function(alg) {
+  this.content_encryption = getCryptoConfig(alg);
+};
+
+WebCryptographer.prototype.getContentEncryptionAlgorithm = function() {
+  return this.content_encryption.jwe_name;
+};
+
+/**
+ * Overrides the default content sign algorithm
+ * @param alg  string
+ */
+WebCryptographer.prototype.setContentSignAlgorithm = function(alg) {
+  this.content_sign = getSignConfig(alg);
+};
+
+WebCryptographer.prototype.getContentSignAlgorithm = function() {
+  return this.content_sign.jwa_name;
+};
+
+/**
+ * Generates an IV.
+ * This function mainly exists so that it can be mocked for testing purpose.
+ *
+ * @return Uint8Array with random bytes
+ */
+WebCryptographer.prototype.createIV = function() {
+  var iv = new Uint8Array(new Array(this.content_encryption.iv_bytes));
+  return Jose.crypto.getRandomValues(iv);
+};
+
+/**
+ * Creates a random content encryption key.
+ * This function mainly exists so that it can be mocked for testing purpose.
+ *
+ * @return Promise<CryptoKey>
+ */
+WebCryptographer.prototype.createCek = function() {
+  var hack = getCekWorkaround(this.content_encryption);
+  return Jose.crypto.subtle.generateKey(hack.id, true, hack.enc_op);
+};
+
+WebCryptographer.prototype.wrapCek = function(cek, key) {
+  return Jose.crypto.subtle.wrapKey("raw", cek, key, this.key_encryption.id);
+};
+
+WebCryptographer.prototype.unwrapCek = function(cek, key) {
+  var hack = getCekWorkaround(this.content_encryption);
+  var extractable = (this.content_encryption.specific_cek_bytes > 0);
+  var key_encryption = this.key_encryption.id;
+
+  return Jose.crypto.subtle.unwrapKey("raw", cek, key, key_encryption, hack.id, extractable, hack.dec_op);
+};
+
+/**
+ * Returns algorithm and operation needed to create a CEK.
+ *
+ * In some cases, e.g. A128CBC-HS256, the CEK gets split into two keys. The Web
+ * Crypto API does not allow us to generate an arbitrary number of bytes and
+ * then create a CryptoKey without any associated algorithm. We therefore piggy
+ * back on AES-CBS and HMAC which allows the creation of CEKs of size 16, 32, 64
+ * and 128 bytes.
+ */
+var getCekWorkaround = function(alg) {
+  var len = alg.specific_cek_bytes;
+  if (len) {
+    if (len == 16) {
+      return {id: {name: "AES-CBC", length: 128}, enc_op: ["encrypt"], dec_op: ["decrypt"]};
+    } else if (len == 32) {
+      return {id: {name: "AES-CBC", length: 256}, enc_op: ["encrypt"], dec_op: ["decrypt"]};
+    } else if (len == 64) {
+      return {id: {name: "HMAC", hash: {name: "SHA-256"}}, enc_op: ["sign"], dec_op: ["verify"]};
+    } else if (len == 128) {
+      return {id: {name: "HMAC", hash: {name: "SHA-384"}}, enc_op: ["sign"], dec_op: ["verify"]};
+    } else {
+      Jose.assert(false, "getCekWorkaround: invalid len");
+    }
+  }
+  return {id: alg.id, enc_op: ["encrypt"], dec_op: ["decrypt"]};
+};
+
+/**
+ * Encrypts plain_text with cek.
+ *
+ * @param iv          Uint8Array
+ * @param aad         Uint8Array
+ * @param cek_promise Promise<CryptoKey>
+ * @param plain_text  Uint8Array
+ * @return Promise<json>
+ */
+WebCryptographer.prototype.encrypt = function(iv, aad, cek_promise, plain_text) {
+  var config = this.content_encryption;
+  if (iv.length != config.iv_bytes) {
+    return Promise.reject(Error("invalid IV length"));
+  }
+  if (config.auth.aead) {
+    var tag_bytes = config.auth.tag_bytes;
+
+    var enc = {
+      name: config.id.name,
+      iv: iv,
+      additionalData: aad,
+      tagLength: tag_bytes * 8
+    };
+
+    return cek_promise.then(function(cek) {
+      return Jose.crypto.subtle.encrypt(enc, cek, plain_text).then(function(cipher_text) {
+        var offset = cipher_text.byteLength - tag_bytes;
+        return {
+          cipher: cipher_text.slice(0, offset),
+          tag: cipher_text.slice(offset)
+        };
+      });
+    });
+  } else {
+    var keys = splitKey(config, cek_promise, ["encrypt"]);
+    var mac_key_promise = keys[0];
+    var enc_key_promise = keys[1];
+
+    // Encrypt the plain text
+    var cipher_text_promise = enc_key_promise.then(function(enc_key) {
+      var enc = {
+        name: config.id.name,
+        iv: iv
+      };
+      return Jose.crypto.subtle.encrypt(enc, enc_key, plain_text);
+    });
+
+    // compute MAC
+    var mac_promise = cipher_text_promise.then(function(cipher_text) {
+      return truncatedMac(
+        config,
+        mac_key_promise,
+        aad,
+        iv,
+        cipher_text);
+    });
+
+    return Promise.all([cipher_text_promise, mac_promise]).then(function(all) {
+      var cipher_text = all[0];
+      var mac = all[1];
+      return {
+        cipher: cipher_text,
+        tag: mac
+      };
+    });
+  }
+};
+
+/**
+ * Decrypts cipher_text with cek. Validates the tag.
+ *
+ * @param cek_promise    Promise<CryptoKey>
+ * @param aad protected header
+ * @param iv IV
+ * @param cipher_text text to be decrypted
+ * @param tag to be verified
+ * @return Promise<string>
+ */
+WebCryptographer.prototype.decrypt = function(cek_promise, aad, iv, cipher_text, tag) {
+  /**
+   * Compares two Uint8Arrays in constant time.
+   *
+   * @return Promise<void>
+   */
+  var compare = function(config, mac_key_promise, arr1, arr2) {
+    Jose.assert(arr1 instanceof Uint8Array, "compare: invalid input");
+    Jose.assert(arr2 instanceof Uint8Array, "compare: invalid input");
+
+    return mac_key_promise.then(function(mac_key) {
+      var hash1 = Jose.crypto.subtle.sign(config.auth.id, mac_key, arr1);
+      var hash2 = Jose.crypto.subtle.sign(config.auth.id, mac_key, arr2);
+      return Promise.all([hash1, hash2]).then(function(all) {
+        var hash1 = new Uint8Array(all[0]);
+        var hash2 = new Uint8Array(all[1]);
+        if (hash1.length != hash2.length) {
+          throw new Error("compare failed");
+        }
+        for (var i = 0; i < hash1.length; i++) {
+          if (hash1[i] != hash2[i]) {
+            throw new Error("compare failed");
+          }
+        }
+        return Promise.resolve(null);
+      });
+    });
+  };
+
+  if (iv.length != this.content_encryption.iv_bytes) {
+    return Promise.reject(Error("decryptCiphertext: invalid IV"));
+  }
+
+  var config = this.content_encryption;
+  if (config.auth.aead) {
+    var dec = {
+      name: config.id.name,
+      iv: iv,
+      additionalData: aad,
+      tagLength: config.auth.tag_bytes * 8
+    };
+
+    return cek_promise.then(function(cek) {
+      var buf = Utils.arrayBufferConcat(cipher_text, tag);
+      return Jose.crypto.subtle.decrypt(dec, cek, buf);
+    });
+  } else {
+    var keys = splitKey(config, cek_promise, ["decrypt"]);
+    var mac_key_promise = keys[0];
+    var enc_key_promise = keys[1];
+
+    // Validate the MAC
+    var mac_promise = truncatedMac(
+      config,
+      mac_key_promise,
+      aad,
+      iv,
+      cipher_text);
+
+    return Promise.all([enc_key_promise, mac_promise]).then(function(all) {
+      var enc_key = all[0];
+      var mac = all[1];
+
+      return compare(config, mac_key_promise, new Uint8Array(mac), tag).then(function() {
+        var dec = {
+          name: config.id.name,
+          iv: iv
+        };
+        return Jose.crypto.subtle.decrypt(dec, enc_key, cipher_text);
+      }).catch(function(err) {
+        return Promise.reject(Error("decryptCiphertext: MAC failed."));
+      });
+    });
+  }
+};
+
+/**
+ * Signs plain_text.
+ *
+ * @param aad         json
+ * @param payload     String or json
+ * @param key_promise Promise<CryptoKey>
+ * @return Promise<ArrayBuffer>
+ */
+WebCryptographer.prototype.sign = function(aad, payload, key_promise) {
+  var config = this.content_sign;
+
+  if (aad.alg) {
+    config = getSignConfig(aad.alg);
+  }
+
+  // Encrypt the plain text
+  return key_promise.then(function(key) {
+    return Jose.crypto.subtle.sign(config.id, key, Utils.arrayFromString(Utils.Base64Url.encode(JSON.stringify(aad)) + '.' + Utils.Base64Url.encodeArray(payload)));
+  });
+};
+
+/**
+ * Verify JWS.
+ *
+ * @param payload     Base64Url encoded payload
+ * @param aad         String Base64Url encoded JSON representation of the protected JWS header
+ * @param signature   Uint8Array containing the signature
+ * @param key_promise Promise<CryptoKey>
+ * @param key_id      value of the kid JoseHeader, it'll be passed as part of the result to the returned promise
+ * @return Promise<json>
+ */
+WebCryptographer.prototype.verify = function(aad, payload, signature, key_promise, key_id) {
+  var config = this.content_sign;
+
+  return key_promise.then(function(key) {
+    config = getSignConfig(getJwaNameForSignKey(key));
+    return Jose.crypto.subtle.verify(config.id, key, signature, Utils.arrayFromString(aad + "." + payload)).then(function(res) {
+      return {kid: key_id, verified: res};
+    });
+  });
+};
+
+Jose.WebCryptographer.keyId = function(rsa_key) {
+  return Utils.sha256(rsa_key.n + "+" + rsa_key.d);
+};
+
+/**
+ * Splits a CEK into two pieces: a MAC key and an ENC key.
+ *
+ * This code is structured around the fact that the crypto API does not provide
+ * a way to validate truncated MACs. The MAC key is therefore always imported to
+ * sign data.
+ *
+ * @param config (used for key lengths & algorithms)
+ * @param cek_promise Promise<CryptoKey>  CEK key to split
+ * @param purpose Array<String> usages of the imported key
+ * @return [Promise<mac key>, Promise<enc key>]
+ */
+var splitKey = function(config, cek_promise, purpose) {
+  // We need to split the CEK key into a MAC and ENC keys
+  var cek_bytes_promise = cek_promise.then(function(cek) {
+    return Jose.crypto.subtle.exportKey("raw", cek);
+  });
+  var mac_key_promise = cek_bytes_promise.then(function(cek_bytes) {
+    if (cek_bytes.byteLength * 8 != config.id.length + config.auth.key_bytes * 8) {
+      return Promise.reject(Error("encryptPlainText: incorrect cek length"));
+    }
+    var bytes = cek_bytes.slice(0, config.auth.key_bytes);
+    return Jose.crypto.subtle.importKey("raw", bytes, config.auth.id, false, ["sign"]);
+  });
+  var enc_key_promise = cek_bytes_promise.then(function(cek_bytes) {
+    if (cek_bytes.byteLength * 8 != config.id.length + config.auth.key_bytes * 8) {
+      return Promise.reject(Error("encryptPlainText: incorrect cek length"));
+    }
+    var bytes = cek_bytes.slice(config.auth.key_bytes);
+    return Jose.crypto.subtle.importKey("raw", bytes, config.id, false, purpose);
+  });
+  return [mac_key_promise, enc_key_promise];
+};
+
+/**
+ * Converts the Jose web algorithms into data which is
+ * useful for the Web Crypto API.
+ *
+ * length = in bits
+ * bytes = in bytes
+ */
+var getCryptoConfig = function(alg) {
+  switch (alg) {
+    // Key encryption
+    case "RSA-OAEP":
+      return {
+        jwe_name: "RSA-OAEP",
+        id: {name: "RSA-OAEP", hash: {name: "SHA-1"}}
+      };
+    case "RSA-OAEP-256":
+      return {
+        jwe_name: "RSA-OAEP-256",
+        id: {name: "RSA-OAEP", hash: {name: "SHA-256"}}
+      };
+    case "A128KW":
+      return {
+        jwe_name: "A128KW",
+        id: {name: "AES-KW", length: 128}
+      };
+    case "A256KW":
+      return {
+        jwe_name: "A256KW",
+        id: {name: "AES-KW", length: 256}
+      };
+    case "dir":
+      return {
+        jwe_name: "dir"
+      };
+
+    // Content encryption
+    case "A128CBC-HS256":
+      return {
+        jwe_name: "A128CBC-HS256",
+        id: {name: "AES-CBC", length: 128},
+        iv_bytes: 16,
+        specific_cek_bytes: 32,
+        auth: {
+          key_bytes: 16,
+          id: {name: "HMAC", hash: {name: "SHA-256"}},
+          truncated_bytes: 16
+        }
+      };
+    case "A256CBC-HS512":
+      return {
+        jwe_name: "A256CBC-HS512",
+        id: {name: "AES-CBC", length: 256},
+        iv_bytes: 16,
+        specific_cek_bytes: 64,
+        auth: {
+          key_bytes: 32,
+          id: {name: "HMAC", hash: {name: "SHA-512"}},
+          truncated_bytes: 32
+        }
+      };
+    case "A128GCM":
+      return {
+        jwe_name: "A128GCM",
+        id: {name: "AES-GCM", length: 128},
+        iv_bytes: 12,
+        auth: {
+          aead: true,
+          tag_bytes: 16
+        }
+      };
+    case "A256GCM":
+      return {
+        jwe_name: "A256GCM",
+        id: {name: "AES-GCM", length: 256},
+        iv_bytes: 12,
+        auth: {
+          aead: true,
+          tag_bytes: 16
+        }
+      };
+    default:
+      throw Error("unsupported algorithm: " + alg);
+  }
+};
+
+/**
+ * Computes a truncated MAC.
+ *
+ * @param config              configuration
+ * @param mac_key_promise     Promise<CryptoKey>  mac key
+ * @param aad                 Uint8Array
+ * @param iv                  Uint8Array
+ * @param cipher_text         Uint8Array
+ * @return Promise<buffer>    truncated MAC
+ */
+var truncatedMac = function(config, mac_key_promise, aad, iv, cipher_text) {
+  return mac_key_promise.then(function(mac_key) {
+    var al = new Uint8Array(Utils.arrayFromInt32(aad.length * 8));
+    var al_full = new Uint8Array(8);
+    al_full.set(al, 4);
+    var buf = Utils.arrayBufferConcat(aad, iv, cipher_text, al_full);
+    return Jose.crypto.subtle.sign(config.auth.id, mac_key, buf).then(function(bytes) {
+      return bytes.slice(0, config.auth.truncated_bytes);
+    });
+  });
+};
+
+/**
+ * Converts the Jose web algorithms into data which is
+ * useful for the Web Crypto API.
+ */
+var getSignConfig = function(alg) {
+
+  switch (alg) {
+    case "RS256":
+      return {
+        jwa_name: "RS256",
+        id: {name: "RSASSA-PKCS1-v1_5", hash: {name: "SHA-256"}}
+      };
+    case "RS384":
+      return {
+        jwa_name: "RS384",
+        id: {name: "RSASSA-PKCS1-v1_5", hash: {name: "SHA-384"}}
+      };
+    case "RS512":
+      return {
+        jwa_name: "RS512",
+        id: {name: "RSASSA-PKCS1-v1_5", hash: {name: "SHA-512"}}
+      };
+    case "PS256":
+      return {
+        jwa_name: "PS256",
+        id: {name: "RSA-PSS", hash: {name: "SHA-256"}, saltLength: 20}
+      };
+    case "PS384":
+      return {
+        jwa_name: "PS384",
+        id: {name: "RSA-PSS", hash: {name: "SHA-384"}, saltLength: 20}
+      };
+    case "PS512":
+      return {
+        jwa_name: "PS512",
+        id: {name: "RSA-PSS", hash: {name: "SHA-512"}, saltLength: 20}
+      };
+    case "HS256":
+      return {
+        jwa_name: "HS256",
+        id: {name: "HMAC", hash: {name: "SHA-256"}}
+      };
+    case "HS384":
+      return {
+        jwa_name: "HS384",
+        id: {name: "HMAC", hash: {name: "SHA-384"}}
+      };
+    case "HS512":
+      return {
+        jwa_name: "HS512",
+        id: {name: "HMAC", hash: {name: "SHA-512"}}
+      };
+    case "ES256":
+      return {
+        jwa_name: "ES256",
+        id: {name: "ECDSA", hash: {name: "SHA-256"}}
+      };
+    case "ES384":
+      return {
+        jwa_name: "ES384",
+        id: {name: "ECDSA", hash: {name: "SHA-384"}}
+      };
+    case "ES512":
+      return {
+        jwa_name: "ES512",
+        id: {name: "ECDSA", hash: {name: "SHA-512"}}
+      };
+    default:
+      throw Error("unsupported algorithm: " + alg);
+  }
+};
+
+/**
+ * Returns JWA name for a given CryptoKey
+ * @param key CryptoKey
+ */
+var getJwaNameForSignKey = function(key) {
+
+  var rv = "",
+    sign_algo = key.algorithm.name,
+    hash_algo = key.algorithm.hash.name;
+
+  if(sign_algo == "RSASSA-PKCS1-v1_5") {
+    rv = "R";
+  } else if(sign_algo == "RSA-PSS") {
+    rv = "P";
+  } else {
+    throw new Error("unsupported sign/verify algorithm " + sign_algo);
+  }
+
+  if(hash_algo.indexOf("SHA-") === 0) {
+    rv += "S";
+  } else {
+    throw new Error("unsupported hash algorithm " + sign_algo);
+  }
+
+  rv += hash_algo.substring(4);
+
+  return rv;
+};
+
+/**
+ * Derives key usage from algorithm's name
+ *
+ * @param alg String algorithm name
+ * @returns {*}
+ */
+var getKeyUsageByAlg = function(alg) {
+
+  switch (alg) {
+    // signature
+    case "RS256":
+    case "RS384":
+    case "RS512":
+    case "PS256":
+    case "PS384":
+    case "PS512":
+    case "HS256":
+    case "HS384":
+    case "HS512":
+    case "ES256":
+    case "ES384":
+    case "ES512":
+      return {
+        publicKey: "verify",
+        privateKey: "sign"
+      };
+    // key encryption
+    case "RSA-OAEP":
+    case "RSA-OAEP-256":
+    case "A128KW":
+    case "A256KW":
+      return {
+        publicKey: "wrapKey",
+        privateKey: "unwrapKey"
+      };
+    default:
+      throw Error("unsupported algorithm: " + alg);
+  }
+};
+
+/*-
+ * Copyright 2014 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+Jose.Utils = {};
+var Utils = {};
+
+/**
+ * Converts the output from `openssl x509 -text` or `openssl rsa -text` into a
+ * CryptoKey which can then be used with RSA-OAEP. Also accepts (and validates)
+ * JWK keys.
+ *
+ * TODO: this code probably belongs in the webcryptographer.
+ *
+ * @param rsa_key  public RSA key in json format. Parameters can be base64
+ *                 encoded, strings or number (for 'e').
+ * @param alg      String, name of the algorithm
+ * @return Promise<CryptoKey>
+ */
+Jose.Utils.importRsaPublicKey = function(rsa_key, alg) {
+  var jwk;
+  var config;
+  var usage = getKeyUsageByAlg(alg);
+
+  if (usage.publicKey == "wrapKey") {
+    if (!rsa_key.alg) {
+      rsa_key.alg = alg;
+    }
+    jwk = Utils.convertRsaKey(rsa_key, ["n", "e"]);
+    config = getCryptoConfig(alg);
+  } else {
+    var rk = {};
+    for (var name in rsa_key) {
+      if (rsa_key.hasOwnProperty(name)) {
+        rk[name] = rsa_key[name];
+      }
+    }
+
+    if (!rk.alg && alg) {
+      rk.alg = alg;
+    }
+    config = getSignConfig(rk.alg);
+    jwk = Utils.convertRsaKey(rk, ["n", "e"]);
+    jwk.ext = true;
+  }
+  return Jose.crypto.subtle.importKey("jwk", jwk, config.id, false, [usage.publicKey]);
+};
+
+/**
+ * Converts the output from `openssl x509 -text` or `openssl rsa -text` into a
+ * CryptoKey which can then be used with RSA-OAEP and RSA. Also accepts (and validates)
+ * JWK keys.
+ *
+ * TODO: this code probably belongs in the webcryptographer.
+ *
+ * @param rsa_key  private RSA key in json format. Parameters can be base64
+ *                 encoded, strings or number (for 'e').
+ * @param alg      String, name of the algorithm
+ * @return Promise<CryptoKey>
+ */
+Jose.Utils.importRsaPrivateKey = function(rsa_key, alg) {
+  var jwk;
+  var config;
+  var usage = getKeyUsageByAlg(alg);
+
+  if (usage.privateKey == "unwrapKey") {
+    if (!rsa_key.alg) {
+      rsa_key.alg = alg;
+    }
+    jwk = Utils.convertRsaKey(rsa_key, ["n", "e", "d", "p", "q", "dp", "dq", "qi"]);
+    config = getCryptoConfig("RSA-OAEP");
+  } else {
+    var rk = {};
+    for (var name in rsa_key) {
+      if (rsa_key.hasOwnProperty(name)) {
+        rk[name] = rsa_key[name];
+      }
+    }
+    config = getSignConfig(alg);
+    if (!rk.alg && alg) {
+      rk.alg = alg;
+    }
+    jwk = Utils.convertRsaKey(rk, ["n", "e", "d", "p", "q", "dp", "dq", "qi"]);
+    jwk.ext = true;
+  }
+  return Jose.crypto.subtle.importKey("jwk", jwk, config.id, false, [usage.privateKey]);
+};
+
+// Private functions
+
+Utils.isString = function(str) {
+  return ((typeof(str) == "string") || (str instanceof String));
+};
+
+/**
+ * Takes an arrayish (an array, ArrayBuffer or Uint8Array)
+ * and returns an array or a Uint8Array.
+ *
+ * @param arr  arrayish
+ * @return array or Uint8Array
+ */
+Utils.arrayish = function(arr) {
+  if (arr instanceof Array) {
+    return arr;
+  }
+  if (arr instanceof Uint8Array) {
+    return arr;
+  }
+  if (arr instanceof ArrayBuffer) {
+    return new Uint8Array(arr);
+  }
+  Jose.assert(false, "arrayish: invalid input");
+};
+
+/**
+ * Checks if an RSA key contains all the expected parameters. Also checks their
+ * types. Converts hex encoded strings (or numbers) to base64.
+ *
+ * @param rsa_key     RSA key in json format. Parameters can be base64 encoded,
+ *                    strings or number (for 'e').
+ * @param parameters  array<string>
+ * @return json
+ */
+Utils.convertRsaKey = function(rsa_key, parameters) {
+  var r = {};
+  var alg;
+
+  // Check that we have all the parameters
+  var missing = [];
+  parameters.map(function(p){if (typeof(rsa_key[p]) == "undefined") { missing.push(p); }});
+
+  if (missing.length > 0) {
+    Jose.assert(false, "convertRsaKey: Was expecting " + missing.join());
+  }
+
+  // kty is either missing or is set to "RSA"
+  if (typeof(rsa_key.kty) != "undefined") {
+    Jose.assert(rsa_key.kty == "RSA", "convertRsaKey: expecting rsa_key['kty'] to be 'RSA'");
+  }
+  r.kty = "RSA";
+
+  try {
+    getSignConfig(rsa_key.alg);
+    alg = rsa_key.alg;
+  } catch (err) {
+    try {
+      getCryptoConfig(rsa_key.alg);
+      alg = rsa_key.alg;
+    } catch (er) {
+      Jose.assert(alg, "convertRsaKey: expecting rsa_key['alg'] to have a valid value");
+    }
+  }
+  r.alg = alg;
+
+  // note: we punt on checking key_ops
+
+  var intFromHex = function(e) {
+    return parseInt(e, 16);
+  };
+  for (var i = 0; i < parameters.length; i++) {
+    var p = parameters[i];
+    var v = rsa_key[p];
+    if (p == "e") {
+      if (typeof(v) == "number") {
+        v = Utils.Base64Url.encodeArray(Utils.stripLeadingZeros(Utils.arrayFromInt32(v)));
+      }
+    } else if (/^([0-9a-fA-F]{2}:)+[0-9a-fA-F]{2}$/.test(v)) {
+      var arr = v.split(":").map(intFromHex);
+      v = Utils.Base64Url.encodeArray(Utils.stripLeadingZeros(arr));
+    } else if (typeof(v) != "string") {
+      Jose.assert(false, "convertRsaKey: expecting rsa_key['" + p + "'] to be a string");
+    }
+    r[p] = v;
+  }
+
+  return r;
+};
+
+/**
+ * Converts a string into an array of ascii codes.
+ *
+ * @param str  ascii string
+ * @return Uint8Array
+ */
+Utils.arrayFromString = function(str) {
+  Jose.assert(Utils.isString(str), "arrayFromString: invalid input");
+  var arr = str.split('').map(function(c) {
+    return c.charCodeAt(0);
+  });
+  return new Uint8Array(arr);
+};
+
+/**
+ * Converts a string into an array of utf-8 codes.
+ *
+* @param str  utf-8 string
+ * @return Uint8Array
+ */
+Utils.arrayFromUtf8String = function(str) {
+  Jose.assert(Utils.isString(str), "arrayFromUtf8String: invalid input");
+  // javascript represents strings as utf-16. Jose imposes the use of
+  // utf-8, so we need to convert from one representation to the other.
+  str = unescape(encodeURIComponent(str));
+  return Utils.arrayFromString(str);
+};
+
+/**
+ * Converts an array of ascii bytes into a string.
+ *
+ * @param arr  arrayish
+ * @return ascii string
+ */
+Utils.stringFromArray = function(arr) {
+  arr = Utils.arrayish(arr);
+  var r = '';
+  for (var i = 0; i < arr.length; i++) {
+    r += String.fromCharCode(arr[i]);
+  }
+
+  return r;
+};
+
+/**
+ * Converts an array of ascii bytes into a string.
+ *
+ * @param arr  ArrayBuffer
+ * @return ascii string
+ */
+Utils.utf8StringFromArray = function(arr) {
+  Jose.assert(arr instanceof ArrayBuffer, "utf8StringFromArray: invalid input");
+
+  // javascript represents strings as utf-16. Jose imposes the use of
+  // utf-8, so we need to convert from one representation to the other.
+  var r = Utils.stringFromArray(arr);
+  return decodeURIComponent(escape(r));
+};
+
+/**
+ * Strips leading zero in an array.
+ *
+ * @param arr  arrayish
+ * @return array
+ */
+Utils.stripLeadingZeros = function(arr) {
+  if (arr instanceof ArrayBuffer) {
+    arr = new Uint8Array(arr);
+  }
+  var is_leading_zero = true;
+  var r = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (is_leading_zero && arr[i] === 0) {
+      continue;
+    }
+    is_leading_zero = false;
+    r.push(arr[i]);
+  }
+  return r;
+};
+
+/**
+ * Converts a number into an array of 4 bytes (big endian).
+ *
+ * @param i  number
+ * @return ArrayBuffer
+ */
+Utils.arrayFromInt32 = function(i) {
+  Jose.assert(typeof(i) == "number", "arrayFromInt32: invalid input");
+  Jose.assert(i == i | 0, "arrayFromInt32: out of range");
+
+  var buf = new Uint8Array(new Uint32Array([i]).buffer);
+  var r = new Uint8Array(4);
+  for (var j = 0; j < 4; j++) {
+    r[j] = buf[3 - j];
+  }
+  return r.buffer;
+};
+
+/**
+ * Concatenates arrayishes.
+ *
+ * @param arguments two or more arrayishes
+ * @return Uint8Array
+ */
+Utils.arrayBufferConcat = function(/* ... */) {
+  // Compute total size
+  var args = [];
+  var total = 0;
+  for (var i = 0; i < arguments.length; i++) {
+    args.push(Utils.arrayish(arguments[i]));
+    total += args[i].length;
+  }
+  var r = new Uint8Array(total);
+  var offset = 0;
+  for (i = 0; i < arguments.length; i++) {
+    for (var j = 0; j < args[i].length; j++) {
+      r[offset++] = args[i][j];
+    }
+  }
+  Jose.assert(offset == total, "arrayBufferConcat: unexpected offset");
+  return r;
+};
+
+Utils.Base64Url = {};
+
+/**
+ * Base64Url encodes a string (no trailing '=')
+ *
+ * @param str  string
+ * @return string
+ */
+Utils.Base64Url.encode = function(str) {
+  Jose.assert(Utils.isString(str), "Base64Url.encode: invalid input");
+  return btoa(str)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+};
+
+/**
+ * Base64Url encodes an array
+ *
+ * @param arr array or ArrayBuffer
+ * @return string
+ */
+Utils.Base64Url.encodeArray = function(arr) {
+  return Utils.Base64Url.encode(Utils.stringFromArray(arr));
+};
+
+/**
+ * Base64Url decodes a string
+ *
+ * @param str  string
+ * @return string
+ */
+Utils.Base64Url.decode = function(str) {
+  Jose.assert(Utils.isString(str), "Base64Url.decode: invalid input");
+  // atob is nice and ignores missing '='
+  return atob(str.replace(/-/g, "+").replace(/_/g, "/"));
+};
+
+Utils.Base64Url.decodeArray = function(str) {
+  Jose.assert(Utils.isString(str), "Base64Url.decodeArray: invalid input");
+  return Utils.arrayFromString(Utils.Base64Url.decode(str));
+};
+
+Utils.sha256 = function(str) {
+  // Browser docs indicate the first parameter to crypto.subtle.digest to be a
+  // DOMString. This was initially implemented as an object and continues to be
+  // supported, so we favor the older form for backwards compatibility.
+  return Jose.crypto.subtle.digest({name: "SHA-256"}, Utils.arrayFromString(str)).then(function(hash) {
+    return Utils.Base64Url.encodeArray(hash);
+  });
+};
+
+Utils.isCryptoKey = function(rsa_key) {
+  // Some browsers don't expose the CryptoKey as an object, so we need to check
+  // the constructor's name.
+  if (rsa_key.constructor.name == 'CryptoKey') {
+    return true;
+  }
+
+  // In the presence of minifiers, relying on class names can be problematic,
+  // so let's also allow objects that have an 'algorithm' property.
+  if (rsa_key.hasOwnProperty('algorithm')) {
+    return true;
+  }
+
+  return false;
+};
+
+/*-
+ * Copyright 2014 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Handles encryption.
+ *
+ * @param cryptographer  an instance of WebCryptographer (or equivalent).
+ * @param key_promise    Promise<CryptoKey>, either RSA or shared key
+ */
+JoseJWE.Encrypter = function(cryptographer, key_promise) {
+  this.cryptographer = cryptographer;
+  this.key_promise = key_promise;
+  this.userHeaders = {};
+};
+
+/**
+ * Adds a key/value pair which will be included in the header.
+ *
+ * The data lives in plaintext (an attacker can read the header) but is tamper
+ * proof (an attacker cannot modify the header).
+ *
+ * Note: some headers have semantic implications. E.g. if you set the "zip"
+ * header, you are responsible for properly compressing plain_text before
+ * calling encrypt().
+ *
+ * @param k  String
+ * @param v  String
+ */
+JoseJWE.Encrypter.prototype.addHeader = function(k, v) {
+  this.userHeaders[k] = v;
+};
+
+/**
+ * Performs encryption.
+ *
+ * @param plain_text  utf-8 string
+ * @return Promise<String>
+ */
+JoseJWE.Encrypter.prototype.encrypt = function(plain_text) {
+  /**
+   * Encrypts plain_text with CEK.
+   *
+   * @param cek_promise  Promise<CryptoKey>
+   * @param plain_text   string
+   * @return Promise<json>
+   */
+  var encryptPlainText = function(cek_promise, plain_text) {
+    // Create header
+    var headers = {};
+    for (var i in this.userHeaders) {
+      headers[i] = this.userHeaders[i];
+    }
+    headers.alg = this.cryptographer.getKeyEncryptionAlgorithm();
+    headers.enc = this.cryptographer.getContentEncryptionAlgorithm();
+    var jwe_protected_header = Utils.Base64Url.encode(JSON.stringify(headers));
+
+    // Create the IV
+    var iv = this.cryptographer.createIV();
+
+    // Create the AAD
+    var aad = Utils.arrayFromString(jwe_protected_header);
+    plain_text = Utils.arrayFromUtf8String(plain_text);
+
+    return this.cryptographer.encrypt(iv, aad, cek_promise, plain_text).then(function(r) {
+      r.header = jwe_protected_header;
+      r.iv = iv;
+      return r;
+    });
+  };
+
+  var cek_promise, encrypted_cek;
+
+  if (this.cryptographer.getKeyEncryptionAlgorithm() == "dir") {
+    // with direct encryption, this.key_promise provides the cek
+    // and encrypted_cek is empty
+    cek_promise = Promise.resolve(this.key_promise);
+    encrypted_cek = [];
+  } else {
+    // Create a CEK key
+    cek_promise = this.cryptographer.createCek();
+
+    // Key & Cek allows us to create the encrypted_cek
+    encrypted_cek = Promise.all([this.key_promise, cek_promise]).then(function (all) {
+      var key = all[0];
+      var cek = all[1];
+      return this.cryptographer.wrapCek(cek, key);
+    }.bind(this));
+  }
+
+  // Cek allows us to encrypy the plain text
+  var enc_promise = encryptPlainText.bind(this, cek_promise, plain_text)();
+
+  // Once we have all the promises, we can base64 encode all the pieces.
+  return Promise.all([encrypted_cek, enc_promise]).then(function(all) {
+    var encrypted_cek = all[0];
+    var data = all[1];
+    return data.header + "." +
+      Utils.Base64Url.encodeArray(encrypted_cek) + "." +
+      Utils.Base64Url.encodeArray(data.iv) + "." +
+      Utils.Base64Url.encodeArray(data.cipher) + "." +
+      Utils.Base64Url.encodeArray(data.tag);
+  });
+};
+
+/*-
+ * Copyright 2014 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Handles decryption.
+ *
+ * @param cryptographer  an instance of WebCryptographer (or equivalent). Keep
+ *                       in mind that decryption mutates the cryptographer.
+ * @param key_promise    Promise<CryptoKey>, either RSA or shared key
+ */
+JoseJWE.Decrypter = function(cryptographer, key_promise) {
+  this.cryptographer = cryptographer;
+  this.key_promise = key_promise;
+  this.headers = {};
+};
+
+JoseJWE.Decrypter.prototype.getHeaders = function() {
+  return this.headers;
+};
+
+/**
+ * Performs decryption.
+ *
+ * @param cipher_text  String
+ * @return Promise<String>
+ */
+JoseJWE.Decrypter.prototype.decrypt = function(cipher_text) {
+  // Split cipher_text in 5 parts
+  var parts = cipher_text.split(".");
+  if (parts.length != 5) {
+    return Promise.reject(Error("decrypt: invalid input"));
+  }
+
+  // part 1: header
+  this.headers = JSON.parse(Utils.Base64Url.decode(parts[0]));
+  if (!this.headers.alg) {
+    return Promise.reject(Error("decrypt: missing alg"));
+  }
+  if (!this.headers.enc) {
+    return Promise.reject(Error("decrypt: missing enc"));
+  }
+  this.cryptographer.setKeyEncryptionAlgorithm(this.headers.alg);
+  this.cryptographer.setContentEncryptionAlgorithm(this.headers.enc);
+
+  if (this.headers.crit) {
+    // We don't support the crit header
+    return Promise.reject(Error("decrypt: crit is not supported"));
+  }
+
+  var cek_promise;
+
+  if (this.headers.alg == "dir") {
+    // with direct mode, we already have the cek
+    cek_promise = Promise.resolve(this.key_promise);
+  } else {
+    // part 2: decrypt the CEK
+    // In some modes (e.g. RSA-PKCS1v1.5), you must take precautions to prevent
+    // chosen-ciphertext attacks as described in RFC 3218, "Preventing
+    // the Million Message Attack on Cryptographic Message Syntax". We currently
+    // only support RSA-OAEP, so we don't generate a key if unwrapping fails.
+    var encrypted_cek = Utils.Base64Url.decodeArray(parts[1]);
+    cek_promise = this.key_promise.then(function (key) {
+      return this.cryptographer.unwrapCek(encrypted_cek, key);
+    }.bind(this));
+  }
+
+  // part 3: decrypt the cipher text
+  var plain_text_promise = this.cryptographer.decrypt(
+    cek_promise,
+    Utils.arrayFromString(parts[0]),
+    Utils.Base64Url.decodeArray(parts[2]),
+    Utils.Base64Url.decodeArray(parts[3]),
+    Utils.Base64Url.decodeArray(parts[4]));
+
+  return plain_text_promise.then(Utils.utf8StringFromArray);
+};
+
+/*-
+ * Copyright 2015 Peculiar Ventures
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Handles decryption.
+ *
+ * @param cryptographer  an instance of WebCryptographer (or equivalent). Keep
+ *                       in mind that decryption mutates the cryptographer.
+ *
+ * @author Patrizio Bruno <patrizio@desertconsulting.net>
+ */
+JoseJWS.Signer = function(cryptographer) {
+  this.cryptographer = cryptographer;
+
+  this.key_promises = {};
+  this.waiting_kid = 0;
+  this.headers = {};
+  this.signer_aads = {};
+  this.signer_headers = {};
+};
+
+/**
+ * Adds a signer to JoseJWS instance. It'll be the on of the signers of the resulting JWS.
+ *
+ * @param rsa_key        private RSA key in json format, Parameters can be base64
+ *                       encoded, strings or number (for 'e'). Or CryptoKey
+ * @param key_id         a string identifying the rsa_key. OPTIONAL
+ * @param aad            Object protected header
+ * @param header         Object unprotected header
+ */
+JoseJWS.Signer.prototype.addSigner = function(rsa_key, key_id, aad, header) {
+  var that = this;
+  var key_promise;
+  if (Utils.isCryptoKey(rsa_key)) {
+    key_promise = new Promise(function(resolve) {
+      resolve(rsa_key);
+    });
+  } else {
+    var alg;
+    if (aad && aad.alg) {
+      alg = aad.alg;
+    } else {
+      alg = that.cryptographer.getContentSignAlgorithm();
+    }
+    key_promise = Jose.Utils.importRsaPrivateKey(rsa_key, alg, "sign");
+  }
+
+  var kid_promise;
+  if (key_id) {
+    kid_promise = new Promise(function(resolve) {
+      resolve(key_id);
+    });
+  } else if (Utils.isCryptoKey(rsa_key)) {
+    throw new Error("key_id is a mandatory argument when the key is a CryptoKey");
+  } else {
+    kid_promise = Jose.WebCryptographer.keyId(rsa_key);
+  }
+
+  that.waiting_kid++;
+
+  return kid_promise.then(function(kid) {
+    that.key_promises[kid] = key_promise;
+    that.waiting_kid--;
+    if (aad) {
+      that.signer_aads[kid] = aad;
+    }
+    if (header) {
+      that.signer_headers[kid] = header;
+    }
+    return kid;
+  });
+};
+
+/**
+ * Adds a signature to a JWS object
+ * @param jws JWS Object to be signed or its representation
+ * @param aad     Object protected header
+ * @param header  Object unprotected header
+ * @return Promise<String>
+ */
+JoseJWS.Signer.prototype.addSignature = function(jws, aad, header) {
+  if (Utils.isString(jws)) {
+    jws = JSON.parse(jws);
+  }
+
+  if (jws.payload && Utils.isString(jws.payload) &&
+    jws.protected && Utils.isString(jws.protected) &&
+    jws.header && jws.header instanceof Object &&
+    jws.signature && Utils.isString(jws.signature)) {
+    return this.sign(JWS.fromObject(jws), aad, header);
+  } else {
+    throw new Error("JWS is not a valid JWS object");
+  }
+};
+
+/**
+ * Computes signature.
+ *
+ * @param payload JWS Object or utf-8 string to be signed
+ * @param aad     Object protected header
+ * @param header  Object unprotected header
+ * @return Promise<JWS>
+ */
+JoseJWS.Signer.prototype.sign = function(payload, aad, header) {
+
+  var that = this;
+  var kids = [];
+
+  if (Object.keys(that.key_promises).length === 0) {
+    throw new Error("No signers defined. At least one is required to sign the JWS.");
+  }
+
+  if (that.waiting_kid) {
+    throw new Error("still generating key IDs");
+  }
+
+  function sign (message, protectedHeader, unprotectedHeader, rsa_key_promise, kid) {
+    var toBeSigned;
+
+    if (!protectedHeader) {
+      protectedHeader = {};
+    }
+
+    if (!protectedHeader.alg) {
+      protectedHeader.alg = that.cryptographer.getContentSignAlgorithm();
+      protectedHeader.typ = "JWT";
+    }
+
+    if (!protectedHeader.kid) {
+      protectedHeader.kid = kid;
+    }
+
+    if (Utils.isString(message)) {
+      toBeSigned = Utils.arrayFromUtf8String(message);
+    } else {
+      try {
+        toBeSigned = Utils.arrayish(message);
+      } catch (e) {
+        if (message instanceof JWS) {
+          toBeSigned = Utils.arrayFromString(Utils.Base64Url.decode(message.payload));
+        } else if (message instanceof Object) {
+          toBeSigned = Utils.arrayFromUtf8String(JSON.stringify(message));
+        } else {
+          throw new Error("cannot sign this message");
+        }
+      }
+    }
+
+    return that.cryptographer.sign(protectedHeader, toBeSigned, rsa_key_promise).then(function(signature) {
+      var jws = new JWS(protectedHeader, unprotectedHeader, toBeSigned, signature);
+      if (message instanceof JWS) {
+        delete jws.payload;
+        if (!message.signatures) {
+          message.signatures = [jws];
+        } else {
+          message.signatures.push(jws);
+        }
+        return message;
+      }
+      return jws;
+    });
+  }
+
+  function doSign (pl, ph, uh, kps, kids) {
+    if (kids.length) {
+      var k_id = kids.shift();
+      var rv = sign(pl, that.signer_aads[k_id] || ph, that.signer_headers[k_id] || uh, kps[k_id], k_id);
+      if (kids.length) {
+        rv = rv.then(function(jws) {
+          return doSign(jws, null, null, kps, kids);
+        });
+      }
+      return rv;
+    }
+  }
+
+  for(var kid in that.key_promises) {
+    if (that.key_promises.hasOwnProperty(kid)) {
+      kids.push(kid);
+    }
+  }
+  return doSign(payload, aad, header, that.key_promises, kids);
+};
+
+
+/**
+ * Initialize a JWS object.
+ *
+ * @param protectedHeader protected header (JS object)
+ * @param payload Uint8Array payload to be signed
+ * @param signature ArrayBuffer signature of the payload
+ * @param header unprotected header (JS object)
+ *
+ * @constructor
+ */
+var JWS = function(protectedHeader, header, payload, signature) {
+  this.header = header;
+  this.payload = Utils.Base64Url.encodeArray(payload);
+  if (signature) {
+    this.signature = Utils.Base64Url.encodeArray(signature);
+  }
+  this.protected = Utils.Base64Url.encode(JSON.stringify(protectedHeader));
+};
+
+JWS.fromObject = function(obj) {
+  var rv = new JWS(obj.protected, obj.header, obj.payload, null);
+  rv.signature = obj.signature;
+  rv.signatures = obj.signatures;
+  return rv;
+};
+
+/**
+ * Serialize a JWS object using the JSON serialization format
+ *
+ * @returns {Object} a copy of this
+ */
+JWS.prototype.JsonSerialize = function() {
+  return JSON.stringify(this);
+};
+
+/**
+ * Serialize a JWS object using the Compact Serialization Format
+ *
+ * @returns {string} BASE64URL(UTF8(PROTECTED HEADER)).BASE64URL(PAYLOAD).BASE64URL(SIGNATURE)
+ */
+JWS.prototype.CompactSerialize = function() {
+  return this.protected + '.' + this.payload + '.' + this.signature;
+};
+
+/*-
+ * Copyright 2015 Peculiar Ventures
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Handles signature verification.
+ *
+ * @param cryptographer  an instance of WebCryptographer (or equivalent). Keep
+ *                       in mind that decryption mutates the cryptographer.
+ * @param message        a JWS message
+ * @param keyfinder (optional) a function returning a Promise<CryptoKey> given
+ *                             a key id
+ *
+ * @author Patrizio Bruno <patrizio@desertconsulting.net>
+ */
+JoseJWS.Verifier = function (cryptographer, message, keyfinder) {
+
+  var that = this,
+    alg,
+    jwt,
+    aad,
+    header,
+    payload,
+    signatures,
+    protectedHeader,
+    jwtRx = /^([0-9a-z_\-]+)\.([0-9a-z_\-]+)\.([0-9a-z_\-]+)$/i;
+
+  that.cryptographer = cryptographer;
+
+  alg = cryptographer.getContentSignAlgorithm();
+
+  that.cryptographer = new Jose.WebCryptographer();
+
+  if (Utils.isString(message)) {
+    if ((jwt = jwtRx.exec(message))) {
+      if (jwt.length != 4) {
+        throw new Error("wrong JWS compact serialization format");
+      }
+
+      message = {
+        protected: jwt[1],
+        payload: jwt[2],
+        signature: jwt[3]
+      };
+    } else {
+      message = JSON.parse(message);
+    }
+  } else if (typeof message != "object") {
+    throw new Error("data format not supported");
+  }
+
+  aad = message.protected;
+  header = message.header;
+  payload = message.payload;
+  signatures = message.signatures instanceof Array ? message.signatures.slice(0) : [];
+
+  signatures.forEach(function (sign) {
+    sign.aad = sign.protected;
+    sign.protected = JSON.parse(Utils.Base64Url.decode(sign.protected));
+  });
+
+  that.aad = aad;
+  protectedHeader = Utils.Base64Url.decode(aad);
+  try {
+    protectedHeader = JSON.parse(protectedHeader);
+  } catch (e) {
+  }
+
+  if (!protectedHeader && !header) {
+    throw new Error("at least one header is required");
+  }
+
+  if (!protectedHeader.alg) {
+    throw new Error("'alg' is a mandatory header");
+  }
+
+  if (protectedHeader.alg != alg) {
+    throw new Error("the alg header '" + protectedHeader.alg + "' doesn't match the requested algorithm '" + alg + "'");
+  }
+
+  if (protectedHeader && protectedHeader.typ && protectedHeader.typ != "JWT") {
+    throw new Error("typ '" + protectedHeader.typ + "' not supported");
+  }
+
+  if (message.signature) {
+    signatures.unshift({
+      aad: aad,
+      protected: protectedHeader,
+      header: header,
+      signature: message.signature
+    });
+  }
+
+  that.signatures = [];
+  for(var i = 0; i < signatures.length; i++) {
+    that.signatures[i] = JSON.parse(JSON.stringify(signatures[i]));
+    that.signatures[i].signature = Utils.arrayFromString(Utils.Base64Url.decode(signatures[i].signature));
+  }
+
+  that.payload = payload;
+
+  that.key_promises = {};
+  that.waiting_kid = 0;
+
+  if (keyfinder) {
+    that.keyfinder = keyfinder;
+  }
+};
+
+/**
+ * Add supported recipients to verify multiple signatures
+ *
+ * @param rsa_key        public RSA key in json format. Parameters can be base64
+ *                       encoded, strings or number (for 'e').
+ * @param key_id         a string identifying the rsa_key. OPTIONAL
+ * @param alg            String signature algorithm. OPTIONAL
+ * @returns Promise<string> a Promise of a key id
+ */
+JoseJWS.Verifier.prototype.addRecipient = function (rsa_key, key_id, alg) {
+
+  var that = this,
+    kid_promise,
+    key_promise = Utils.isCryptoKey(rsa_key) ? new Promise(function (resolve) {
+      resolve(rsa_key);
+    }) : Jose.Utils.importRsaPublicKey(rsa_key, alg || that.cryptographer.getContentSignAlgorithm(), "verify");
+
+  if (key_id) {
+    kid_promise = new Promise(function (resolve) {
+      resolve(key_id);
+    });
+  } else if (Utils.isCryptoKey(rsa_key)) {
+    throw new Error("key_id is a mandatory argument when the key is a CryptoKey");
+  } else {
+    console.log("it's not safe to not pass a key_id");
+    kid_promise = Jose.WebCryptographer.keyId(rsa_key);
+  }
+
+  that.waiting_kid++;
+
+  return kid_promise.then(function (kid) {
+    that.key_promises[kid] = key_promise;
+    that.waiting_kid--;
+    return kid;
+  });
+};
+
+/**
+ * Verifies a JWS signature
+ *
+ * @returns Promise<Array> a Promise of an array of objects { kid: string, verified: bool, payload?: string }
+ *
+ * payload is only populated and usable if verified is true
+ */
+JoseJWS.Verifier.prototype.verify = function () {
+
+  var that = this,
+    signatures = that.signatures,
+    key_promises = that.key_promises,
+    keyfinder = that.keyfinder,
+    promises = [],
+    check = !!keyfinder || Object.keys(that.key_promises).length > 0;
+
+  if (!check) {
+    throw new Error("No recipients defined. At least one is required to verify the JWS.");
+  }
+
+  if (that.waiting_kid) {
+    throw new Error("still generating key IDs");
+  }
+
+  signatures.forEach(function (sig) {
+    var kid = sig.protected.kid;
+    if (keyfinder) {
+      key_promises[kid] = keyfinder(kid);
+    }
+    promises.push(that.cryptographer.verify(sig.aad, that.payload, sig.signature, key_promises[kid], kid)
+      .then(function (vr) {
+        if (vr.verified) {
+          vr.payload = Utils.Base64Url.decode(that.payload);
+        }
+        return vr;
+      }));
+  });
+  return Promise.all(promises);
+};
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(62).Buffer))
+
+/***/ }),
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7809,35 +9899,1990 @@ function escapeJsonPtr(str) {
 
 
 /***/ }),
-/* 53 */
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+// Support decoding URL-safe base64 strings, as Node.js does.
+// See: https://en.wikipedia.org/wiki/Base64#URL_applications
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function getLens (b64) {
+  var len = b64.length
+
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // Trim off extra bytes after placeholder bytes are found
+  // See: https://github.com/beatgammit/base64-js/issues/42
+  var validLen = b64.indexOf('=')
+  if (validLen === -1) validLen = len
+
+  var placeHoldersLen = validLen === len
+    ? 0
+    : 4 - (validLen % 4)
+
+  return [validLen, placeHoldersLen]
+}
+
+// base64 is 4/3 + up to two characters of the original data
+function byteLength (b64) {
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function _byteLength (b64, validLen, placeHoldersLen) {
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function toByteArray (b64) {
+  var tmp
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+
+  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
+
+  var curByte = 0
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  var len = placeHoldersLen > 0
+    ? validLen - 4
+    : validLen
+
+  for (var i = 0; i < len; i += 4) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 18) |
+      (revLookup[b64.charCodeAt(i + 1)] << 12) |
+      (revLookup[b64.charCodeAt(i + 2)] << 6) |
+      revLookup[b64.charCodeAt(i + 3)]
+    arr[curByte++] = (tmp >> 16) & 0xFF
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 2) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 2) |
+      (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 1) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 10) |
+      (revLookup[b64.charCodeAt(i + 1)] << 4) |
+      (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] +
+    lookup[num >> 12 & 0x3F] +
+    lookup[num >> 6 & 0x3F] +
+    lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp =
+      ((uint8[i] << 16) & 0xFF0000) +
+      ((uint8[i + 1] << 8) & 0xFF00) +
+      (uint8[i + 2] & 0xFF)
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(
+      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
+    ))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 2] +
+      lookup[(tmp << 4) & 0x3F] +
+      '=='
+    )
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 10] +
+      lookup[(tmp >> 4) & 0x3F] +
+      lookup[(tmp << 2) & 0x3F] +
+      '='
+    )
+  }
+
+  return parts.join('')
+}
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+/* eslint-disable no-proto */
+
+
+
+var base64 = __webpack_require__(61)
+var ieee754 = __webpack_require__(57)
+var isArray = __webpack_require__(58)
+
+exports.Buffer = Buffer
+exports.SlowBuffer = SlowBuffer
+exports.INSPECT_MAX_BYTES = 50
+
+/**
+ * If `Buffer.TYPED_ARRAY_SUPPORT`:
+ *   === true    Use Uint8Array implementation (fastest)
+ *   === false   Use Object implementation (most compatible, even IE6)
+ *
+ * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+ * Opera 11.6+, iOS 4.2+.
+ *
+ * Due to various browser bugs, sometimes the Object implementation will be used even
+ * when the browser supports typed arrays.
+ *
+ * Note:
+ *
+ *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
+ *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+ *
+ *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+ *
+ *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+ *     incorrect length in some situations.
+
+ * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
+ * get the Object implementation, which is slower but behaves correctly.
+ */
+Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
+  ? global.TYPED_ARRAY_SUPPORT
+  : typedArraySupport()
+
+/*
+ * Export kMaxLength after typed array support is determined.
+ */
+exports.kMaxLength = kMaxLength()
+
+function typedArraySupport () {
+  try {
+    var arr = new Uint8Array(1)
+    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
+    return arr.foo() === 42 && // typed array instances can be augmented
+        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
+        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
+  } catch (e) {
+    return false
+  }
+}
+
+function kMaxLength () {
+  return Buffer.TYPED_ARRAY_SUPPORT
+    ? 0x7fffffff
+    : 0x3fffffff
+}
+
+function createBuffer (that, length) {
+  if (kMaxLength() < length) {
+    throw new RangeError('Invalid typed array length')
+  }
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = new Uint8Array(length)
+    that.__proto__ = Buffer.prototype
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    if (that === null) {
+      that = new Buffer(length)
+    }
+    that.length = length
+  }
+
+  return that
+}
+
+/**
+ * The Buffer constructor returns instances of `Uint8Array` that have their
+ * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
+ * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
+ * and the `Uint8Array` methods. Square bracket notation works as expected -- it
+ * returns a single octet.
+ *
+ * The `Uint8Array` prototype remains unmodified.
+ */
+
+function Buffer (arg, encodingOrOffset, length) {
+  if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
+    return new Buffer(arg, encodingOrOffset, length)
+  }
+
+  // Common case.
+  if (typeof arg === 'number') {
+    if (typeof encodingOrOffset === 'string') {
+      throw new Error(
+        'If encoding is specified then the first argument must be a string'
+      )
+    }
+    return allocUnsafe(this, arg)
+  }
+  return from(this, arg, encodingOrOffset, length)
+}
+
+Buffer.poolSize = 8192 // not used by this implementation
+
+// TODO: Legacy, not needed anymore. Remove in next major version.
+Buffer._augment = function (arr) {
+  arr.__proto__ = Buffer.prototype
+  return arr
+}
+
+function from (that, value, encodingOrOffset, length) {
+  if (typeof value === 'number') {
+    throw new TypeError('"value" argument must not be a number')
+  }
+
+  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
+    return fromArrayBuffer(that, value, encodingOrOffset, length)
+  }
+
+  if (typeof value === 'string') {
+    return fromString(that, value, encodingOrOffset)
+  }
+
+  return fromObject(that, value)
+}
+
+/**
+ * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
+ * if value is a number.
+ * Buffer.from(str[, encoding])
+ * Buffer.from(array)
+ * Buffer.from(buffer)
+ * Buffer.from(arrayBuffer[, byteOffset[, length]])
+ **/
+Buffer.from = function (value, encodingOrOffset, length) {
+  return from(null, value, encodingOrOffset, length)
+}
+
+if (Buffer.TYPED_ARRAY_SUPPORT) {
+  Buffer.prototype.__proto__ = Uint8Array.prototype
+  Buffer.__proto__ = Uint8Array
+  if (typeof Symbol !== 'undefined' && Symbol.species &&
+      Buffer[Symbol.species] === Buffer) {
+    // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
+    Object.defineProperty(Buffer, Symbol.species, {
+      value: null,
+      configurable: true
+    })
+  }
+}
+
+function assertSize (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('"size" argument must be a number')
+  } else if (size < 0) {
+    throw new RangeError('"size" argument must not be negative')
+  }
+}
+
+function alloc (that, size, fill, encoding) {
+  assertSize(size)
+  if (size <= 0) {
+    return createBuffer(that, size)
+  }
+  if (fill !== undefined) {
+    // Only pay attention to encoding if it's a string. This
+    // prevents accidentally sending in a number that would
+    // be interpretted as a start offset.
+    return typeof encoding === 'string'
+      ? createBuffer(that, size).fill(fill, encoding)
+      : createBuffer(that, size).fill(fill)
+  }
+  return createBuffer(that, size)
+}
+
+/**
+ * Creates a new filled Buffer instance.
+ * alloc(size[, fill[, encoding]])
+ **/
+Buffer.alloc = function (size, fill, encoding) {
+  return alloc(null, size, fill, encoding)
+}
+
+function allocUnsafe (that, size) {
+  assertSize(size)
+  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+    for (var i = 0; i < size; ++i) {
+      that[i] = 0
+    }
+  }
+  return that
+}
+
+/**
+ * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
+ * */
+Buffer.allocUnsafe = function (size) {
+  return allocUnsafe(null, size)
+}
+/**
+ * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
+ */
+Buffer.allocUnsafeSlow = function (size) {
+  return allocUnsafe(null, size)
+}
+
+function fromString (that, string, encoding) {
+  if (typeof encoding !== 'string' || encoding === '') {
+    encoding = 'utf8'
+  }
+
+  if (!Buffer.isEncoding(encoding)) {
+    throw new TypeError('"encoding" must be a valid string encoding')
+  }
+
+  var length = byteLength(string, encoding) | 0
+  that = createBuffer(that, length)
+
+  var actual = that.write(string, encoding)
+
+  if (actual !== length) {
+    // Writing a hex string, for example, that contains invalid characters will
+    // cause everything after the first invalid character to be ignored. (e.g.
+    // 'abxxcd' will be treated as 'ab')
+    that = that.slice(0, actual)
+  }
+
+  return that
+}
+
+function fromArrayLike (that, array) {
+  var length = array.length < 0 ? 0 : checked(array.length) | 0
+  that = createBuffer(that, length)
+  for (var i = 0; i < length; i += 1) {
+    that[i] = array[i] & 255
+  }
+  return that
+}
+
+function fromArrayBuffer (that, array, byteOffset, length) {
+  array.byteLength // this throws if `array` is not a valid ArrayBuffer
+
+  if (byteOffset < 0 || array.byteLength < byteOffset) {
+    throw new RangeError('\'offset\' is out of bounds')
+  }
+
+  if (array.byteLength < byteOffset + (length || 0)) {
+    throw new RangeError('\'length\' is out of bounds')
+  }
+
+  if (byteOffset === undefined && length === undefined) {
+    array = new Uint8Array(array)
+  } else if (length === undefined) {
+    array = new Uint8Array(array, byteOffset)
+  } else {
+    array = new Uint8Array(array, byteOffset, length)
+  }
+
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = array
+    that.__proto__ = Buffer.prototype
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    that = fromArrayLike(that, array)
+  }
+  return that
+}
+
+function fromObject (that, obj) {
+  if (Buffer.isBuffer(obj)) {
+    var len = checked(obj.length) | 0
+    that = createBuffer(that, len)
+
+    if (that.length === 0) {
+      return that
+    }
+
+    obj.copy(that, 0, 0, len)
+    return that
+  }
+
+  if (obj) {
+    if ((typeof ArrayBuffer !== 'undefined' &&
+        obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
+      if (typeof obj.length !== 'number' || isnan(obj.length)) {
+        return createBuffer(that, 0)
+      }
+      return fromArrayLike(that, obj)
+    }
+
+    if (obj.type === 'Buffer' && isArray(obj.data)) {
+      return fromArrayLike(that, obj.data)
+    }
+  }
+
+  throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
+}
+
+function checked (length) {
+  // Note: cannot use `length < kMaxLength()` here because that fails when
+  // length is NaN (which is otherwise coerced to zero.)
+  if (length >= kMaxLength()) {
+    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+                         'size: 0x' + kMaxLength().toString(16) + ' bytes')
+  }
+  return length | 0
+}
+
+function SlowBuffer (length) {
+  if (+length != length) { // eslint-disable-line eqeqeq
+    length = 0
+  }
+  return Buffer.alloc(+length)
+}
+
+Buffer.isBuffer = function isBuffer (b) {
+  return !!(b != null && b._isBuffer)
+}
+
+Buffer.compare = function compare (a, b) {
+  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+    throw new TypeError('Arguments must be Buffers')
+  }
+
+  if (a === b) return 0
+
+  var x = a.length
+  var y = b.length
+
+  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
+    if (a[i] !== b[i]) {
+      x = a[i]
+      y = b[i]
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+}
+
+Buffer.isEncoding = function isEncoding (encoding) {
+  switch (String(encoding).toLowerCase()) {
+    case 'hex':
+    case 'utf8':
+    case 'utf-8':
+    case 'ascii':
+    case 'latin1':
+    case 'binary':
+    case 'base64':
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      return true
+    default:
+      return false
+  }
+}
+
+Buffer.concat = function concat (list, length) {
+  if (!isArray(list)) {
+    throw new TypeError('"list" argument must be an Array of Buffers')
+  }
+
+  if (list.length === 0) {
+    return Buffer.alloc(0)
+  }
+
+  var i
+  if (length === undefined) {
+    length = 0
+    for (i = 0; i < list.length; ++i) {
+      length += list[i].length
+    }
+  }
+
+  var buffer = Buffer.allocUnsafe(length)
+  var pos = 0
+  for (i = 0; i < list.length; ++i) {
+    var buf = list[i]
+    if (!Buffer.isBuffer(buf)) {
+      throw new TypeError('"list" argument must be an Array of Buffers')
+    }
+    buf.copy(buffer, pos)
+    pos += buf.length
+  }
+  return buffer
+}
+
+function byteLength (string, encoding) {
+  if (Buffer.isBuffer(string)) {
+    return string.length
+  }
+  if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
+      (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
+    return string.byteLength
+  }
+  if (typeof string !== 'string') {
+    string = '' + string
+  }
+
+  var len = string.length
+  if (len === 0) return 0
+
+  // Use a for loop to avoid recursion
+  var loweredCase = false
+  for (;;) {
+    switch (encoding) {
+      case 'ascii':
+      case 'latin1':
+      case 'binary':
+        return len
+      case 'utf8':
+      case 'utf-8':
+      case undefined:
+        return utf8ToBytes(string).length
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return len * 2
+      case 'hex':
+        return len >>> 1
+      case 'base64':
+        return base64ToBytes(string).length
+      default:
+        if (loweredCase) return utf8ToBytes(string).length // assume utf8
+        encoding = ('' + encoding).toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+Buffer.byteLength = byteLength
+
+function slowToString (encoding, start, end) {
+  var loweredCase = false
+
+  // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
+  // property of a typed array.
+
+  // This behaves neither like String nor Uint8Array in that we set start/end
+  // to their upper/lower bounds if the value passed is out of range.
+  // undefined is handled specially as per ECMA-262 6th Edition,
+  // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
+  if (start === undefined || start < 0) {
+    start = 0
+  }
+  // Return early if start > this.length. Done here to prevent potential uint32
+  // coercion fail below.
+  if (start > this.length) {
+    return ''
+  }
+
+  if (end === undefined || end > this.length) {
+    end = this.length
+  }
+
+  if (end <= 0) {
+    return ''
+  }
+
+  // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
+  end >>>= 0
+  start >>>= 0
+
+  if (end <= start) {
+    return ''
+  }
+
+  if (!encoding) encoding = 'utf8'
+
+  while (true) {
+    switch (encoding) {
+      case 'hex':
+        return hexSlice(this, start, end)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Slice(this, start, end)
+
+      case 'ascii':
+        return asciiSlice(this, start, end)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Slice(this, start, end)
+
+      case 'base64':
+        return base64Slice(this, start, end)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return utf16leSlice(this, start, end)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = (encoding + '').toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+
+// The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
+// Buffer instances.
+Buffer.prototype._isBuffer = true
+
+function swap (b, n, m) {
+  var i = b[n]
+  b[n] = b[m]
+  b[m] = i
+}
+
+Buffer.prototype.swap16 = function swap16 () {
+  var len = this.length
+  if (len % 2 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 16-bits')
+  }
+  for (var i = 0; i < len; i += 2) {
+    swap(this, i, i + 1)
+  }
+  return this
+}
+
+Buffer.prototype.swap32 = function swap32 () {
+  var len = this.length
+  if (len % 4 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 32-bits')
+  }
+  for (var i = 0; i < len; i += 4) {
+    swap(this, i, i + 3)
+    swap(this, i + 1, i + 2)
+  }
+  return this
+}
+
+Buffer.prototype.swap64 = function swap64 () {
+  var len = this.length
+  if (len % 8 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 64-bits')
+  }
+  for (var i = 0; i < len; i += 8) {
+    swap(this, i, i + 7)
+    swap(this, i + 1, i + 6)
+    swap(this, i + 2, i + 5)
+    swap(this, i + 3, i + 4)
+  }
+  return this
+}
+
+Buffer.prototype.toString = function toString () {
+  var length = this.length | 0
+  if (length === 0) return ''
+  if (arguments.length === 0) return utf8Slice(this, 0, length)
+  return slowToString.apply(this, arguments)
+}
+
+Buffer.prototype.equals = function equals (b) {
+  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  if (this === b) return true
+  return Buffer.compare(this, b) === 0
+}
+
+Buffer.prototype.inspect = function inspect () {
+  var str = ''
+  var max = exports.INSPECT_MAX_BYTES
+  if (this.length > 0) {
+    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
+    if (this.length > max) str += ' ... '
+  }
+  return '<Buffer ' + str + '>'
+}
+
+Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
+  if (!Buffer.isBuffer(target)) {
+    throw new TypeError('Argument must be a Buffer')
+  }
+
+  if (start === undefined) {
+    start = 0
+  }
+  if (end === undefined) {
+    end = target ? target.length : 0
+  }
+  if (thisStart === undefined) {
+    thisStart = 0
+  }
+  if (thisEnd === undefined) {
+    thisEnd = this.length
+  }
+
+  if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
+    throw new RangeError('out of range index')
+  }
+
+  if (thisStart >= thisEnd && start >= end) {
+    return 0
+  }
+  if (thisStart >= thisEnd) {
+    return -1
+  }
+  if (start >= end) {
+    return 1
+  }
+
+  start >>>= 0
+  end >>>= 0
+  thisStart >>>= 0
+  thisEnd >>>= 0
+
+  if (this === target) return 0
+
+  var x = thisEnd - thisStart
+  var y = end - start
+  var len = Math.min(x, y)
+
+  var thisCopy = this.slice(thisStart, thisEnd)
+  var targetCopy = target.slice(start, end)
+
+  for (var i = 0; i < len; ++i) {
+    if (thisCopy[i] !== targetCopy[i]) {
+      x = thisCopy[i]
+      y = targetCopy[i]
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+}
+
+// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+//
+// Arguments:
+// - buffer - a Buffer to search
+// - val - a string, Buffer, or number
+// - byteOffset - an index into `buffer`; will be clamped to an int32
+// - encoding - an optional encoding, relevant is val is a string
+// - dir - true for indexOf, false for lastIndexOf
+function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+  // Empty buffer means no match
+  if (buffer.length === 0) return -1
+
+  // Normalize byteOffset
+  if (typeof byteOffset === 'string') {
+    encoding = byteOffset
+    byteOffset = 0
+  } else if (byteOffset > 0x7fffffff) {
+    byteOffset = 0x7fffffff
+  } else if (byteOffset < -0x80000000) {
+    byteOffset = -0x80000000
+  }
+  byteOffset = +byteOffset  // Coerce to Number.
+  if (isNaN(byteOffset)) {
+    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+    byteOffset = dir ? 0 : (buffer.length - 1)
+  }
+
+  // Normalize byteOffset: negative offsets start from the end of the buffer
+  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
+  if (byteOffset >= buffer.length) {
+    if (dir) return -1
+    else byteOffset = buffer.length - 1
+  } else if (byteOffset < 0) {
+    if (dir) byteOffset = 0
+    else return -1
+  }
+
+  // Normalize val
+  if (typeof val === 'string') {
+    val = Buffer.from(val, encoding)
+  }
+
+  // Finally, search either indexOf (if dir is true) or lastIndexOf
+  if (Buffer.isBuffer(val)) {
+    // Special case: looking for empty string/buffer always fails
+    if (val.length === 0) {
+      return -1
+    }
+    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+  } else if (typeof val === 'number') {
+    val = val & 0xFF // Search for a byte value [0-255]
+    if (Buffer.TYPED_ARRAY_SUPPORT &&
+        typeof Uint8Array.prototype.indexOf === 'function') {
+      if (dir) {
+        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+      } else {
+        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+      }
+    }
+    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+  }
+
+  throw new TypeError('val must be string, number or Buffer')
+}
+
+function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
+  var indexSize = 1
+  var arrLength = arr.length
+  var valLength = val.length
+
+  if (encoding !== undefined) {
+    encoding = String(encoding).toLowerCase()
+    if (encoding === 'ucs2' || encoding === 'ucs-2' ||
+        encoding === 'utf16le' || encoding === 'utf-16le') {
+      if (arr.length < 2 || val.length < 2) {
+        return -1
+      }
+      indexSize = 2
+      arrLength /= 2
+      valLength /= 2
+      byteOffset /= 2
+    }
+  }
+
+  function read (buf, i) {
+    if (indexSize === 1) {
+      return buf[i]
+    } else {
+      return buf.readUInt16BE(i * indexSize)
+    }
+  }
+
+  var i
+  if (dir) {
+    var foundIndex = -1
+    for (i = byteOffset; i < arrLength; i++) {
+      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+        if (foundIndex === -1) foundIndex = i
+        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+      } else {
+        if (foundIndex !== -1) i -= i - foundIndex
+        foundIndex = -1
+      }
+    }
+  } else {
+    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
+    for (i = byteOffset; i >= 0; i--) {
+      var found = true
+      for (var j = 0; j < valLength; j++) {
+        if (read(arr, i + j) !== read(val, j)) {
+          found = false
+          break
+        }
+      }
+      if (found) return i
+    }
+  }
+
+  return -1
+}
+
+Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
+  return this.indexOf(val, byteOffset, encoding) !== -1
+}
+
+Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+}
+
+Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
+}
+
+function hexWrite (buf, string, offset, length) {
+  offset = Number(offset) || 0
+  var remaining = buf.length - offset
+  if (!length) {
+    length = remaining
+  } else {
+    length = Number(length)
+    if (length > remaining) {
+      length = remaining
+    }
+  }
+
+  // must be an even number of digits
+  var strLen = string.length
+  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
+
+  if (length > strLen / 2) {
+    length = strLen / 2
+  }
+  for (var i = 0; i < length; ++i) {
+    var parsed = parseInt(string.substr(i * 2, 2), 16)
+    if (isNaN(parsed)) return i
+    buf[offset + i] = parsed
+  }
+  return i
+}
+
+function utf8Write (buf, string, offset, length) {
+  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+function asciiWrite (buf, string, offset, length) {
+  return blitBuffer(asciiToBytes(string), buf, offset, length)
+}
+
+function latin1Write (buf, string, offset, length) {
+  return asciiWrite(buf, string, offset, length)
+}
+
+function base64Write (buf, string, offset, length) {
+  return blitBuffer(base64ToBytes(string), buf, offset, length)
+}
+
+function ucs2Write (buf, string, offset, length) {
+  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+Buffer.prototype.write = function write (string, offset, length, encoding) {
+  // Buffer#write(string)
+  if (offset === undefined) {
+    encoding = 'utf8'
+    length = this.length
+    offset = 0
+  // Buffer#write(string, encoding)
+  } else if (length === undefined && typeof offset === 'string') {
+    encoding = offset
+    length = this.length
+    offset = 0
+  // Buffer#write(string, offset[, length][, encoding])
+  } else if (isFinite(offset)) {
+    offset = offset | 0
+    if (isFinite(length)) {
+      length = length | 0
+      if (encoding === undefined) encoding = 'utf8'
+    } else {
+      encoding = length
+      length = undefined
+    }
+  // legacy write(string, encoding, offset, length) - remove in v0.13
+  } else {
+    throw new Error(
+      'Buffer.write(string, encoding, offset[, length]) is no longer supported'
+    )
+  }
+
+  var remaining = this.length - offset
+  if (length === undefined || length > remaining) length = remaining
+
+  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
+    throw new RangeError('Attempt to write outside buffer bounds')
+  }
+
+  if (!encoding) encoding = 'utf8'
+
+  var loweredCase = false
+  for (;;) {
+    switch (encoding) {
+      case 'hex':
+        return hexWrite(this, string, offset, length)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Write(this, string, offset, length)
+
+      case 'ascii':
+        return asciiWrite(this, string, offset, length)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Write(this, string, offset, length)
+
+      case 'base64':
+        // Warning: maxLength not taken into account in base64Write
+        return base64Write(this, string, offset, length)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return ucs2Write(this, string, offset, length)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = ('' + encoding).toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+
+Buffer.prototype.toJSON = function toJSON () {
+  return {
+    type: 'Buffer',
+    data: Array.prototype.slice.call(this._arr || this, 0)
+  }
+}
+
+function base64Slice (buf, start, end) {
+  if (start === 0 && end === buf.length) {
+    return base64.fromByteArray(buf)
+  } else {
+    return base64.fromByteArray(buf.slice(start, end))
+  }
+}
+
+function utf8Slice (buf, start, end) {
+  end = Math.min(buf.length, end)
+  var res = []
+
+  var i = start
+  while (i < end) {
+    var firstByte = buf[i]
+    var codePoint = null
+    var bytesPerSequence = (firstByte > 0xEF) ? 4
+      : (firstByte > 0xDF) ? 3
+      : (firstByte > 0xBF) ? 2
+      : 1
+
+    if (i + bytesPerSequence <= end) {
+      var secondByte, thirdByte, fourthByte, tempCodePoint
+
+      switch (bytesPerSequence) {
+        case 1:
+          if (firstByte < 0x80) {
+            codePoint = firstByte
+          }
+          break
+        case 2:
+          secondByte = buf[i + 1]
+          if ((secondByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F)
+            if (tempCodePoint > 0x7F) {
+              codePoint = tempCodePoint
+            }
+          }
+          break
+        case 3:
+          secondByte = buf[i + 1]
+          thirdByte = buf[i + 2]
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F)
+            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
+              codePoint = tempCodePoint
+            }
+          }
+          break
+        case 4:
+          secondByte = buf[i + 1]
+          thirdByte = buf[i + 2]
+          fourthByte = buf[i + 3]
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F)
+            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
+              codePoint = tempCodePoint
+            }
+          }
+      }
+    }
+
+    if (codePoint === null) {
+      // we did not generate a valid codePoint so insert a
+      // replacement char (U+FFFD) and advance only 1 byte
+      codePoint = 0xFFFD
+      bytesPerSequence = 1
+    } else if (codePoint > 0xFFFF) {
+      // encode to utf16 (surrogate pair dance)
+      codePoint -= 0x10000
+      res.push(codePoint >>> 10 & 0x3FF | 0xD800)
+      codePoint = 0xDC00 | codePoint & 0x3FF
+    }
+
+    res.push(codePoint)
+    i += bytesPerSequence
+  }
+
+  return decodeCodePointsArray(res)
+}
+
+// Based on http://stackoverflow.com/a/22747272/680742, the browser with
+// the lowest limit is Chrome, with 0x10000 args.
+// We go 1 magnitude less, for safety
+var MAX_ARGUMENTS_LENGTH = 0x1000
+
+function decodeCodePointsArray (codePoints) {
+  var len = codePoints.length
+  if (len <= MAX_ARGUMENTS_LENGTH) {
+    return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
+  }
+
+  // Decode in chunks to avoid "call stack size exceeded".
+  var res = ''
+  var i = 0
+  while (i < len) {
+    res += String.fromCharCode.apply(
+      String,
+      codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
+    )
+  }
+  return res
+}
+
+function asciiSlice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i] & 0x7F)
+  }
+  return ret
+}
+
+function latin1Slice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i])
+  }
+  return ret
+}
+
+function hexSlice (buf, start, end) {
+  var len = buf.length
+
+  if (!start || start < 0) start = 0
+  if (!end || end < 0 || end > len) end = len
+
+  var out = ''
+  for (var i = start; i < end; ++i) {
+    out += toHex(buf[i])
+  }
+  return out
+}
+
+function utf16leSlice (buf, start, end) {
+  var bytes = buf.slice(start, end)
+  var res = ''
+  for (var i = 0; i < bytes.length; i += 2) {
+    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
+  }
+  return res
+}
+
+Buffer.prototype.slice = function slice (start, end) {
+  var len = this.length
+  start = ~~start
+  end = end === undefined ? len : ~~end
+
+  if (start < 0) {
+    start += len
+    if (start < 0) start = 0
+  } else if (start > len) {
+    start = len
+  }
+
+  if (end < 0) {
+    end += len
+    if (end < 0) end = 0
+  } else if (end > len) {
+    end = len
+  }
+
+  if (end < start) end = start
+
+  var newBuf
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    newBuf = this.subarray(start, end)
+    newBuf.__proto__ = Buffer.prototype
+  } else {
+    var sliceLen = end - start
+    newBuf = new Buffer(sliceLen, undefined)
+    for (var i = 0; i < sliceLen; ++i) {
+      newBuf[i] = this[i + start]
+    }
+  }
+
+  return newBuf
+}
+
+/*
+ * Need to make sure that buffer isn't trying to write out of bounds.
+ */
+function checkOffset (offset, ext, length) {
+  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
+  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
+}
+
+Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var val = this[offset]
+  var mul = 1
+  var i = 0
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul
+  }
+
+  return val
+}
+
+Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    checkOffset(offset, byteLength, this.length)
+  }
+
+  var val = this[offset + --byteLength]
+  var mul = 1
+  while (byteLength > 0 && (mul *= 0x100)) {
+    val += this[offset + --byteLength] * mul
+  }
+
+  return val
+}
+
+Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length)
+  return this[offset]
+}
+
+Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  return this[offset] | (this[offset + 1] << 8)
+}
+
+Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  return (this[offset] << 8) | this[offset + 1]
+}
+
+Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return ((this[offset]) |
+      (this[offset + 1] << 8) |
+      (this[offset + 2] << 16)) +
+      (this[offset + 3] * 0x1000000)
+}
+
+Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset] * 0x1000000) +
+    ((this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    this[offset + 3])
+}
+
+Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var val = this[offset]
+  var mul = 1
+  var i = 0
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul
+  }
+  mul *= 0x80
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+  return val
+}
+
+Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var i = byteLength
+  var mul = 1
+  var val = this[offset + --i]
+  while (i > 0 && (mul *= 0x100)) {
+    val += this[offset + --i] * mul
+  }
+  mul *= 0x80
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+  return val
+}
+
+Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length)
+  if (!(this[offset] & 0x80)) return (this[offset])
+  return ((0xff - this[offset] + 1) * -1)
+}
+
+Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  var val = this[offset] | (this[offset + 1] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  var val = this[offset + 1] | (this[offset] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset]) |
+    (this[offset + 1] << 8) |
+    (this[offset + 2] << 16) |
+    (this[offset + 3] << 24)
+}
+
+Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset] << 24) |
+    (this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    (this[offset + 3])
+}
+
+Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, true, 23, 4)
+}
+
+Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, false, 23, 4)
+}
+
+Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, true, 52, 8)
+}
+
+Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, false, 52, 8)
+}
+
+function checkInt (buf, value, offset, ext, max, min) {
+  if (!Buffer.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
+  if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+}
+
+Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+    checkInt(this, value, offset, byteLength, maxBytes, 0)
+  }
+
+  var mul = 1
+  var i = 0
+  this[offset] = value & 0xFF
+  while (++i < byteLength && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+    checkInt(this, value, offset, byteLength, maxBytes, 0)
+  }
+
+  var i = byteLength - 1
+  var mul = 1
+  this[offset + i] = value & 0xFF
+  while (--i >= 0 && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  this[offset] = (value & 0xff)
+  return offset + 1
+}
+
+function objectWriteUInt16 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
+    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+      (littleEndian ? i : 1 - i) * 8
+  }
+}
+
+Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+  } else {
+    objectWriteUInt16(this, value, offset, true)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = (value & 0xff)
+  } else {
+    objectWriteUInt16(this, value, offset, false)
+  }
+  return offset + 2
+}
+
+function objectWriteUInt32 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffffffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
+    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
+  }
+}
+
+Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset + 3] = (value >>> 24)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 1] = (value >>> 8)
+    this[offset] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, true)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, false)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1)
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+  }
+
+  var i = 0
+  var mul = 1
+  var sub = 0
+  this[offset] = value & 0xFF
+  while (++i < byteLength && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
+      sub = 1
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1)
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+  }
+
+  var i = byteLength - 1
+  var mul = 1
+  var sub = 0
+  this[offset + i] = value & 0xFF
+  while (--i >= 0 && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
+      sub = 1
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  if (value < 0) value = 0xff + value + 1
+  this[offset] = (value & 0xff)
+  return offset + 1
+}
+
+Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+  } else {
+    objectWriteUInt16(this, value, offset, true)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = (value & 0xff)
+  } else {
+    objectWriteUInt16(this, value, offset, false)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 3] = (value >>> 24)
+  } else {
+    objectWriteUInt32(this, value, offset, true)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (value < 0) value = 0xffffffff + value + 1
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, false)
+  }
+  return offset + 4
+}
+
+function checkIEEE754 (buf, value, offset, ext, max, min) {
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+  if (offset < 0) throw new RangeError('Index out of range')
+}
+
+function writeFloat (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
+  }
+  ieee754.write(buf, value, offset, littleEndian, 23, 4)
+  return offset + 4
+}
+
+Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, false, noAssert)
+}
+
+function writeDouble (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
+  }
+  ieee754.write(buf, value, offset, littleEndian, 52, 8)
+  return offset + 8
+}
+
+Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, false, noAssert)
+}
+
+// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+  if (!start) start = 0
+  if (!end && end !== 0) end = this.length
+  if (targetStart >= target.length) targetStart = target.length
+  if (!targetStart) targetStart = 0
+  if (end > 0 && end < start) end = start
+
+  // Copy 0 bytes; we're done
+  if (end === start) return 0
+  if (target.length === 0 || this.length === 0) return 0
+
+  // Fatal error conditions
+  if (targetStart < 0) {
+    throw new RangeError('targetStart out of bounds')
+  }
+  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+  if (end < 0) throw new RangeError('sourceEnd out of bounds')
+
+  // Are we oob?
+  if (end > this.length) end = this.length
+  if (target.length - targetStart < end - start) {
+    end = target.length - targetStart + start
+  }
+
+  var len = end - start
+  var i
+
+  if (this === target && start < targetStart && targetStart < end) {
+    // descending copy from end
+    for (i = len - 1; i >= 0; --i) {
+      target[i + targetStart] = this[i + start]
+    }
+  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+    // ascending copy from start
+    for (i = 0; i < len; ++i) {
+      target[i + targetStart] = this[i + start]
+    }
+  } else {
+    Uint8Array.prototype.set.call(
+      target,
+      this.subarray(start, start + len),
+      targetStart
+    )
+  }
+
+  return len
+}
+
+// Usage:
+//    buffer.fill(number[, offset[, end]])
+//    buffer.fill(buffer[, offset[, end]])
+//    buffer.fill(string[, offset[, end]][, encoding])
+Buffer.prototype.fill = function fill (val, start, end, encoding) {
+  // Handle string cases:
+  if (typeof val === 'string') {
+    if (typeof start === 'string') {
+      encoding = start
+      start = 0
+      end = this.length
+    } else if (typeof end === 'string') {
+      encoding = end
+      end = this.length
+    }
+    if (val.length === 1) {
+      var code = val.charCodeAt(0)
+      if (code < 256) {
+        val = code
+      }
+    }
+    if (encoding !== undefined && typeof encoding !== 'string') {
+      throw new TypeError('encoding must be a string')
+    }
+    if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
+      throw new TypeError('Unknown encoding: ' + encoding)
+    }
+  } else if (typeof val === 'number') {
+    val = val & 255
+  }
+
+  // Invalid ranges are not set to a default, so can range check early.
+  if (start < 0 || this.length < start || this.length < end) {
+    throw new RangeError('Out of range index')
+  }
+
+  if (end <= start) {
+    return this
+  }
+
+  start = start >>> 0
+  end = end === undefined ? this.length : end >>> 0
+
+  if (!val) val = 0
+
+  var i
+  if (typeof val === 'number') {
+    for (i = start; i < end; ++i) {
+      this[i] = val
+    }
+  } else {
+    var bytes = Buffer.isBuffer(val)
+      ? val
+      : utf8ToBytes(new Buffer(val, encoding).toString())
+    var len = bytes.length
+    for (i = 0; i < end - start; ++i) {
+      this[i + start] = bytes[i % len]
+    }
+  }
+
+  return this
+}
+
+// HELPER FUNCTIONS
+// ================
+
+var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g
+
+function base64clean (str) {
+  // Node strips out invalid characters like \n and \t from the string, base64-js does not
+  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
+  // Node converts strings with length < 2 to ''
+  if (str.length < 2) return ''
+  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+  while (str.length % 4 !== 0) {
+    str = str + '='
+  }
+  return str
+}
+
+function stringtrim (str) {
+  if (str.trim) return str.trim()
+  return str.replace(/^\s+|\s+$/g, '')
+}
+
+function toHex (n) {
+  if (n < 16) return '0' + n.toString(16)
+  return n.toString(16)
+}
+
+function utf8ToBytes (string, units) {
+  units = units || Infinity
+  var codePoint
+  var length = string.length
+  var leadSurrogate = null
+  var bytes = []
+
+  for (var i = 0; i < length; ++i) {
+    codePoint = string.charCodeAt(i)
+
+    // is surrogate component
+    if (codePoint > 0xD7FF && codePoint < 0xE000) {
+      // last char was a lead
+      if (!leadSurrogate) {
+        // no lead yet
+        if (codePoint > 0xDBFF) {
+          // unexpected trail
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+          continue
+        } else if (i + 1 === length) {
+          // unpaired lead
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+          continue
+        }
+
+        // valid lead
+        leadSurrogate = codePoint
+
+        continue
+      }
+
+      // 2 leads in a row
+      if (codePoint < 0xDC00) {
+        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+        leadSurrogate = codePoint
+        continue
+      }
+
+      // valid surrogate pair
+      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
+    } else if (leadSurrogate) {
+      // valid bmp char, but last char was a lead
+      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+    }
+
+    leadSurrogate = null
+
+    // encode utf8
+    if (codePoint < 0x80) {
+      if ((units -= 1) < 0) break
+      bytes.push(codePoint)
+    } else if (codePoint < 0x800) {
+      if ((units -= 2) < 0) break
+      bytes.push(
+        codePoint >> 0x6 | 0xC0,
+        codePoint & 0x3F | 0x80
+      )
+    } else if (codePoint < 0x10000) {
+      if ((units -= 3) < 0) break
+      bytes.push(
+        codePoint >> 0xC | 0xE0,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      )
+    } else if (codePoint < 0x110000) {
+      if ((units -= 4) < 0) break
+      bytes.push(
+        codePoint >> 0x12 | 0xF0,
+        codePoint >> 0xC & 0x3F | 0x80,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      )
+    } else {
+      throw new Error('Invalid code point')
+    }
+  }
+
+  return bytes
+}
+
+function asciiToBytes (str) {
+  var byteArray = []
+  for (var i = 0; i < str.length; ++i) {
+    // Node's code seems to be doing this and not & 0x7F..
+    byteArray.push(str.charCodeAt(i) & 0xFF)
+  }
+  return byteArray
+}
+
+function utf16leToBytes (str, units) {
+  var c, hi, lo
+  var byteArray = []
+  for (var i = 0; i < str.length; ++i) {
+    if ((units -= 2) < 0) break
+
+    c = str.charCodeAt(i)
+    hi = c >> 8
+    lo = c % 256
+    byteArray.push(lo)
+    byteArray.push(hi)
+  }
+
+  return byteArray
+}
+
+function base64ToBytes (str) {
+  return base64.toByteArray(base64clean(str))
+}
+
+function blitBuffer (src, dst, offset, length) {
+  for (var i = 0; i < length; ++i) {
+    if ((i + offset >= dst.length) || (i >= src.length)) break
+    dst[i + offset] = src[i]
+  }
+  return i
+}
+
+function isnan (val) {
+  return val !== val // eslint-disable-line no-self-compare
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
+
+/***/ }),
+/* 63 */
 /***/ (function(module, exports) {
 
 module.exports = {"$schema":"http://json-schema.org/draft-04/schema#","type":"object","title":"shield-study-addon","description":"`shield-study-addon` addon-specific probe data, with `attributes` sent as Map(s,s).","properties":{"version":{"type":"integer","title":"Version schema.  Will be 3","enum":[3]},"study_name":{"description":"Name of a particular study.  Usually the addon_id.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"branch":{"description":"Which branch (variation) of the study the user has.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"addon_version":{"description":"Semantic version of the addon.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"shield_version":{"description":"Which version of the shield-studies-addon-utils.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"testing":{"type":"boolean","description":"If `true`, this packet is a TESTING packet and can be safely ignored."},"data":{"type":"object","title":"Shield-Study-Addon 'data' field.","description":"`shield-study-addon` addon-specific probe data, with `attributes` sent as Map(s,s).","properties":{"attributes":{"type":"object","description":"Map(string, string) of attributes.","properties":{},"additionalProperties":{"type":"string"}}},"required":["attributes"]},"type":{"type":"string","description":"doc_type, restated","enum":["shield-study-addon"]}},"required":["version","study_name","branch","addon_version","shield_version","data","type"]}
 
 /***/ }),
-/* 54 */
+/* 64 */
 /***/ (function(module, exports) {
 
 module.exports = {"$schema":"http://json-schema.org/draft-04/schema#","type":"object","title":"shield-study-error","description":"`shield-study-error` data used to notify, group and count some kinds of errors from shield studies.","properties":{"version":{"type":"integer","title":"Version schema.  Will be 3","enum":[3]},"study_name":{"description":"Name of a particular study.  Usually the addon_id.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"branch":{"description":"Which branch (variation) of the study the user has.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"addon_version":{"description":"Semantic version of the addon.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"shield_version":{"description":"Which version of the shield-studies-addon-utils.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"testing":{"type":"boolean","description":"If `true`, this packet is a TESTING packet and can be safely ignored."},"data":{"type":"object","title":"Shield-Study-Error 'data' field","description":"`shield-study-error` data used to notify, group and count some kinds of errors from shield studies.","properties":{"error_id":{"description":"between 1,100 chars, no spaces, unicode ok.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"error_source":{"type":"string","description":"Where did the error originate.","enum":["addon","shield","firefox","unknown"]},"message":{"type":"string","minLength":1,"title":"Message schema.","description":"String of an error message."},"severity":{"type":"string","description":"An explanation about the purpose of this instance.","enum":["debug","info","warn","fatal","impossible"]},"attributes":{"type":"object","description":"Map(string, string) of attributes.","properties":{},"additionalProperties":{"type":"string"}},"error":{"type":"object","description":"(Future use), things like tracebacks.","properties":{},"additionalProperties":{"type":"string"}}},"required":["error_id","error_source"]},"type":{"type":"string","description":"doc_type, restated","enum":["shield-study-error"]}},"required":["version","study_name","branch","addon_version","shield_version","data","type"]}
 
 /***/ }),
-/* 55 */
+/* 65 */
 /***/ (function(module, exports) {
 
 module.exports = {"$schema":"http://json-schema.org/draft-04/schema#","type":"object","title":"shield-study","description":"`shield-study` state and outcome data.","properties":{"version":{"type":"integer","title":"Version schema.  Will be 3","enum":[3]},"study_name":{"description":"Name of a particular study.  Usually the addon_id.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"branch":{"description":"Which branch (variation) of the study the user has.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"addon_version":{"description":"Semantic version of the addon.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"shield_version":{"description":"Which version of the shield-studies-addon-utils.","type":"string","pattern":"^\\S+$","minLength":1,"maxLength":100},"testing":{"type":"boolean","description":"If `true`, this packet is a TESTING packet and can be safely ignored."},"data":{"type":"object","description":"`shield-study` state and outcome data.","properties":{"study_state":{"type":"string","description":"message about the most recent state of the study.","enum":["enter","exit","installed","ineligible","expired","user-disable","ended-positive","ended-neutral","ended-negative","active"]},"study_state_fullname":{"type":"string","description":"Second part of name of state, if any.  Study-specific for study-defined endings."},"attributes":{"type":"object","description":"Map(string, string) of attributes.","properties":{},"additionalProperties":{"type":"string"}}},"required":["study_state"]},"type":{"type":"string","description":"doc_type, restated","enum":["shield-study"]}},"required":["version","study_name","branch","addon_version","shield_version","data","type"]}
 
 /***/ }),
-/* 56 */
+/* 66 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__uri__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__schemes_http__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__schemes_https__ = __webpack_require__(58);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__schemes_mailto__ = __webpack_require__(59);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__schemes_urn__ = __webpack_require__(61);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__schemes_urn_uuid__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__schemes_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__schemes_https__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__schemes_mailto__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__schemes_urn__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__schemes_urn_uuid__ = __webpack_require__(70);
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "SCHEMES", function() { return __WEBPACK_IMPORTED_MODULE_0__uri__["a"]; });
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "pctEncChar", function() { return __WEBPACK_IMPORTED_MODULE_0__uri__["b"]; });
 /* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "pctDecChars", function() { return __WEBPACK_IMPORTED_MODULE_0__uri__["c"]; });
@@ -7865,21 +11910,21 @@ __WEBPACK_IMPORTED_MODULE_0__uri__["a" /* SCHEMES */][__WEBPACK_IMPORTED_MODULE_
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 57 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__regexps_uri__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__regexps_uri__ = __webpack_require__(19);
 
 /* harmony default export */ __webpack_exports__["a"] = (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__regexps_uri__["b" /* buildExps */])(true));
 //# sourceMappingURL=regexps-iri.js.map
 
 /***/ }),
-/* 58 */
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__http__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__http__ = __webpack_require__(20);
 
 const handler = {
     scheme: "https",
@@ -7891,14 +11936,14 @@ const handler = {
 //# sourceMappingURL=https.js.map
 
 /***/ }),
-/* 59 */
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__uri__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_punycode__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_punycode__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_punycode___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_punycode__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __webpack_require__(6);
 
 
 
@@ -8049,7 +12094,7 @@ const handler = {
 //# sourceMappingURL=mailto.js.map
 
 /***/ }),
-/* 60 */
+/* 70 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8078,7 +12123,7 @@ const handler = {
 //# sourceMappingURL=urn-uuid.js.map
 
 /***/ }),
-/* 61 */
+/* 71 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8134,34 +12179,7 @@ const handler = {
 //# sourceMappingURL=urn.js.map
 
 /***/ }),
-/* 62 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 63 */
+/* 72 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -8189,24 +12207,27 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 64 */
+/* 73 */
 /***/ (function(module, exports) {
 
-module.exports = {"name":"shield-studies-addon-utils","description":"Utilities for building Shield-Study Mozilla Firefox add-ons.","version":"5.0.3","author":"Mozilla","bin":{"copyStudyUtils":"bin/copyStudyUtils.js"},"bugs":{"url":"https://github.com/mozilla/shield-studies-addon-utils/issues"},"dependencies":{"ajv":"^6.5.0","commander":"^2.15.1","fs-extra":"^6.0.1","shield-study-schemas":"^0.8.3"},"devDependencies":{"assert":"^1.4.1","doctoc":"^1.3.1","eslint":"4.19.1","eslint-plugin-json":"^1.2.0","eslint-plugin-mozilla":"^0.13.0","eslint-plugin-no-unsanitized":"^3.0.2","fixpack":"^2.3.1","fx-runner":"^1.0.9","geckodriver":"^1.11.0","get-firefox":"^2.1.0","mocha":"^5.2.0","npm-run-all":"^4.1.2","pre-commit":"^1.2.2","prettier":"^1.11.0","selenium-webdriver":"^3.6.0","web-ext":"^2.7.0","webpack":"^2.6.1","yamljs":"^0.3.0"},"engines":{"npm":"^6.1.0"},"files":["bin/copyStudyUtils.js","testUtils","webExtensionApis/study/api.js","webExtensionApis/study/schema.json","webExtensionApis/study/src/telemetry.js","weeUtils/documentSchema.js","weeUtils/generateStubApi.js","weeUtils/verifyWeeSchema.js","weeUtils/wee-schema-schema.json"],"homepage":"https://github.com/mozilla/shield-studies-addon-utils#readme","keywords":["addon","jsm","mozilla","normandy","shield","shield-study"],"license":"MPL-2.0","main":"src/index.js","pre-commit":["format"],"repository":{"type":"git","url":"git://github.com/mozilla/shield-studies-addon-utils.git"},"scripts":{"build":"npm run generate && cd webExtensionApis/study && webpack","clean":"rm -rf examples/*/{src/privileged/,dist/}","docformat":"doctoc --title '**Contents**' docs/*.md && prettier '**/*.md' --write","eslint":"eslint . --ext js --ext json","eslint-fix":"npm run eslint -- --fix","fast-build":"npm run-all build:*  # no pre and post checks","format":"prettier '**/*.{css,js,jsm,json,md}' --trailing-comma=all --ignore-path=.eslintignore --write","generate":"npm-run-all -s -n generate:schema:* generate:docs:* generate:stubApi:*","generate:docs:study":"cd webExtensionApis/study && node ../../weeUtils/documentSchema.js schema.json > api.md","generate:schema:study":"cd webExtensionApis/study && yaml2json schema.yaml -p > schema.json && node ../../weeUtils/verifyWeeSchema.js schema.json","generate:stubApi:study":"cd webExtensionApis/study && node ../../weeUtils/generateStubApi.js ./schema.json > stubApi.js","lint":"npm-run-all lint:*","lint:eslint":"npm run eslint","lint:fixpack":"fixpack  # cleans up package.json","postbuild":"if [ -z ${SKIPLINT} ]; then npm run format; fi","postformat":"run-p lint:fixpack eslint-fix","prebuild":"if [ -z ${SKIPLINT} ]; then npm run lint; fi","prepare":"export SKIPLINT=1 && fixpack && npm run build","pretest":"npm run build && npm run test-addon:bundle-utils && npm run test-addon:build","pretest-addon":"npm run pretest","small-study":"cd examples/small-study && npm run rebuild && npm start","test":"npm run test-only","test-addon":"cd test-addon && web-ext run --no-reload","test-addon:build":"cd test-addon && web-ext build","test-addon:bundle-utils":"./bin/copyStudyUtils.js test-addon/src/privileged","test-only":"FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} ADDON_ZIP=test-addon/dist/shield_utils_test_add-on-1.0.0.zip mocha test/functional/ --bail"}}
+module.exports = {"name":"shield-studies-addon-utils","description":"Utilities for building Shield-Study Mozilla Firefox add-ons.","version":"5.2.1","author":"Mozilla","bin":{"copyStudyUtils":"bin/copyStudyUtils.js","importPioneerOptIn":"bin/import-pioneer-opt-in.sh"},"bugs":{"url":"https://github.com/mozilla/shield-studies-addon-utils/issues"},"dependencies":{"ajv":"^6.5.0","commander":"^2.15.1","fs-extra":"^6.0.1","jose-jwe-jws":"0.1.6","shield-study-schemas":"^0.8.3"},"devDependencies":{"assert":"^1.4.1","doctoc":"^1.3.1","eslint":"4.19.1","eslint-plugin-json":"^1.2.0","eslint-plugin-mozilla":"^0.13.0","eslint-plugin-no-unsanitized":"^3.0.2","fixpack":"^2.3.1","fx-runner":"^1.0.9","geckodriver":"^1.12.2","get-firefox":"^2.1.0","mocha":"^5.2.0","npm-run-all":"^4.1.2","pre-commit":"^1.2.2","prettier":"^1.11.0","selenium-webdriver":"^3.6.0","web-ext":"^2.7.0","webext-experiment-utils":"github:mozilla/webext-experiment-utils#23c4cd0c056695aefd10de1d74024f0211d2b758","webpack":"^2.6.1","yamljs":"^0.3.0"},"engines":{"npm":"^6.1.0"},"files":["bin/copyStudyUtils.js","bin/import-pioneer-opt-in.sh","testUtils","webExtensionApis/study/api.js","webExtensionApis/study/schema.json","webExtensionApis/study/src/telemetry.js","weeUtils/documentSchema.js","weeUtils/generateStubApi.js","weeUtils/verifyWeeSchema.js","weeUtils/wee-schema-schema.json"],"homepage":"https://github.com/mozilla/shield-studies-addon-utils#readme","keywords":["addon","mozilla","normandy","shield","shield-study"],"license":"MPL-2.0","main":"src/index.js","pre-commit":["format"],"repository":{"type":"git","url":"git://github.com/mozilla/shield-studies-addon-utils.git"},"scripts":{"build":"npm run generate && cd webExtensionApis/study && webpack","clean":"rm -rf examples/*/{src/privileged/,dist/}","docformat":"doctoc --title '**Contents**' docs/*.md && prettier '**/*.md' --write","eslint":"eslint . --ext js --ext json","eslint-fix":"npm run eslint -- --fix","fast-build":"npm run-all build:*  # no pre and post checks","format":"prettier '**/*.{css,js,jsm,json,md}' --trailing-comma=all --ignore-path=.eslintignore --write","generate":"npm-run-all -s -n generate:generateSchema:* generate:verifyWeeSchema:* generate:documentSchema:* generate:generateStubApi:*","generate:documentSchema:study":"cd webExtensionApis/study && documentSchema schema.json > api.md","generate:generateSchema:study":"cd webExtensionApis/study && yaml2json schema.yaml -p > schema.json","generate:generateStubApi:study":"cd webExtensionApis/study && generateStubApi ./schema.json > stubApi.js","generate:verifyWeeSchema:study":"cd webExtensionApis/study && verifyWeeSchema schema.json","import-pioneer-opt-in":"bin/import-pioneer-opt-in.sh","lint":"npm-run-all lint:*","lint:eslint":"npm run eslint","lint:fixpack":"fixpack  # cleans up package.json","postbuild":"if [ -z ${SKIPLINT} ]; then npm run format; fi","postformat":"run-p lint:fixpack eslint-fix","prebuild":"if [ -z ${SKIPLINT} ]; then npm run lint; fi","prepare":"export SKIPLINT=1 && fixpack && npm run build","pretest":"npm run build && npm run test-addon:bundle-utils && npm run test-addon:build && npm run import-pioneer-opt-in","pretest-addon":"npm run pretest","small-study":"cd examples/small-study && npm run rebuild && npm start","test":"npm run test:func","test-addon":"cd test-addon && web-ext run --no-reload","test-addon:build":"cd test-addon && web-ext build","test-addon:bundle-utils":"./bin/copyStudyUtils.js test-addon/src/privileged","test:func":"npm-run-all -pr test:func:*","test:func:selenium-mocha":"FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} ADDON_ZIP=test-addon/dist/shield_utils_test_add-on-1.0.0.zip GECKODRIVER_URL=http://127.0.0.1:4444 mocha test/functional/ --bail --full-trace","test:func:start-geckodriver-server":"geckodriver -vv 1> test/results/logs/geckodriver.log 2> test/results/logs/geckodriver.errors.log"}}
 
 /***/ }),
-/* 65 */
+/* 74 */
 /***/ (function(module, exports) {
 
-module.exports = [{"namespace":"study","description":"Interface for Shield and Pioneer studies.","apiVersion":5,"types":[{"id":"NullableString","$schema":"http://json-schema.org/draft-04/schema","oneOf":[{"type":"null"},{"type":"string"}],"choices":[{"type":"null"},{"type":"string"}],"testcases":[null,"a string"]},{"id":"NullableInteger","$schema":"http://json-schema.org/draft-04/schema","oneOf":[{"type":"null"},{"type":"integer"}],"choices":[{"type":"null"},{"type":"integer"}],"testcases":[null,1234567890],"failcases":["1234567890",[]]},{"id":"NullableNumber","$schema":"http://json-schema.org/draft-04/schema","oneOf":[{"type":"null"},{"type":"number"}],"choices":[{"type":"null"},{"type":"number"}],"testcases":[null,1234567890,1234567890.123],"failcases":["1234567890","1234567890.123",[]]},{"id":"studyTypesEnum","$schema":"http://json-schema.org/draft-04/schema","type":"string","enum":["shield","pioneer"],"testcases":["shield","pioneer"],"failcases":["foo"]},{"id":"weightedVariationObject","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"name":{"type":"string"},"weight":{"type":"number","minimum":0}},"required":["name","weight"],"testcase":{"name":"feature-active","weight":1.5}},{"id":"weightedVariationsArray","$schema":"http://json-schema.org/draft-04/schema","type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"weight":{"type":"number","minimum":0}},"required":["name","weight"]},"testcase":[{"name":"feature-active","weight":1.5},{"name":"feature-inactive","weight":1.5}]},{"id":"anEndingRequest","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"fullname":{"$ref":"NullableString","optional":true},"category":{"oneOf":[{"type":"null"},{"type":"string","enum":["ended-positive","ended-neutral","ended-negative"]}],"choices":[{"type":"null"},{"type":"string","enum":["ended-positive","ended-neutral","ended-negative"]}],"optional":true},"baseUrls":{"oneOf":[{"type":"null"},{"type":"array","items":{"type":"string"}}],"choices":[{"type":"null"},{"type":"array","items":{"type":"string"}}],"optional":true,"default":[]},"exacturls":{"oneOf":[{"type":"null"},{"type":"array","items":{"type":"string"}}],"choices":[{"type":"null"},{"type":"array","items":{"type":"string"}}],"optional":"true\ndefault: []"}},"additionalProperties":true,"testcases":[{"baseUrls":["some.url"],"fullname":"anEnding","category":"ended-positive"},{},{"baseUrls":["some.url"]},{"baseUrls":[],"fullname":null,"category":null}],"failcases":[{"baseUrls":null,"category":"not okay"}]},{"id":"onEndStudyResponse","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"fields":{"type":"object","additionalProperties":true},"urls":{"type":"array","items":{"type":"string"}}}},{"id":"studyInfoObject","$schema":"http://json-schema.org/draft-04/schema","type":"object","additionalProperties":true,"properties":{"variation":{"$ref":"weightedVariationObject"},"firstRunTimestamp":{"$ref":"NullableInteger"},"activeExperimentName":{"type":"string"},"delayInMinutes":{"$ref":"NullableNumber"},"isFirstRun":{"type":"boolean"}},"required":["variation","firstRunTimestamp","activeExperimentName","isFirstRun"]},{"id":"studySetup","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"activeExperimentName":{"type":"string"},"studyType":{"$ref":"studyTypesEnum"},"expire":{"type":"object","properties":{"days":{"type":"integer"}},"optional":true,"additionalProperties":false},"endings":{"type":"object","additionalProperties":{"$ref":"anEndingRequest"}},"weightedVariations":{"$ref":"weightedVariationsArray"},"telemetry":{"type":"object","properties":{"send":{"type":"boolean"},"removeTestingFlag":{"type":"boolean"}}},"testing":{"type":"object","properties":{"variationName":{"$ref":"NullableString","optional":true},"firstRunTimestamp":{"$ref":"NullableInteger","optional":true},"expired":{"choices":[{"type":"null"},{"type":"boolean"}],"oneOf":[{"type":"null"},{"type":"boolean"}],"optional":true}},"additionalProperties":false,"optional":true}},"required":["activeExperimentName","studyType","endings","weightedVariations","telemetry"],"additionalProperties":true,"testcases":[{"activeExperimentName":"aStudy","studyType":"shield","expire":{"days":10},"endings":{"anEnding":{"baseUrls":["some.url"]}},"weightedVariations":[{"name":"feature-active","weight":1.5}],"telemetry":{"send":false,"removeTestingFlag":false}},{"activeExperimentName":"aStudy","studyType":"shield","expire":{"days":10},"endings":{"anEnding":{"baseUrls":["some.url"]}},"weightedVariations":[{"name":"feature-active","weight":1.5}],"telemetry":{"send":false,"removeTestingFlag":false},"testing":{"variationName":"something","firstRunTimestamp":1234567890,"expired":true}},{"activeExperimentName":"aStudy","studyType":"pioneer","endings":{"anEnding":{"baseUrls":["some.url"]}},"weightedVariations":[{"name":"feature-active","weight":1.5}],"telemetry":{"send":false,"removeTestingFlag":true},"testing":{"variationName":"something","firstRunTimestamp":1234567890,"expired":true}},{"activeExperimentName":"shield-utils-test-addon@shield.mozilla.org","studyType":"shield","telemetry":{"send":true,"removeTestingFlag":false},"endings":{"user-disable":{"baseUrls":["http://www.example.com/?reason=user-disable"]},"ineligible":{"baseUrls":["http://www.example.com/?reason=ineligible"]},"expired":{"baseUrls":["http://www.example.com/?reason=expired"]},"some-study-defined-ending":{"category":"ended-neutral"},"some-study-defined-ending-with-survey-url":{"baseUrls":["http://www.example.com/?reason=some-study-defined-ending-with-survey-url"],"category":"ended-negative"}},"weightedVariations":[{"name":"feature-active","weight":1.5},{"name":"feature-passive","weight":1.5},{"name":"control","weight":1}],"expire":{"days":14},"testing":{},"allowEnroll":true}]},{"id":"telemetryPayload","$schema":"http://json-schema.org/draft-04/schema","type":"object","additionalProperties":true,"testcase":{"foo":"bar"}},{"id":"searchTelemetryQuery","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"type":{"type":["array"],"items":{"type":"string"},"optional":true},"n":{"type":"integer","optional":true},"minimumTimestamp":{"type":"number","optional":true},"headersOnly":{"type":"boolean","optional":true}},"additionalProperties":false,"testcase":{"type":["shield-study-addon","shield-study"],"n":100,"minimumTimestamp":1523968204184,"headersOnly":false}},{"id":"anEndingAnswer","$schema":"http://json-schema.org/draft-04/schema","type":"object","additionalProperties":true}],"functions":[{"name":"setup","type":"function","async":true,"description":"Attempt an setup/enrollment, with these effects:\n\n- sets 'studyType' as Shield or Pioneer\n  - affects telemetry\n  - (5.1 TODO) watches for dataPermission changes that should *always*\n    stop that kind of study\n\n- Use or choose variation\n  - `testing.variation` if present\n  - OR (internal) deterministicVariation\n    from `weightedVariations`\n    based on hash of\n\n    - activeExperimentName\n    - clientId\n\n- During firstRun[1] only:\n  - set firstRunTimestamp pref value\n  - send 'enter' ping\n  - if `allowEnroll`, send 'install' ping\n  - else endStudy(\"ineligible\") and return\n\n- Every Run\n  - setActiveExperiment(studySetup)\n  - monitor shield | pioneer permission endings\n  - suggests alarming if `expire` is set.\n\nReturns:\n- studyInfo object (see `getStudyInfo`)\n\nTelemetry Sent (First run only)\n\n  - enter\n  - install\n\nFires Events\n\n(At most one of)\n- study:onReady  OR\n- study:onEndStudy\n\nPreferences set\n- `shield.${runtime.id}.firstRunTimestamp`\n\nNote:\n1. allowEnroll is ONLY used during first run (install)\n","parameters":[{"name":"studySetup","$ref":"studySetup"}],"returns":[{"$ref":"studyInfoObject"}]},{"name":"endStudy","type":"function","async":true,"defaultReturn":{"urls":["url1","url2"],"endingName":"some-reason"},"description":"Signal to browser.study that it should end.\n\nUsage scenarios:\n- addons defined\n  - postive endings (tried feature)\n  - negative endings (client clicked 'no thanks')\n  - expiration / timeout (feature should last for 14 days then uninstall)\n\nLogic:\n- If study has already ended, do nothing.\n- Else: END\n\nEND:\n- record internally that study is ended.\n- disable all methods that rely on configuration / setup.\n- clear all prefs stored by `browser.study`\n- fire telemetry pings for:\n  - 'exit'\n  - the ending, one of:\n\n    \"ineligible\",\n    \"expired\",\n    \"user-disable\",\n    \"ended-positive\",\n    \"ended-neutral\",\n    \"ended-negative\",\n\n- augment all ending urls with query urls\n- fire 'study:end' event to `browser.study.onEndStudy` handlers.\n\nAddon should then do\n- open returned urls\n- feature specific cleanup\n- uninstall the addon\n\nNote:\n1.  calling this function multiple time is safe.\n`browser.study` will choose the\n","parameters":[{"name":"anEndingAlias","type":"string"}],"returns":[{"$ref":"anEndingAnswer"}]},{"name":"getStudyInfo","type":"function","async":true,"description":"current study configuration, including\n- variation\n- activeExperimentName\n- delayInMinutes\n- firstRunTimestamp\n- isFirstRun\n\nBut not:\n- telemetry clientId\n\nThrows Error if called before `browser.study.setup`\n","defaultReturn":{"variation":"styleA","firstRunTimestamp":1523968204184,"activeExperimentName":"some experiment","delayInMinutes":12},"parameters":[],"returns":[{"$ref":"studyInfoObject"}]},{"name":"sendTelemetry","type":"function","description":"Send Telemetry using appropriate shield or pioneer methods.\n\nshield:\n- `shield-study-addon` ping, requires object string keys and string values\n\npioneer:\n- TBD\n\nNote:\n- no conversions / coercion of data happens.\n\nNote:\n- undefined what happens if validation fails\n- undefined what happens when you try to send 'shield' from 'pioneer'\n\nTBD fix the parameters here.\n","async":true,"parameters":[{"name":"payload","$ref":"telemetryPayload"}],"defaultReturn":"undefined","returns":null},{"name":"searchSentTelemetry","type":"function","async":true,"description":"Search locally stored telemetry pings using these fields (if set)\n\nn:\n  if set, no more than `n` pings.\ntype:\n  Array of 'ping types' (e.g., main, crash, shield-study-addon) to filter\nminimumTimestamp:\n  only pings after this timestamp.\nheadersOnly:\n  boolean.  If true, only the 'headers' will be returned.\n\nPings will be returned sorted by timestamp with most recent first.\n\nUsage scenarios:\n- enrollment / eligiblity using recent Telemetry behaviours or client environment\n- addon testing scenarios\n","defaultReturn":[{"pingType":"main"}],"parameters":[{"name":"searchTelemetryQuery","$ref":"searchTelemetryQuery"}]},{"name":"validateJSON","type":"function","async":true,"defaultReturn":{"valid":true,"errors":[]},"description":"Using AJV, do jsonschema validation of an object.  Can be used to validate your arguments, packets at client.","parameters":[{"name":"someJson","type":"object","additionalProperties":true},{"name":"jsonschema","type":"object","descripton":"a valid jsonschema object","additionalProperties":true}],"returns":[{"type":"object"},{"parameters":null,"valid":[{"type":"boolean"}],"errors":[{"type":"array"}]}]}],"events":[{"name":"onReady","type":"function","defaultReturn":{"variation":"styleA","firstRunTimestamp":1523968204184},"description":"Fires when the study is 'ready' for the feature to startup.","parameters":[{"name":"studyInfo","type":"object"}]},{"name":"onEndStudy","type":"function","defaultReturn":{"urls":[],"reason":"some-reason"},"description":"Listen for when the study wants to end.\n\nAct on it by\n- opening surveyUrls\n- tearing down your feature\n- uninstalling the addon\n","parameters":[{"name":"ending","type":"object"}]}]},{"namespace":"studyDebug","description":"Interface for Test Utilities","apiVersion":5,"functions":[{"name":"throwAnException","type":"function","description":"Throws an exception from a privileged function - for making sure that we can catch these in our web extension","async":false,"parameters":[{"name":"message","type":"string"}]},{"name":"throwAnExceptionAsync","type":"function","description":"Throws an exception from a privileged async function - for making sure that we can catch these in our web extension","async":true,"parameters":[{"name":"message","type":"string"}]},{"name":"firstSeen","type":"function","async":true,"description":"","parameters":[]},{"name":"setActive","type":"function","async":true,"description":"","parameters":[]},{"name":"startup","type":"function","async":true,"description":"","parameters":[{"name":"details","type":"object","additionalProperties":true}]},{"name":"setFirstRunTimestamp","type":"function","async":true,"description":"Set the pref for firstRunTimestamp, to simulate:\n- 2nd run\n- other useful tests around expiration and states.\n","parameters":[{"name":"timestamp","type":"number","minimum":1}]},{"name":"reset","type":"function","async":true,"description":"\nReset the studyUtils _internals, for debugging purposes.\n","parameters":[]},{"name":"getInternals","type":"function","async":true,"description":"Return `_internals` of the studyUtils object.\n\nUse this for debugging state.\n\nAbout `this._internals`:\n- variation:  (chosen variation, `setup` )\n- isEnding: bool  `endStudy`\n- isSetup: bool   `setup`\n- isFirstRun: bool `setup`, based on pref\n- studySetup: bool  `setup` the config\n- seenTelemetry: object of lists of seen telemetry by bucket\n- prefs: object of all created prefs and their names\n","parameters":[]}]}]
+module.exports = [{"namespace":"study","description":"Interface for Shield and Pioneer studies.","apiVersion":5,"types":[{"id":"NullableString","$schema":"http://json-schema.org/draft-04/schema","oneOf":[{"type":"null"},{"type":"string"}],"choices":[{"type":"null"},{"type":"string"}],"testcases":[null,"a string"]},{"id":"NullableBoolean","$schema":"http://json-schema.org/draft-04/schema","oneOf":[{"type":"null"},{"type":"boolean"}],"choices":[{"type":"null"},{"type":"boolean"}],"testcases":[null,true,false],"failcases":["1234567890","foo",[]]},{"id":"NullableInteger","$schema":"http://json-schema.org/draft-04/schema","oneOf":[{"type":"null"},{"type":"integer"}],"choices":[{"type":"null"},{"type":"integer"}],"testcases":[null,1234567890],"failcases":["1234567890",[]]},{"id":"NullableNumber","$schema":"http://json-schema.org/draft-04/schema","oneOf":[{"type":"null"},{"type":"number"}],"choices":[{"type":"null"},{"type":"number"}],"testcases":[null,1234567890,1234567890.123],"failcases":["1234567890","1234567890.123",[]]},{"id":"studyTypesEnum","$schema":"http://json-schema.org/draft-04/schema","type":"string","enum":["shield","pioneer"],"testcases":["shield","pioneer"],"failcases":["foo"]},{"id":"weightedVariationObject","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"name":{"type":"string"},"weight":{"type":"number","minimum":0}},"required":["name","weight"],"testcase":{"name":"feature-active","weight":1.5}},{"id":"weightedVariationsArray","$schema":"http://json-schema.org/draft-04/schema","type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"weight":{"type":"number","minimum":0}},"required":["name","weight"]},"testcase":[{"name":"feature-active","weight":1.5},{"name":"feature-inactive","weight":1.5}]},{"id":"anEndingRequest","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"fullname":{"$ref":"NullableString","optional":true},"category":{"oneOf":[{"type":"null"},{"type":"string","enum":["ended-positive","ended-neutral","ended-negative"]}],"choices":[{"type":"null"},{"type":"string","enum":["ended-positive","ended-neutral","ended-negative"]}],"optional":true},"baseUrls":{"oneOf":[{"type":"null"},{"type":"array","items":{"type":"string"}}],"choices":[{"type":"null"},{"type":"array","items":{"type":"string"}}],"optional":true,"default":[]},"exacturls":{"oneOf":[{"type":"null"},{"type":"array","items":{"type":"string"}}],"choices":[{"type":"null"},{"type":"array","items":{"type":"string"}}],"optional":"true\ndefault: []"}},"additionalProperties":true,"testcases":[{"baseUrls":["some.url"],"fullname":"anEnding","category":"ended-positive"},{},{"baseUrls":["some.url"]},{"baseUrls":[],"fullname":null,"category":null}],"failcases":[{"baseUrls":null,"category":"not okay"}]},{"id":"onEndStudyResponse","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"fields":{"type":"object","additionalProperties":true},"urls":{"type":"array","items":{"type":"string"}}}},{"id":"studyInfoObject","$schema":"http://json-schema.org/draft-04/schema","type":"object","additionalProperties":true,"properties":{"variation":{"$ref":"weightedVariationObject"},"firstRunTimestamp":{"$ref":"NullableInteger"},"activeExperimentName":{"type":"string"},"delayInMinutes":{"$ref":"NullableNumber"},"isFirstRun":{"type":"boolean"}},"required":["variation","firstRunTimestamp","activeExperimentName","isFirstRun"]},{"id":"dataPermissionsObject","type":"object","additionalProperties":false,"properties":{"shield":{"type":"boolean"},"pioneer":{"type":"boolean"}},"required":["shield","pioneer"]},{"id":"studySetup","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"activeExperimentName":{"type":"string"},"studyType":{"$ref":"studyTypesEnum"},"expire":{"type":"object","properties":{"days":{"type":"integer"}},"optional":true,"additionalProperties":false},"endings":{"type":"object","additionalProperties":{"$ref":"anEndingRequest"}},"weightedVariations":{"$ref":"weightedVariationsArray"},"telemetry":{"type":"object","properties":{"send":{"type":"boolean"},"removeTestingFlag":{"type":"boolean"},"internalTelemetryArchive":{"optional":true,"$ref":"NullableBoolean"}}},"testing":{"type":"object","properties":{"variationName":{"$ref":"NullableString","optional":true},"firstRunTimestamp":{"$ref":"NullableInteger","optional":true},"expired":{"choices":[{"type":"null"},{"type":"boolean"}],"oneOf":[{"type":"null"},{"type":"boolean"}],"optional":true}},"additionalProperties":false,"optional":true}},"required":["activeExperimentName","studyType","endings","weightedVariations","telemetry"],"additionalProperties":true,"testcases":[{"activeExperimentName":"aStudy","studyType":"shield","expire":{"days":10},"endings":{"anEnding":{"baseUrls":["some.url"]}},"weightedVariations":[{"name":"feature-active","weight":1.5}],"telemetry":{"send":false,"removeTestingFlag":false}},{"activeExperimentName":"aStudy","studyType":"shield","expire":{"days":10},"endings":{"anEnding":{"baseUrls":["some.url"]}},"weightedVariations":[{"name":"feature-active","weight":1.5}],"telemetry":{"send":false,"removeTestingFlag":false,"internalTelemetryArchive":false},"testing":{"variationName":"something","firstRunTimestamp":1234567890,"expired":true}},{"activeExperimentName":"aStudy","studyType":"pioneer","endings":{"anEnding":{"baseUrls":["some.url"]}},"weightedVariations":[{"name":"feature-active","weight":1.5}],"telemetry":{"send":false,"removeTestingFlag":true,"internalTelemetryArchive":true},"testing":{"variationName":"something","firstRunTimestamp":1234567890,"expired":true}},{"activeExperimentName":"shield-utils-test-addon@shield.mozilla.org","studyType":"shield","telemetry":{"send":true,"removeTestingFlag":false},"endings":{"user-disable":{"baseUrls":["http://www.example.com/?reason=user-disable"]},"ineligible":{"baseUrls":["http://www.example.com/?reason=ineligible"]},"expired":{"baseUrls":["http://www.example.com/?reason=expired"]},"some-study-defined-ending":{"category":"ended-neutral"},"some-study-defined-ending-with-survey-url":{"baseUrls":["http://www.example.com/?reason=some-study-defined-ending-with-survey-url"],"category":"ended-negative"}},"weightedVariations":[{"name":"feature-active","weight":1.5},{"name":"feature-passive","weight":1.5},{"name":"control","weight":1}],"expire":{"days":14},"testing":{},"allowEnroll":true}]},{"id":"telemetryPayload","$schema":"http://json-schema.org/draft-04/schema","type":"object","additionalProperties":true,"testcase":{"foo":"bar"}},{"id":"searchTelemetryQuery","$schema":"http://json-schema.org/draft-04/schema","type":"object","properties":{"type":{"type":["array"],"items":{"type":"string"},"optional":true},"n":{"type":"integer","optional":true},"minimumTimestamp":{"type":"number","optional":true},"headersOnly":{"type":"boolean","optional":true}},"additionalProperties":false,"testcase":{"type":["shield-study-addon","shield-study"],"n":100,"minimumTimestamp":1523968204184,"headersOnly":false}},{"id":"anEndingAnswer","$schema":"http://json-schema.org/draft-04/schema","type":"object","additionalProperties":true}],"functions":[{"name":"setup","type":"function","async":true,"description":"Attempt an setup/enrollment, with these effects:\n\n- sets 'studyType' as Shield or Pioneer\n  - affects telemetry\n  - (5.2+ TODO) watches for dataPermission changes that should *always*\n    stop that kind of study\n\n- Use or choose variation\n  - `testing.variation` if present\n  - OR (internal) deterministicVariation\n    from `weightedVariations`\n    based on hash of\n\n    - activeExperimentName\n    - clientId\n\n- During firstRun[1] only:\n  - set firstRunTimestamp pref value\n  - send 'enter' ping\n  - if `allowEnroll`, send 'install' ping\n  - else endStudy(\"ineligible\") and return\n\n- Every Run\n  - setActiveExperiment(studySetup)\n  - monitor shield | pioneer permission endings\n  - suggests alarming if `expire` is set.\n\nReturns:\n- studyInfo object (see `getStudyInfo`)\n\nTelemetry Sent (First run only)\n\n  - enter\n  - install\n\nFires Events\n\n(At most one of)\n- study:onReady  OR\n- study:onEndStudy\n\nPreferences set\n- `shield.${runtime.id}.firstRunTimestamp`\n\nNote:\n1. allowEnroll is ONLY used during first run (install)\n","parameters":[{"name":"studySetup","$ref":"studySetup"}],"returns":[{"$ref":"studyInfoObject"}]},{"name":"endStudy","type":"function","async":true,"defaultReturn":{"urls":["url1","url2"],"endingName":"some-reason"},"description":"Signal to browser.study that it should end.\n\nUsage scenarios:\n- add-ons defined\n  - positive endings (tried feature)\n  - negative endings (client clicked 'no thanks')\n  - expiration / timeout (feature should last for 14 days then uninstall)\n\nLogic:\n- If study has already ended, do nothing.\n- Else: END\n\nEND:\n- record internally that study is ended.\n- disable all methods that rely on configuration / setup.\n- clear all prefs stored by `browser.study`\n- fire telemetry pings for:\n  - 'exit'\n  - the ending, one of:\n\n    \"ineligible\",\n    \"expired\",\n    \"user-disable\",\n    \"ended-positive\",\n    \"ended-neutral\",\n    \"ended-negative\",\n\n- augment all ending URLs with query URLs\n- fire 'study:end' event to `browser.study.onEndStudy` handlers.\n\nAdd-on should then do\n- open returned URLs\n- feature specific cleanup\n- uninstall the add-on\n\nNote:\n1.  calling this function multiple time is safe.\n`browser.study` will choose the\n","parameters":[{"name":"anEndingAlias","type":"string"}],"returns":[{"$ref":"anEndingAnswer"}]},{"name":"getStudyInfo","type":"function","async":true,"description":"current study configuration, including\n- variation\n- activeExperimentName\n- delayInMinutes\n- firstRunTimestamp\n- isFirstRun\n\nBut not:\n- telemetry clientId\n\nThrows Error if called before `browser.study.setup`\n","defaultReturn":{"variation":"styleA","firstRunTimestamp":1523968204184,"activeExperimentName":"some experiment","delayInMinutes":12},"parameters":[],"returns":[{"$ref":"studyInfoObject"}]},{"name":"getDataPermissions","type":"function","async":true,"description":"Object of current dataPermissions (shield enabled true/false, pioneer enabled true/false)","defaultReturn":{"shield":true,"pioneer":false},"parameters":[],"returns":[{"$ref":"dataPermissionsObject"}]},{"name":"sendTelemetry","type":"function","description":"Send Telemetry using appropriate shield or pioneer methods.\n\nNote: The payload must adhere to the `data.attributes` property in the [`shield-study-addon`](https://github.com/mozilla-services/mozilla-pipeline-schemas/blob/dev/templates/include/telemetry/shieldStudyAddonPayload.3.schema.json) schema. That is, it must be a flat object with string keys and string values.\n\nNote:\n- no conversions / coercion of data happens.\n- undefined what happens if validation fails\n\nTBD fix the parameters here.\n","async":true,"parameters":[{"name":"payload","$ref":"telemetryPayload"}],"defaultReturn":"undefined","returns":null},{"name":"calculateTelemetryPingSize","type":"function","description":"Calculate Telemetry using appropriate shield or pioneer methods.\n\nshield:\n- Calculate the size of a ping\n\npioneer:\n- Calculate the size of a ping that has Pioneer encrypted data\n","async":true,"parameters":[{"name":"payload","$ref":"telemetryPayload"}],"defaultReturn":"undefined","returns":[{"type":"number"}]},{"name":"searchSentTelemetry","type":"function","async":true,"description":"Search locally stored telemetry pings using these fields (if set)\n\nn:\n  if set, no more than `n` pings.\ntype:\n  Array of 'ping types' (e.g., main, crash, shield-study-addon) to filter\nminimumTimestamp:\n  only pings after this timestamp.\nheadersOnly:\n  boolean.  If true, only the 'headers' will be returned.\n\nPings will be returned sorted by timestamp with most recent first.\n\nUsage scenarios:\n- enrollment / eligiblity using recent Telemetry behaviours or client environment\n- add-on testing scenarios\n","defaultReturn":[{"pingType":"main"}],"parameters":[{"name":"searchTelemetryQuery","$ref":"searchTelemetryQuery"}]},{"name":"getTestingOverrides","type":"function","async":true,"description":"Returns an object with the following keys:\n  variationName - to be able to test specific variations\n  firstRunTimestamp - to be able to test the expiration event\n  expired - to be able to test the behavior of an already expired study\nUsed to override study testing flags in getStudySetup().\nThe values are set by the corresponding preference under the `extensions.${widgetId}.test.*` preference branch.\n","parameters":[]},{"name":"validateJSON","type":"function","async":true,"defaultReturn":{"valid":true,"errors":[]},"description":"Using AJV, do jsonschema validation of an object.  Can be used to validate your arguments, packets at client.","parameters":[{"name":"someJson","type":"object","additionalProperties":true},{"name":"jsonschema","type":"object","descripton":"a valid jsonschema object","additionalProperties":true}],"returns":[{"type":"object"},{"parameters":null,"valid":[{"type":"boolean"}],"errors":[{"type":"array"}]}]}],"events":[{"name":"onReady","type":"function","defaultReturn":{"variation":"styleA","firstRunTimestamp":1523968204184},"description":"Fires when the study is 'ready' for the feature to startup.","parameters":[{"name":"studyInfo","type":"object"}]},{"name":"onEndStudy","type":"function","defaultReturn":{"urls":[],"reason":"some-reason"},"description":"Listen for when the study wants to end.\n\nAct on it by\n- opening surveyUrls\n- tearing down your feature\n- uninstalling the add-on\n","parameters":[{"name":"ending","type":"object"}]}]},{"namespace":"study.logger","description":"For study developers to be able to log messages which are hidden by default but can\nbe displayed via a preference (not currently possible with avoid console.{info,log,debug,warn,error}).\nLog messages will be prefixed with the add-on's widget id and the log level is controlled by the\n`shieldStudy.logLevel` preference.\nNote that since there is no way to handle an arbitrarily variable number of arguments in the schema,\nall values to log needs to be sent as a single variable.\nUsage example: await browser.study.logger.log(\"foo\");\nUsage example (multiple things to log): await browser.study.logger.log([\"foo\", bar]);\n","functions":[{"name":"info","type":"function","async":true,"description":"Corresponds to console.info","parameters":[{"name":"values","type":"any"}]},{"name":"log","type":"function","async":true,"description":"Corresponds to console.log","parameters":[{"name":"values","type":"any"}]},{"name":"debug","type":"function","async":true,"description":"Corresponds to console.debug","parameters":[{"name":"values","type":"any"}]},{"name":"warn","type":"function","async":true,"description":"Corresponds to console.warn","parameters":[{"name":"values","type":"any"}]},{"name":"error","type":"function","async":true,"description":"Corresponds to console.error","parameters":[{"name":"values","type":"any"}]}]},{"namespace":"studyDebug","description":"Interface for Test Utilities","apiVersion":5,"functions":[{"name":"throwAnException","type":"function","description":"Throws an exception from a privileged function - for making sure that we can catch these in our web extension","async":false,"parameters":[{"name":"message","type":"string"}]},{"name":"throwAnExceptionAsync","type":"function","description":"Throws an exception from a privileged async function - for making sure that we can catch these in our web extension","async":true,"parameters":[{"name":"message","type":"string"}]},{"name":"firstSeen","type":"function","async":true,"description":"","parameters":[]},{"name":"setActive","type":"function","async":true,"description":"","parameters":[]},{"name":"startup","type":"function","async":true,"description":"","parameters":[{"name":"details","type":"object","additionalProperties":true}]},{"name":"setFirstRunTimestamp","type":"function","async":true,"description":"Set the pref for firstRunTimestamp, to simulate:\n- 2nd run\n- other useful tests around expiration and states.\n","parameters":[{"name":"timestamp","type":"number","minimum":1}]},{"name":"reset","type":"function","async":true,"description":"\nReset the studyUtils _internals, for debugging purposes.\n","parameters":[]},{"name":"getInternals","type":"function","async":true,"description":"Return `_internals` of the studyUtils object.\n\nUse this for debugging state.\n\nAbout `this._internals`:\n- variation:  (chosen variation, `setup` )\n- isEnding: bool  `endStudy`\n- isSetup: bool   `setup`\n- isFirstRun: bool `setup`, based on pref\n- studySetup: bool  `setup` the config\n- seenTelemetry: array of seen telemetry. Fully populated only if studySetup.telemetry.internalTelemetryArchive is true\n- prefs: object of all created prefs and their names\n","parameters":[]},{"name":"getInternalTestingOverrides","type":"function","async":true,"description":"Returns an object with the following keys:\n  studyType - to be able to test add-ons with different studyType configurations\nUsed to override study testing flags in getStudySetup().\nThe values are set by the corresponding preference under the `extensions.${widgetId}.test.*` preference branch.\n","parameters":[]}]}]
 
 /***/ }),
-/* 66 */
+/* 75 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__makeWidgetId__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__testingOverrides__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__dataPermissions__ = __webpack_require__(7);
 /* eslint-env commonjs */
 /* eslint no-logger: off */
 /* global ExtensionAPI */
@@ -8218,16 +12239,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+
+
+
 ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
 ChromeUtils.import("resource://gre/modules/ExtensionUtils.jsm");
 
-__WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("loading web extension experiment study/api.js");
+__WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("loading web extension experiment study/api.js");
 
-// eslint-disable-next-line no-undef
+/* eslint-disable no-undef */
 const { EventManager } = ExtensionCommon;
-// eslint-disable-next-line no-undef
 const { ExtensionError } = ExtensionUtils;
-
 const EventEmitter =
   ExtensionCommon.EventEmitter || ExtensionUtils.EventEmitter;
 
@@ -8263,7 +12285,7 @@ this.study = class extends ExtensionAPI {
      */
     this.extension = extension;
     this.studyApiEventEmitter = new StudyApiEventEmitter();
-    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("constructed!");
+    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("constructed!");
   }
 
   /**
@@ -8279,12 +12301,12 @@ this.study = class extends ExtensionAPI {
    * @returns {undefined}
    */
   async onShutdown(shutdownReason) {
-    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("possible uninstalling", shutdownReason);
+    __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("possible uninstalling", shutdownReason);
     if (
       shutdownReason === "ADDON_UNINSTALL" ||
       shutdownReason === "ADDON_DISABLE"
     ) {
-      __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("definitely uninstall | disable", shutdownReason);
+      __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("definitely uninstall | disable", shutdownReason);
       const anEndingAlias = "user-disable";
       const endingResponse = await this.studyUtils.endStudy(anEndingAlias);
       // See #194, getApi is already torn down, so cannot hear it.
@@ -8293,14 +12315,14 @@ this.study = class extends ExtensionAPI {
   }
 
   /**
-   * @param {object} context the addon context
+   * @param {object} context the add-on context
    * @returns {object} api with study, studyDebug keys
    */
   getAPI(context) {
     const { extension } = this;
 
     // Load studyUtils
-    const { studyUtils } = __webpack_require__(19);
+    const { studyUtils } = __webpack_require__(23);
 
     // Make studyUtils available for onShutdown handler
     this.studyUtils = studyUtils;
@@ -8312,8 +12334,12 @@ this.study = class extends ExtensionAPI {
     studyUtils.setExtensionManifest(extension.manifest);
     studyUtils._internals = studyUtils._createInternals();
 
+    // for add-on logging via browser.study.logger.log()
+    const widgetId = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__makeWidgetId__["a" /* default */])(extension.manifest.applications.gecko.id);
+    const addonLogger = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__logger__["b" /* createLogger */])(widgetId, `shieldStudy.logLevel`);
+
     async function endStudy(anEndingAlias) {
-      __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("called endStudy anEndingAlias");
+      __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("called endStudy anEndingAlias");
       const endingResponse = await studyUtils.endStudy(anEndingAlias);
       studyApiEventEmitter.emitEndStudy(endingResponse);
     }
@@ -8383,7 +12409,7 @@ this.study = class extends ExtensionAPI {
           // function when the study is initialized
           if (studyInfo.isFirstRun) {
             if (!studySetup.allowEnroll) {
-              __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("User is ineligible, ending study.");
+              __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("User is ineligible, ending study.");
               // 1. uses studySetup.endings.ineligible.url if any,
               // 2. sends UT for "ineligible"
               // 3. then uninstalls add-on
@@ -8393,7 +12419,7 @@ this.study = class extends ExtensionAPI {
           }
 
           if (studyInfo.delayInMinutes === 0) {
-            __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("encountered already expired study");
+            __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("encountered already expired study");
             await endStudy("expired");
             return studyUtils.info();
           }
@@ -8407,12 +12433,12 @@ this.study = class extends ExtensionAPI {
 
           // update what the study variation and other info is.
           studyInfo = studyUtils.info();
-          __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug(`api info: ${JSON.stringify(studyInfo)}`);
+          __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug(`api info: ${JSON.stringify(studyInfo)}`);
           try {
             studyApiEventEmitter.emitReady(studyInfo);
           } catch (e) {
-            __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].error("browser.study.setup error");
-            __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].error(e);
+            __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].error("browser.study.setup error");
+            __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].error(e);
           }
           return studyUtils.info();
         },
@@ -8472,8 +12498,13 @@ this.study = class extends ExtensionAPI {
          *  Throws ExtensionError if called before `browser.study.setup`
          **/
         getStudyInfo: async function getStudyInfo() {
-          __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("called getStudyInfo ");
+          __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("called getStudyInfo ");
           return studyUtils.info();
+        },
+
+        /* Object of current dataPermissions (shield enabled true/false, pioneer enabled true/false) */
+        getDataPermissions: async function getDataPermissions() {
+          return __WEBPACK_IMPORTED_MODULE_3__dataPermissions__["a" /* getDataPermissions */]();
         },
 
         /** Send Telemetry using appropriate shield or pioneer methods.
@@ -8497,7 +12528,7 @@ this.study = class extends ExtensionAPI {
          * @returns {undefined}
          */
         sendTelemetry: async function sendTelemetry(payload) {
-          __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("called sendTelemetry payload");
+          __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("called sendTelemetry payload");
 
           function throwIfInvalid(obj) {
             // Check: all keys and values must be strings,
@@ -8512,6 +12543,23 @@ this.study = class extends ExtensionAPI {
 
           throwIfInvalid(payload);
           return studyUtils.telemetry(payload);
+        },
+
+        /** Calculate Telemetry using appropriate shield or pioneer methods.
+         *
+         *  shield:
+         *   - Calculate the size of a ping
+         *
+         *   pioneer:
+         *   - Calculate the size of a ping that has Pioneer encrypted data
+         *
+         * @param {Object} payload Non-nested object with key strings, and key values
+         * @returns {Promise<Number>} The total size of the ping.
+         */
+        calculateTelemetryPingSize: async function calculateTelemetryPingSize(
+          payload,
+        ) {
+          return studyUtils.calculateTelemetryPingSize(payload);
         },
 
         /** Search locally stored telemetry pings using these fields (if set)
@@ -8539,15 +12587,28 @@ this.study = class extends ExtensionAPI {
             "resource://gre/modules/TelemetryArchive.jsm",
             {},
           );
-          const { searchTelemetryArchive } = __webpack_require__(20);
+          const { searchTelemetryArchive } = __webpack_require__(24);
           return searchTelemetryArchive(TelemetryArchive, searchTelemetryQuery);
         },
 
         /* Using AJV, do jsonschema validation of an object.  Can be used to validate your arguments, packets at client. */
         validateJSON: async function validateJSON(someJson, jsonschema) {
-          __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* default */].debug("called validateJSON someJson, jsonschema");
+          __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug("called validateJSON someJson, jsonschema");
           return studyUtils.jsonschema.validate(someJson, jsonschema);
           // return { valid: true, errors: [] };
+        },
+
+        /* Returns an object with the following keys:
+    variationName - to be able to test specific variations
+    firstRunTimestamp - to be able to test the expiration event
+    expired - to be able to test the behavior of an already expired study
+  The values are set by the corresponding preference under the `extensions.${widgetId}.test.*` preference branch. */
+        getTestingOverrides: async function getTestingOverrides() {
+          __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].info(
+            "The preferences that can be used to override study testing flags: ",
+            __WEBPACK_IMPORTED_MODULE_2__testingOverrides__["a" /* listPreferences */](widgetId),
+          );
+          return __WEBPACK_IMPORTED_MODULE_2__testingOverrides__["b" /* getTestingOverrides */](widgetId);
         },
 
         /**
@@ -8583,6 +12644,33 @@ this.study = class extends ExtensionAPI {
             studyApiEventEmitter.off("endStudy", listener);
           };
         }).api(),
+
+        logger: {
+          /* Corresponds to console.info */
+          info: async function info(values) {
+            addonLogger.info(values);
+          },
+
+          /* Corresponds to console.log */
+          log: async function log(values) {
+            addonLogger.log(values);
+          },
+
+          /* Corresponds to console.debug */
+          debug: async function debug(values) {
+            addonLogger.debug(values);
+          },
+
+          /* Corresponds to console.warn */
+          warn: async function warn(values) {
+            addonLogger.warn(values);
+          },
+
+          /* Corresponds to console.error */
+          error: async function error(values) {
+            addonLogger.error(values);
+          },
+        },
       },
 
       studyDebug: {
@@ -8613,6 +12701,10 @@ this.study = class extends ExtensionAPI {
         async getInternals() {
           return studyUtils._internals;
         },
+
+        getInternalTestingOverrides: async function getInternalTestingOverrides() {
+          return __WEBPACK_IMPORTED_MODULE_2__testingOverrides__["c" /* getInternalTestingOverrides */](widgetId);
+        },
       },
     };
   }
@@ -8620,7 +12712,7 @@ this.study = class extends ExtensionAPI {
 
 
 /***/ }),
-/* 67 */
+/* 76 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8630,11 +12722,11 @@ this.study = class extends ExtensionAPI {
 
 ChromeUtils.import("resource://gre/modules/ExtensionUtils.jsm");
 
-const Ajv = __webpack_require__(7);
+const Ajv = __webpack_require__(9);
 const ajv = new Ajv({
   // important:  these options make ajv behave like 04, not draft-07
   schemaId: "auto", // id UNLESS $id is defined. (draft 5)
-  meta: __webpack_require__(14),
+  meta: __webpack_require__(16),
   validateSchema: false,
 });
 
@@ -8655,7 +12747,7 @@ const jsonschema = {
 
 
 /***/ }),
-/* 68 */
+/* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8767,6 +12859,435 @@ function cumsum(arr) {
   hashFraction,
   sha256,
 });
+
+
+/***/ }),
+/* 78 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dataPermissions__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__getPingSize__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__getPingSize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__getPingSize__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jose_jwe_jws_dist_jose_commonjs_js__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jose_jwe_jws_dist_jose_commonjs_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_jose_jwe_jws_dist_jose_commonjs_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pioneer_public_keys_json__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pioneer_public_keys_json___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__pioneer_public_keys_json__);
+/* eslint-env commonjs */
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(Pioneer)" }]*/
+
+
+
+
+
+const { Services } = ChromeUtils.import(
+  "resource://gre/modules/Services.jsm",
+  {},
+);
+const { TelemetryController } = ChromeUtils.import(
+  "resource://gre/modules/TelemetryController.jsm",
+  {},
+);
+
+const { generateUUID } = Cc["@mozilla.org/uuid-generator;1"].getService(
+  Ci.nsIUUIDGenerator,
+);
+
+
+
+// The public keys used for encryption
+
+
+const PIONEER_ID_PREF = "extensions.pioneer.cachedClientID";
+
+const EVENTS = {
+  INELIGIBLE: "ineligible",
+  EXPIRED: "expired",
+  USER_DISABLE: "user-disable",
+  ENDED_POSITIVE: "ended-positive",
+  ENDED_NEUTRAL: "ended-neutral",
+  ENDED_NEGATIVE: "ended-negative",
+};
+
+// Make crypto available and make jose use it.
+Cu.importGlobalProperties(["crypto"]);
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3_jose_jwe_jws_dist_jose_commonjs_js__["setCrypto"])(crypto);
+
+/**
+ * @typedef {Object} Config
+ * @property {String} studyName
+ *   Unique name of the study.
+ *
+ * @property {String?} telemetryEnv
+ *   Optional. Which telemetry environment to send data to. Should be
+ *   either ``"prod"`` or ``"stage"``. Defaults to ``"prod"``.
+ */
+
+/**
+ * Utilities for making Pioneer Studies.
+ */
+class PioneerUtils {
+  /**
+   * @param {Config} config Object with Pioneer-related configuration as specified above
+   */
+  constructor(config) {
+    this.config = config;
+    this.encrypter = null;
+    this._logger = null;
+  }
+
+  /**
+   * @returns {Object} A public key
+   */
+  getPublicKey() {
+    const env = this.config.telemetryEnv || "prod";
+    return __WEBPACK_IMPORTED_MODULE_4__pioneer_public_keys_json__[env];
+  }
+
+  /**
+   * @returns {void}
+   */
+  setupEncrypter() {
+    if (this.encrypter === null) {
+      const pk = this.getPublicKey();
+      const rsa_key = __WEBPACK_IMPORTED_MODULE_3_jose_jwe_jws_dist_jose_commonjs_js__["Jose"].Utils.importRsaPublicKey(pk.key, "RSA-OAEP");
+      const cryptographer = new __WEBPACK_IMPORTED_MODULE_3_jose_jwe_jws_dist_jose_commonjs_js__["Jose"].WebCryptographer();
+      this.encrypter = new __WEBPACK_IMPORTED_MODULE_3_jose_jwe_jws_dist_jose_commonjs_js__["JoseJWE"].Encrypter(cryptographer, rsa_key);
+    }
+  }
+
+  /**
+   * @returns {String} Unique ID for a Pioneer user.
+   */
+  getPioneerId() {
+    let id = Services.prefs.getCharPref(PIONEER_ID_PREF, "");
+
+    if (!id) {
+      // generateUUID adds leading and trailing "{" and "}". strip them off.
+      id = generateUUID()
+        .toString()
+        .slice(1, -1);
+      Services.prefs.setCharPref(PIONEER_ID_PREF, id);
+    }
+
+    return id;
+  }
+
+  /**
+   * @private
+   * @param {String} data The data to encrypt
+   * @returns {String} The encrypted data
+   */
+  async encryptData(data) {
+    this.setupEncrypter();
+    return this.encrypter.encrypt(data);
+  }
+
+  /**
+   * Constructs a payload object with encrypted data.
+   *
+   * @param {String} schemaName
+   *   The name of the schema to be used for validation.
+   *
+   * @param {int} schemaVersion
+   *   The version of the schema to be used for validation.
+   *
+   * @param {Object} data
+   *   An object containing data to be encrypted and submitted.
+   *
+   * @returns {Object}
+   *   A Telemetry payload object with the encrypted data.
+   */
+  async buildEncryptedPayload(schemaName, schemaVersion, data) {
+    const pk = this.getPublicKey();
+
+    return {
+      encryptedData: await this.encryptData(JSON.stringify(data)),
+      encryptionKeyId: pk.id,
+      pioneerId: this.getPioneerId(),
+      studyName: this.config.studyName,
+      schemaName,
+      schemaVersion,
+    };
+  }
+
+  /**
+   * Encrypts the given data and submits a properly formatted
+   * Pioneer ping to Telemetry.
+   *
+   * @param {String} schemaName
+   *   The name of the schema to be used for validation.
+   *
+   * @param {int} schemaVersion
+   *   The version of the schema to be used for validation.
+   *
+   * @param {Object} data
+   *   A object containing data to be encrypted and submitted.
+   *
+   * @param {Object} options
+   *   An object with additional options for the function.
+   *
+   * @param {Boolean} options.force
+   *   A boolean to indicate whether to force submission of the ping.
+   *
+   * @returns {String}
+   *   The ID of the ping that was submitted
+   */
+  async submitEncryptedPing(schemaName, schemaVersion, data, options = {}) {
+    // If the user is no longer opted in we should not be submitting pings.
+    const isUserOptedIn = await __WEBPACK_IMPORTED_MODULE_1__dataPermissions__["b" /* isUserOptedInToPioneer */]();
+    if (!isUserOptedIn && !options.force) {
+      return null;
+    }
+
+    const payload = await this.buildEncryptedPayload(
+      schemaName,
+      schemaVersion,
+      data,
+    );
+
+    const telOptions = {
+      addClientId: true,
+      addEnvironment: true,
+    };
+
+    return TelemetryController.submitExternalPing(
+      "pioneer-study",
+      payload,
+      telOptions,
+    );
+  }
+
+  /**
+   * Gets an object that is a mapping of all the available events.
+   *
+   * @returns {Object}
+   *   An object with all the available events.
+   */
+  getAvailableEvents() {
+    return EVENTS;
+  }
+
+  /**
+   * Submits an encrypted event ping.
+   *
+   * @param {String} eventId
+   *   The ID of the event that occured.
+   *
+   * @param {Object} options
+   *   An object of options to be passed through to submitEncryptedPing
+   *
+   * @returns {String}
+   *   The ID of the event ping that was submitted.
+   */
+  async submitEventPing(eventId, options = {}) {
+    if (!Object.values(EVENTS).includes(eventId)) {
+      throw new Error("Invalid event ID.");
+    }
+    return this.submitEncryptedPing("event", 1, { eventId }, options);
+  }
+}
+
+class PioneerStudyType {
+  /**
+   * @param {object} studyUtils The studyUtils instance from where this class was instantiated
+   */
+  constructor(studyUtils) {
+    const studySetup = studyUtils._internals.studySetup;
+    const Config = {
+      studyName: studySetup.activeExperimentName,
+      telemetryEnv: studySetup.telemetry.removeTestingFlag ? "prod" : "stage",
+    };
+    this.pioneerUtils = new PioneerUtils(Config);
+    this.schemaVersion = 3; // Corresponds to the schema versions used in https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/dev/templates/telemetry/shield-study (and the shield-study-addon, shield-study-error equivalents)
+  }
+
+  /**
+   * @returns {Promise<String>} The ID of the event ping that was submitted.
+   */
+  async notifyNotEligible() {
+    return this.notifyEndStudy(this.EVENTS.INELIGIBLE);
+  }
+
+  /**
+   * @param {String?} eventId The ID of the event that occured.
+   * @returns {Promise<String>} The ID of the event ping that was submitted.
+   */
+  async notifyEndStudy(eventId = EVENTS.ENDED_NEUTRAL) {
+    return this.pioneerUtils.submitEventPing(eventId, { force: true });
+  }
+
+  /**
+   * @returns {Promise<String>} Unique ID for a Pioneer user.
+   */
+  async getTelemetryId() {
+    return this.pioneerUtils.getPioneerId();
+  }
+
+  /**
+   * @param {String} bucket The type of telemetry payload
+   * @param {Object} payload The telemetry payload
+   * @returns {Promise<String>} The ID of the ping that was submitted
+   */
+  async sendTelemetry(bucket, payload) {
+    const schemaName = bucket;
+    return this._telemetry(schemaName, this.schemaVersion, payload);
+  }
+
+  /**
+   * Encrypts the given data and submits a properly formatted
+   * Pioneer ping to Telemetry.
+   *
+   * @param {String} schemaName
+   *   The name of the schema to be used for validation.
+   *
+   * @param {int} schemaVersion
+   *   The version of the schema to be used for validation.
+   *
+   * @param {Object} payload
+   *   A object containing data to be encrypted and submitted.
+   *
+   * @returns {Promise<String>} The ID of the ping that was submitted
+   * @private
+   */
+  async _telemetry(schemaName, schemaVersion, payload) {
+    const pingId = await this.pioneerUtils.submitEncryptedPing(
+      schemaName,
+      schemaVersion,
+      payload,
+    );
+    if (pingId) {
+      __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug(
+        "Pioneer Telemetry sent (encrypted)",
+        JSON.stringify(payload),
+      );
+    } else {
+      __WEBPACK_IMPORTED_MODULE_0__logger__["a" /* utilsLogger */].debug(
+        "Pioneer Telemetry not sent due to privacy preferences",
+        JSON.stringify(payload),
+      );
+    }
+    return pingId;
+  }
+
+  /**
+   * Calculate the size of a ping.
+   *
+   * @param {String} bucket The type of telemetry payload
+   *
+   * @param {Object} payload
+   *   The data payload of the ping.
+   *
+   * @returns {Promise<Number>}
+   *   The total size of the ping.
+   */
+  async getPingSize(bucket, payload) {
+    const schemaName = bucket;
+    return this.getEncryptedPingSize(schemaName, this.schemaVersion, payload);
+  }
+
+  /**
+   * Calculate the size of a ping that has Pioneer encrypted data.
+   *
+   * @param {String} schemaName
+   *   The name of the schema to be used for validation.
+   *
+   * @param {int} schemaVersion
+   *   The version of the schema to be used for validation.
+   *
+   * @param {Object} data
+   *   An object containing data to be encrypted and submitted.
+   *
+   * @returns {Promise<Number>}
+   *   The total size of the ping.
+   */
+  async getEncryptedPingSize(schemaName, schemaVersion, data) {
+    return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__getPingSize__["getPingSize"])(
+      await this.pioneerUtils.buildEncryptedPayload(
+        schemaName,
+        schemaVersion,
+        data,
+      ),
+    );
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (PioneerStudyType);
+
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports) {
+
+module.exports = {"stage":{"id":"pioneer-20170905","key":{"e":"AQAB","kty":"RSA","n":"3nI-DQ7NoUZCvT348Vi4JfGC1h6R3Qf_yXR0dKM5DmwsuQMxguce6sZ28GWQHJjgbdcs8nTuNQihyVtr9vLsoKUVSmPs_a3QEGXEhTpuTtm7cCb_7HyAlwGtysn2AsdElG8HsDFWlZmiDaHTrTmdLnuk-Z3GRg4nnA4xs4vvUuh0fCVIKoSMFyt3Tkc6IBWJ9X3XrDEbSPrghXV7Cu8LMK3Y4avy6rjEGjWXL-WqIPhiYJcBiFnCcqUCMPvdW7Fs9B36asc_2EQAM5d7BAiBwMjoosSyU6b4JGpI530c3xhqLbX00q1ePCG732cIwp0-bGWV_q0FpQX2M9cNv2Ax4Q"}},"prod":{"id":"pioneer-20170905","key":{"e":"AQAB","kty":"RSA","n":"_uqWswIJpR-cFdwwtNdAI_B_0sPIyQyBy6hiiQ0GKLF2k1PkN6RaxtbZK8v1_BriYtEgWn3hNzJNbKBWBMFtF5-8OfvxH-hgIIeDmRmeHmynLBBCDVf2HAZYaDXJiM7s6LBubDuoPDc3Ovoj287W7E4LgzsBS0wo3ARIwlKn6x0Dj5tu6CQ5r3t0GKZoSFkiVZA7nke-VC55nlDacIIYAqkMX0dzsBaCRmf2C5JJTP-K14iRLB5VFGZ_vnoZ-Wi1BGRV2TNRl3xl0lFJIcPklFpU3hsnRPiF4y7kenU6OIhJVQMqX1CtCF698k7SFCYJt7r1ymWJE-tv0ZwF9b1MFw"}}}
+
+/***/ }),
+/* 80 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getPingSize__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getPingSize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__getPingSize__);
+/* eslint-env commonjs */
+
+
+
+const { TelemetryController } = ChromeUtils.import(
+  "resource://gre/modules/TelemetryController.jsm",
+  null,
+);
+const { ClientID } = ChromeUtils.import(
+  "resource://gre/modules/ClientID.jsm",
+  {},
+);
+// ChromeUtils.import("resource://gre/modules/ExtensionUtils.jsm");
+
+// eslint-disable-next-line no-undef
+// const { ExtensionError } = ExtensionUtils;
+
+class ShieldStudyType {
+  /**
+   * @param {object} studyUtils The studyUtils instance from where this class was instantiated
+   */
+  constructor(studyUtils) {
+    // console.log("studyUtils", studyUtils);
+  }
+
+  /**
+   * @returns {Promise<String>} The telemetry client id
+   */
+  async getTelemetryId() {
+    return ClientID.getClientID();
+  }
+
+  /**
+   * @param {String} bucket The type of telemetry payload
+   * @param {Object} payload The telemetry payload
+   * @returns {Promise<String>} The ID of the ping that was submitted
+   */
+  async sendTelemetry(bucket, payload) {
+    const telOptions = { addClientId: true, addEnvironment: true };
+    return TelemetryController.submitExternalPing(bucket, payload, telOptions);
+  }
+
+  /**
+   * Calculate the size of a ping.
+   *
+   * @param {String} bucket The type of telemetry payload
+   *
+   * @param {Object} payload
+   *   The data payload of the ping.
+   *
+   * @returns {Promise<Number>}
+   *   The total size of the ping.
+   */
+  async getPingSize(bucket, payload) {
+    return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__getPingSize__["getPingSize"])(payload);
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (ShieldStudyType);
 
 
 /***/ })
