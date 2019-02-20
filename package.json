@@ -24,7 +24,7 @@
   "dependencies": {
     "dompurify": "^1.0.4",
     "pontoon-to-webext": "^1.0.2",
-    "shield-studies-addon-utils": "^5.0.3"
+    "shield-studies-addon-utils": "^5.2.1"
   },
   "devDependencies": {
     "eslint": "^4.19.1"

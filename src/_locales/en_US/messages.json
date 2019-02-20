@@ -85,5 +85,8 @@
   },
   "studyOptOutAll": {
     "message": "To disable all studies in Firefox, you can update your Privacy and Security settings in about:preferences."
+  },
+  "browserActionTitle": {
+    "message": "DNS Over HTTPS"
   }
 }
