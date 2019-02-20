@@ -44,8 +44,8 @@ class NotificationPrompt {
     if (options.moreInfo) {
       let mainMessage = "%S %S";
       let text = options.moreInfo.title || "Learn more";
-      let link = browserWin.document.createElement("label");
-      link.className = "text-link";
+      let link = browserWin.document.createXULElement("label", {is: "text-link"}); // 67
+      link.className = "text-link"; // Pre 67
       link.setAttribute("useoriginprincipal", true);
       link.setAttribute("href", options.moreInfo.url);
       link.textContent = text;
