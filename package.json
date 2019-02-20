@@ -22,11 +22,11 @@
   },
   "homepage": "https://github.com/jonathanKingston/http-dns#readme",
   "dependencies": {
-    "dompurify": "^1.0.4",
+    "dompurify": "^1.0.10",
     "pontoon-to-webext": "^1.0.2",
-    "shield-studies-addon-utils": "^5.0.3"
+    "shield-studies-addon-utils": "^5.2.1"
   },
   "devDependencies": {
-    "eslint": "4.19.1"
+    "eslint": "^4.19.1"
   }
 }
