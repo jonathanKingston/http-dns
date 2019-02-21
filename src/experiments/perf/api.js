@@ -43,18 +43,6 @@ function getFieldValue(obj, name) {
 }
 
 
-
-const IPV4 = /^(\d{1,3}\.){3,}\d{1,3}(:\d+)?$/;
-const IPV6 = /^[0-9A-F:\[\]]{1,4}$/i;
-
-function isIpv4(ipaddress) {
-  return IPV4.test(ipaddress)
-}
-
-function isIpv6(ipaddress) {
-  return IPV6.test(ipaddress)
-}
-
 async function getInfo(xhr, config) {
   let result = {};
 
@@ -92,14 +80,7 @@ async function getInfo(xhr, config) {
     });
 
     channel.QueryInterface(Ci.nsIHttpChannelInternal);
-    if (isIpv4(channel.remoteAddress)) {
-      result.ipVersion = 4;
-    } else if (isIpv6(channel.remoteAddress)) {
-      result.ipVersion = 6;
-    } else {
-      // Doesn't look like a valid ip
-      result.ipVersion = 0;
-    }
+    result.remoteAddress = channel.remoteAddress;
 
     result.status = getFieldValue(channel, "status");
     result.dnsLookupDiff = result.domainLookupEndTime - result.domainLookupStartTime;
