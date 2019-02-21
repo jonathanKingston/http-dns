@@ -3,6 +3,7 @@
 let {interfaces: Ci} = Components;
 
 ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+const {Svc} = ChromeUtils.import("resource://services-sync/util.js");
 
 XPCOMUtils.defineLazyModuleGetter(this, "Preferences", "resource://gre/modules/Preferences.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "TelemetryController", "resource://gre/modules/TelemetryController.jsm");
@@ -45,6 +46,7 @@ function getFieldValue(obj, name) {
 
 async function getInfo(xhr, config) {
   let result = {};
+  // TODO check TTL also
 
   try {
     let channel = xhr.channel;
@@ -83,7 +85,7 @@ async function getInfo(xhr, config) {
     result.remoteAddress = channel.remoteAddress;
 
     result.status = getFieldValue(channel, "status");
-    result.dnsLookupDiff = result.domainLookupEndTime - result.domainLookupStartTime;
+    //result.dnsLookupDiff = result.domainLookupEndTime - result.domainLookupStartTime;
 
     let allHeaders = xhr.getAllResponseHeaders().split(/[\r\n]+/);
 
@@ -114,10 +116,55 @@ async function getInfo(xhr, config) {
     result.exception = ex.message;
   }
 
+  if (config.doh) {
+    let url = new URL(config.url);
+    try {
+      let res = await verifyWasTRR(url.hostname);
+      if (!res.isTRR) {
+        Cu.reportError("trr record not found");
+        return null;
+      }
+      result.isTRR = res.isTRR;
+    } catch {
+      Cu.reportError("dns didn't return");
+      return null;
+    }
+  }
+
   return result;
 }
 
+
+function verifyWasTRR(hostname) {
+  return new Promise((resolve, reject) => {
+    let response = {};
+    let request;
+    let listener = {
+      onLookupComplete: function(inRequest, inRecord, inStatus) {
+        if (inRequest === request) {
+          if (!Components.isSuccessCode(inStatus)) {
+            return reject({message: getErrorString(inStatus)});
+          }
+          response.isTRR = inRecord.IsTRR();
+          return resolve(response);
+        }
+      },
+    };
+
+    let dns = Cc["@mozilla.org/network/dns-service;1"].getService(Ci.nsIDNSService);
+    try {
+      request = dns.asyncResolve(hostname, Ci.nsIDNSService.RESOLVE_OFFLINE, listener, null, {} /* defaultOriginAttributes */);
+    } catch (e) {
+      // handle exceptions such as offline mode.
+      return reject({message: e.name});
+    }
+  });
+}
+
 function buildRequest(config, reportResult) {
+  // Clear the cache
+  Svc.Obs.notify("network:link-status-changed", null, "up");
+
   let xhr = new XMLHttpRequest({ mozSystem: false});
   xhr.open("GET", config.url, true);
 
