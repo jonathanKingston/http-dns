@@ -108,6 +108,9 @@ async function hasFacebookCookie() {
 
 const rollout = {
   async init() {
+    browser.browserAction.onClicked.addListener(() => {
+      this.showTab();
+    });
     browser.study.onEndStudy.addListener((ending) => {
       //TODO make sure we handle all endings here
       stateManager.clear(ending);
@@ -117,6 +120,18 @@ const rollout = {
     });
     await browser.study.setup(baseStudySetup);
     browser.runtime.onMessage.addListener((...args) => this.handleMessage(...args));
+  },
+  async showTab() {
+    const tabs = await this.findStudyTabs();
+    if (tabs.length) {
+      browser.tabs.update(tabs[0].id, {
+        active: true
+      });
+    } else {
+      browser.tabs.create({
+        url: STUDY_URL
+      });
+    }
   },
   async onReady() {
     const studyInfo = await browser.study.getStudyInfo();
@@ -167,10 +182,14 @@ const rollout = {
     browser.experiments.notifications.clear("rollout-prompt");
   },
 
-  async handleUIDisable() {
-    const tabs = await browser.tabs.query({
+  findStudyTabs() {
+    return browser.tabs.query({
       url: STUDY_URL
     });
+  },
+
+  async handleUIDisable() {
+    const tabs = await this.findStudyTabs();
     browser.tabs.remove(tabs.map((tab) => tab.id));
     browser.experiments.notifications.clear("rollout-prompt");
     stateManager.endStudy("UIDisabled");
