@@ -2,27 +2,30 @@
 
 Key | Description
 --- | ---
-event | `perf-report` (can this take other values?)
+event | `perf-report`
 results | String holding a JSON-encoded `OuterResults`
-sentCount | string-encoded integer representing the number of `Results` in each `Test`
+sentCount | count of perf reports from this client, starting at 1
+
+
+OR
+
+Key | Description
+--- | ---
+stateKey | (enabled|disabled|UIdisabled|UIOk|uninstalled|loaded)
 
 ## OuterResults
 
 Key | Description
 --- | ---
-status | `"complete"` (Can this take other values?)
+status | (complete|canceled)
 tests | array of `Test`
 
 ## Test
 
 Key | Description
 --- | ---
-ccheck | ?
-doh | `true` or `false`; whether DOH was used to resolve the remote endpoint
-facebook | `true` or missing; whether the remote endpoint is Facebook
-label | friendly slug with a 1:1 mapping to a (`doh`, `url`) pair
+label | friendly slug
 results | array of `Result`
-url | URL of endpoint
 
 ## Result
 
@@ -34,8 +37,8 @@ connectEndTime | timestamp
 connectStartTime | timestamp
 domainLookupEndTime | timestamp
 domainLookupStartTime | timestamp
-errorCode | `0` or missing?
-event | `"loadend"` (Can this take other values?)
+errorCode | `0` on success; missing for insecure contexts. Value of nsITransportSecurityInfo.errorCode.
+event | `(loadend|abort|timeout|retry-limit|exception)`; `"loadend"` is the only success value
 headers | array of `Header`
 isTRR | `true` or missing; whether DOH was used to resolve the remote endpoint
 remoteAddress | IPv[46] address of the fetch endpoint
@@ -44,8 +47,8 @@ responseCode | HTTP status code for the fetch
 responseEndTime | timestamp
 responseStartTime | timestamp
 secureConnectionStartTime | timestamp or `0`?
-securityState | `2` or missing?
-status | `0`?
+securityState | `2` on success; missing for HTTP. Value of nsITransportSecurityInfo.securityState. Bitfield including fields from [nsIWebProgressListener].
+status | integer [nsresult] for the fetch; 0 on success
 tcpConnectEndTime | timestamp
 
 ## Header
@@ -57,8 +60,8 @@ synth-timings-incoming:
   now=(\d+);
   turnaround=(\d+);
   client_rtt=(\d+), now=(\d+);
-  turnaround=(\d+);
-  client_rtt=(\d+);
+  # turnaround=(\d+);  # These last two values should not appear, but might!
+  # client_rtt=(\d+);
 ```
 
 ```
@@ -68,4 +71,7 @@ synth-timings-outgoing:
   client_rtt=(\d+)
 ```
 
-(What do these values mean?)
+The `client_rtt` is the round-trip time to the client, measured by Cloudflare.
+
+[nsresult]: https://searchfox.org/mozilla-central/source/__GENERATED__/xpcom/base/ErrorList.h#52
+[nsIWebProgressListener]: https://searchfox.org/mozilla-central/rev/3e0f1d95fcf8832413457e3bec802113bdd1f8e8/uriloader/base/nsIWebProgressListener.idl#153-175
