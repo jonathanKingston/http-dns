@@ -18,7 +18,8 @@
     "tabs",
     "cookies",
     "storage",
-    "notifications"
+    "notifications",
+    "https://facebook.com/"
   ],
 
   "browser_action": {
