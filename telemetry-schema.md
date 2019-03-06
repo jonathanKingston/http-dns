@@ -11,13 +11,13 @@ OR
 
 Key | Description
 --- | ---
-stateKey | (enabled|disabled|UIdisabled|UIOk|uninstalled|loaded)
+stateKey | (enabled,disabled,UIdisabled,UIOk,uninstalled,loaded)
 
 ## OuterResults
 
 Key | Description
 --- | ---
-status | (complete|canceled)
+status | (complete,canceled)
 tests | array of `Test`
 
 ## Test
@@ -38,7 +38,7 @@ connectStartTime | timestamp
 domainLookupEndTime | timestamp
 domainLookupStartTime | timestamp
 errorCode | `0` on success; missing for insecure contexts. Value of nsITransportSecurityInfo.errorCode.
-event | `(loadend|abort|timeout|retry-limit|exception)`; `"loadend"` is the only success value
+event | `(loadend,abort,timeout,retry-limit,exception)`; `"loadend"` is the only success value
 headers | array of `Header`
 isTRR | `true` or missing; whether DOH was used to resolve the remote endpoint
 remoteAddress | IPv[46] address of the fetch endpoint
