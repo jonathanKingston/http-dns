@@ -267,7 +267,7 @@ async function runConfigurations(repeatCount, facebook) {
   let configs = shuffleArray(measurements);
 
   for (let c = 0; c < configs.length; c++) {
-    results.push(Object.assign({}, configs[c], {"results": []}));
+    results.push(Object.assign({}, { label: configs[c].label }, {"results": []}));
   }
 
   for (let i = 0; i < repeatCount; i++) {
