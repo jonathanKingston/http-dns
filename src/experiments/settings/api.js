@@ -85,6 +85,7 @@ const settingManager = {
     await this.init();
     const prerequisitePrefs = [
       "network.trr.mode",
+      "network.trr.disable-ECS",
       "network.trr.uri",
       "network.trr.experimentalPerfInterval",
       "network.trr.experimentalPerfRepeatCount"

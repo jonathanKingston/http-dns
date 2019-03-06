@@ -2,6 +2,7 @@
   "prefTypes": {
     "network.trr.mode": "int",
     "network.trr.uri": "string",
+    "network.trr.disable-ECS": "bool",
     "network.trr.experimentalRollout": "int",
     "network.trr.experimentalPerfInterval": "int",
     "network.trr.experimentalPerfRepeatCount": "int"
@@ -22,6 +23,7 @@
       "prefs": {
         "network.trr.uri": "https://mozilla.cloudflare-dns.com/dns-query",
         "network.trr.mode": 2,
+        "network.trr.disable-ECS": false,
         "network.trr.experimentalPerfInterval": 86400000,
         "network.trr.experimentalPerfRepeatCount": 3
       },
@@ -59,6 +61,7 @@
       "prefs": {
         "network.trr.uri": "https://mozilla.cloudflare-dns.com/dns-query",
         "network.trr.mode": 2,
+        "network.trr.disable-ECS": false,
         "network.trr.experimentalPerfInterval": 86400000,
         "network.trr.experimentalPerfRepeatCount": 3
       },
