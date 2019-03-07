@@ -33,6 +33,11 @@ The addon will also send usage telemetry about the state of the addon being inst
 - Existing Shield telemetry utils telemetry will be sent.
 - The variant of the study will be captured.
 
+# Configuring
+
+Setting "network.trr.experimentalPerfInterval" will change how often in seconds the addon does a telemetry request. We check roughly every minute to see if the last perf check was before this interval time.
+This is useful for debugging the telemetry from the addon.
+
 ## How to read the states file
 
 The preferences are managed by [states-trr.json](/src/states-trr.json) this is only read by the browsers parent process in the [Web Extension Experiment code](src/experiments/settings/api.js).

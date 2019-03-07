@@ -5,6 +5,9 @@ let {interfaces: Ci} = Components;
 ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 const {Svc} = ChromeUtils.import("resource://services-sync/util.js");
 
+let cps = Cc["@mozilla.org/network/captive-portal-service;1"]
+                  .getService(Ci.nsICaptivePortalService);
+
 XPCOMUtils.defineLazyModuleGetter(this, "Preferences", "resource://gre/modules/Preferences.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "TelemetryController", "resource://gre/modules/TelemetryController.jsm");
 
@@ -122,7 +125,6 @@ async function getInfo(xhr, config) {
       let res = await verifyWasTRR(url.hostname);
       if (!res.isTRR) {
         Cu.reportError("trr record not found");
-        return null;
       }
       result.isTRR = res.isTRR;
     } catch {
@@ -165,7 +167,7 @@ function buildRequest(config, reportResult) {
   // Clear the cache
   Svc.Obs.notify("network:link-status-changed", null, "up");
 
-  let xhr = new XMLHttpRequest({ mozSystem: false});
+  let xhr = new XMLHttpRequest({ mozSystem: false });
   xhr.open("GET", config.url, true);
 
   xhr.timeout = XHR_TIMEOUT;
@@ -199,21 +201,22 @@ function buildRequest(config, reportResult) {
   xhr.channel.tlsFlags |= (versionFallbackLimit << 3);
 
   // Ignoring loadstart, load and progress events
+  let portalStatus = cps.status;
 
   xhr.addEventListener("loadend", e => {
-    reportResult("loadend", e.target);
+    reportResult("loadend", e.target, portalStatus);
   });
 
   xhr.addEventListener("error", e => {
-    reportResult("error", e.target);
+    reportResult("error", e.target, portalStatus);
   });
 
   xhr.addEventListener("abort", e => {
-    reportResult("abort", e.target);
+    reportResult("abort", e.target, portalStatus);
   });
 
   xhr.addEventListener("timeout", e => {
-    reportResult("timeout", e.target);
+    reportResult("timeout", e.target, portalStatus);
   });
 
   xhr.send();
@@ -223,17 +226,17 @@ function makeRequest(config) {
   return new Promise((resolve, reject) => {
     let retry = 0;
     // put together the configuration and the info collected from the connection
-    async function reportResult(event, xhr) {
+    async function reportResult(event, xhr, portalStatus) {
       let info = await getInfo(xhr, config);
       if (info == null) {
         ++retry;
         if (retry > 3) {
-          resolve(Object.assign({result: {"event": "retry-limit", "description": `Retried ${retry} times`}}, config));
+          resolve(Object.assign({result: {"event": "retry-limit", "description": `Retried ${retry} times`}, portalStatus}, config));
           return;
         }
         buildRequest(config, reportResult);
       } else {
-        resolve(Object.assign({"event": event, "responseCode": xhr.status}, info));
+        resolve(Object.assign({event, responseCode: xhr.status, portalStatus }, info));
       }
       return true;
     }
