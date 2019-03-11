@@ -1,6 +1,6 @@
 {
   "name": "http-dns",
-  "version": "5.0.2",
+  "version": "6.0.0",
   "description": "DNS over HTTPS",
   "main": ".eslintrc.js",
   "scripts": {
