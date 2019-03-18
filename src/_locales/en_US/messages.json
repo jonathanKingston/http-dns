@@ -44,7 +44,7 @@
     "message": "How the studies work"
   },
   "studyWork": {
-    "message": "$BRANDSHORTNAME$ is running a series of studies to evaluate a service that keeps DNS providers from collecting and sharing your browsing history. All users in the study will receive a notification. When a study is active, $BRANDSHORTNAME$ will automatically use Cloudflare’s $CLOUDFLARELINK$.  This study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP in order to compare approaches. In this particular study, we will also measure the speed at which websites send and receive data from $BRANDSHORTNAME$, by sending a “payload” of random bytes through a dedicated service run by Akamai and to one run by Facebook if you are logged into Facebook.",
+    "message": "$BRANDSHORTNAME$ is running a series of studies to evaluate a service that keeps DNS providers from collecting and sharing your browsing history. All users in the study will receive a notification. When a study is active, $BRANDSHORTNAME$ will automatically use Cloudflare’s $CLOUDFLARELINK$.  This study will use the Cloudflare resolver in addition to the DNS selected by a user or their ISP in order to compare approaches. In this particular study, we will also measure the speed at which websites send and receive data from $BRANDSHORTNAME$, by sending a “payload” of random bytes through a dedicated service run by Akamai and to one run by Facebook if you are logged into Facebook. Learn how $MOZILLABLOGLINK$ is helping us test new ways to make browsing more secure.",
     "placeholders": {
       "studylink": {
         "content": "$1"
@@ -57,6 +57,9 @@
       },
       "cloudflarelink": {
         "content": "$4"
+      },
+      "mozillabloglink": {
+        "content": "$5"
       }
     }
   },
@@ -65,6 +68,9 @@
   },
   "cloudflareLink": {
     "message": "1.1.1.1 secure DNS over HTTPS"
+  },
+  "mozillaBlogLink": {
+    "message": "Cloudflare's partnership with Facebook"
   },
   "studyDataDesc": {
     "message": "Cloudflare, like any other DNS provider, needs access to the host names you use to resolve requests. We’ve chosen Cloudflare as our partner for these studies because, unlike many other DNS providers, they agreed to $POLICYLINK$ that include limits on what data they collect and how long they keep it, as well as a promise to not share data with other parties. The performance measurement servers do not collect any personal information except for the source IP from which downloads originate and this information is not shared with other parties. The payload sent to Facebook does not contain any personal information, and is sent only if you are already logged into Facebook.",

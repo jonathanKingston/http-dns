@@ -8,7 +8,6 @@ const {Svc} = ChromeUtils.import("resource://services-sync/util.js");
 let cps = Cc["@mozilla.org/network/captive-portal-service;1"]
                   .getService(Ci.nsICaptivePortalService);
 
-XPCOMUtils.defineLazyModuleGetter(this, "Preferences", "resource://gre/modules/Preferences.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "TelemetryController", "resource://gre/modules/TelemetryController.jsm");
 
 XPCOMUtils.defineLazyServiceGetter(this, "certDB", "@mozilla.org/security/x509certdb;1", "nsIX509CertDB");
@@ -18,22 +17,30 @@ XPCOMUtils.defineLazyGlobalGetters(this, ["XMLHttpRequest"]);
 const XHR_TIMEOUT = 10000;
 
 const measurements = [
-  {label: "http-now-doh", url: "http://ionspm-synth.akamaized.net/now.txt", doh: true, ccheck: false},
-  {label: "http-1M-doh", url: "http://ionspm-synth.akamaized.net/tests/1M.bin", doh: true, ccheck: true},
-  {label: "https-now-doh", url: "https://ionspm-synth.akamaized.net/now.txt", doh: true, ccheck: false},
-  {label: "https-1M-doh", url: "https://ionspm-synth.akamaized.net/tests/1M.bin", doh: true, ccheck: true},
+  {label: "http-now-doh", url: "http://ionspm-synth.akamaized.net/now.txt", doh: true, ccheck: false, ecs: false},
+  {label: "http-1M-doh", url: "http://ionspm-synth.akamaized.net/tests/1M.bin", doh: true, ccheck: true, ecs: false},
+  {label: "https-now-doh", url: "https://ionspm-synth.akamaized.net/now.txt", doh: true, ccheck: false, ecs: false},
+  {label: "https-1M-doh", url: "https://ionspm-synth.akamaized.net/tests/1M.bin", doh: true, ccheck: true, ecs: false},
 
-  {label: "http-now", url: "http://ionspm-synth.akamaized.net/now.txt", doh: false, ccheck: false},
-  {label: "http-1M", url: "http://ionspm-synth.akamaized.net/tests/1M.bin", doh: false, ccheck: true},
-  {label: "https-now", url: "https://ionspm-synth.akamaized.net/now.txt", doh: false, ccheck: false},
-  {label: "https-1M", url: "https://ionspm-synth.akamaized.net/tests/1M.bin", doh: false, ccheck: true},
+  {label: "http-now", url: "http://ionspm-synth.akamaized.net/now.txt", doh: false, ccheck: false, ecs: false},
+  {label: "http-1M", url: "http://ionspm-synth.akamaized.net/tests/1M.bin", doh: false, ccheck: true, ecs: false},
+  {label: "https-now", url: "https://ionspm-synth.akamaized.net/now.txt", doh: false, ccheck: false, ecs: false},
+  {label: "https-1M", url: "https://ionspm-synth.akamaized.net/tests/1M.bin", doh: false, ccheck: true, ecs: false},
 
-  {label: "https-fb-43b-doh", url: "https://scontent.xx.fbcdn.net/test-1px.gif", doh: true, ccheck: false, facebook: true},
-  {label: "https-fb-100k-doh", url: "https://scontent.xx.fbcdn.net/r20-100KB.png", doh: true, ccheck: false, facebook: true},
+  {label: "https-fb-43b-doh", url: "https://scontent.xx.fbcdn.net/test-1px.gif", doh: true, ccheck: false, facebook: true, ecs: false},
+  {label: "https-fb-100k-doh", url: "https://scontent.xx.fbcdn.net/r20-100KB.png", doh: true, ccheck: false, facebook: true, ecs: false},
 
-  {label: "https-fb-43b", url: "https://scontent.xx.fbcdn.net/test-1px.gif", doh: false, ccheck: false, facebook: true},
-  {label: "https-fb-100k", url: "https://scontent.xx.fbcdn.net/r20-100KB.png", doh: false, ccheck: false, facebook: true},
+  {label: "https-fb-43b", url: "https://scontent.xx.fbcdn.net/test-1px.gif", doh: false, ccheck: false, facebook: true, ecs: false},
+  {label: "https-fb-100k", url: "https://scontent.xx.fbcdn.net/r20-100KB.png", doh: false, ccheck: false, facebook: true, ecs: false},
+
+  {label: "https-fb-43b-doh-ecs", url: "https://scontent.xx.fbcdn.net/test-1px.gif", doh: true, ccheck: false, facebook: true, ecs: true},
+  {label: "https-fb-100k-doh-ecs", url: "https://scontent.xx.fbcdn.net/r20-100KB.png", doh: true, ccheck: false, facebook: true, ecs: true},
+
+  {label: "https-fb-43b-ecs", url: "https://scontent.xx.fbcdn.net/test-1px.gif", doh: false, ccheck: false, facebook: true, ecs: true},
+  {label: "https-fb-100k-ecs", url: "https://scontent.xx.fbcdn.net/r20-100KB.png", doh: false, ccheck: false, facebook: true, ecs: true},
 ];
+
+const ECS_PREF = "network.trr.disable-ECS";
 
 let probe_id = null;
 
@@ -164,6 +171,7 @@ function verifyWasTRR(hostname) {
 }
 
 function buildRequest(config, reportResult) {
+  Services.prefs.setBoolPref(ECS_PREF, !!config.ecs);
   // Clear the cache
   Svc.Obs.notify("network:link-status-changed", null, "up");
 

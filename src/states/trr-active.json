@@ -23,7 +23,7 @@
       "prefs": {
         "network.trr.uri": "https://mozilla.cloudflare-dns.com/dns-query",
         "network.trr.mode": 2,
-        "network.trr.disable-ECS": false,
+        "network.trr.disable-ECS": true,
         "network.trr.experimentalPerfInterval": 86400000,
         "network.trr.experimentalPerfRepeatCount": 3
       },
@@ -61,7 +61,7 @@
       "prefs": {
         "network.trr.uri": "https://mozilla.cloudflare-dns.com/dns-query",
         "network.trr.mode": 2,
-        "network.trr.disable-ECS": false,
+        "network.trr.disable-ECS": true,
         "network.trr.experimentalPerfInterval": 86400000,
         "network.trr.experimentalPerfRepeatCount": 3
       },
