@@ -173,7 +173,7 @@ function verifyWasTRR(hostname) {
 function buildRequest(config, reportResult) {
   Services.prefs.setBoolPref(ECS_PREF, !!config.ecs);
   // Clear the cache
-  Svc.Obs.notify("network:link-status-changed", null, "up");
+  Svc.Obs.notify("network:link-status-changed", null, "change");
 
   let xhr = new XMLHttpRequest({ mozSystem: false });
   xhr.open("GET", config.url, true);
