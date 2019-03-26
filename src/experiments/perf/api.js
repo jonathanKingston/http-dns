@@ -3,7 +3,6 @@
 let {interfaces: Ci} = Components;
 
 ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
-const {Svc} = ChromeUtils.import("resource://services-sync/util.js");
 
 let cps = Cc["@mozilla.org/network/captive-portal-service;1"]
                   .getService(Ci.nsICaptivePortalService);
@@ -173,7 +172,8 @@ function verifyWasTRR(hostname) {
 function buildRequest(config, reportResult) {
   Services.prefs.setBoolPref(ECS_PREF, !!config.ecs);
   // Clear the cache
-  Svc.Obs.notify("network:link-status-changed", null, "change");
+  let dns = Cc["@mozilla.org/network/dns-service;1"].getService(Ci.nsIDNSService);
+  dns.clearCache(true);
 
   let xhr = new XMLHttpRequest({ mozSystem: false });
   xhr.open("GET", config.url, true);
