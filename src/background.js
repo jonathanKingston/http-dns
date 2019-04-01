@@ -136,6 +136,7 @@ const rollout = {
   async onReady() {
     const studyInfo = await browser.study.getStudyInfo();
     if (!studyInfo.isFirstRun) {
+      this.setupAlarm();
       return;
     }
     // If the user hasn't met the criteria clean up
